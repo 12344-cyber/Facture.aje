@@ -99,6 +99,8 @@
   #mainVol::-moz-range-thumb { background: #00FF00; box-shadow: 0 0 12px #00FF00; }
   #refVolSlider::-webkit-slider-thumb { background: #9c27b0; box-shadow: 0 0 12px #9c27b0; }
   #refVolSlider::-moz-range-thumb { background: #9c27b0; box-shadow: 0 0 12px #9c27b0; }
+  #musicVol::-webkit-slider-thumb { background: #e91e63; box-shadow: 0 0 12px #e91e63; }
+  #musicVol::-moz-range-thumb { background: #e91e63; box-shadow: 0 0 12px #e91e63; }
 
   .trimmer { background: #0a1a2a; border: 2px solid #FFD700; border-radius: 14px; padding: 16px 12px 12px; margin-top: 10px; }
   .trimmer-title { color: #FFD700; font-weight: 900; font-size: 0.9rem; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; gap: 6px; }
@@ -218,6 +220,15 @@
 
   .studio-mini-ref { position: absolute; top: 80px; right: 16px; background: rgba(156, 39, 176, 0.95); color: #fff; border: 2px solid #9c27b0; border-radius: 30px; padding: 10px 16px; font-family: 'Cairo'; font-weight: 900; font-size: 0.85rem; cursor: pointer; backdrop-filter: blur(8px); z-index: 15; display: none; align-items: center; gap: 6px; box-shadow: 0 4px 20px rgba(156,39,176,0.5); }
   .studio-mini-ref.show { display: flex; }
+
+  /* ✅ زر الموسيقى في الاستوديو */
+  .studio-mini-music { position: absolute; top: 130px; right: 16px; background: rgba(233, 30, 99, 0.95); color: #fff; border: 2px solid #e91e63; border-radius: 30px; padding: 10px 16px; font-family: 'Cairo'; font-weight: 900; font-size: 0.85rem; cursor: pointer; backdrop-filter: blur(8px); z-index: 15; display: none; align-items: center; gap: 6px; box-shadow: 0 4px 20px rgba(233,30,99,0.5); }
+  .studio-mini-music.show { display: flex; }
+  .studio-mini-music.playing { background: rgba(0,255,0,0.95); border-color: #00FF00; color: #0a1a2e; box-shadow: 0 4px 20px rgba(0,255,0,0.5); animation: pulseMusic 1.5s infinite; }
+  @keyframes pulseMusic {
+    0%, 100% { box-shadow: 0 4px 20px rgba(0,255,0,0.5), 0 0 0 0 rgba(0,255,0,0.6); }
+    50% { box-shadow: 0 4px 20px rgba(0,255,0,0.5), 0 0 0 12px rgba(0,255,0,0); }
+  }
 </style>
 </head>
 <body>
@@ -228,6 +239,7 @@
     <div class="indicator" id="indSource">📹 المصدر</div>
     <div class="indicator" id="indMic">🎤 الميكروفون</div>
     <div class="indicator" id="indRef">🎞️ المرجعي</div>
+    <div class="indicator" id="indMusic">🎵 الموسيقى</div>
     <div class="indicator" id="indRec">🔴 التسجيل</div>
   </div>
 
@@ -381,6 +393,24 @@
     <input type="range" id="micVol" class="volume-slider" min="100" max="500" value="250" step="10">
   </div>
 
+  <!-- ✅ قسم جديد: الموسيقى الخلفية -->
+  <div class="step" style="border-color:#e91e63;">
+    <div class="step-title">
+      <span class="num" style="background:#e91e63;color:#fff;">🎵</span>
+      <span style="color:#ff80ab;">الموسيقى الخلفية</span>
+    </div>
+    <div class="hint" style="background:#e91e6310; border-right-color:#e91e63; color:#ff80ab;">
+      💡 ارفع ملف موسيقى — ستُدمج مع صوتك تلقائياً أثناء التسجيل. اضغط الزر أسفل الشاشة أثناء التسجيل لتشغيلها.
+    </div>
+    <input type="file" id="musicFile" accept="audio/*" style="margin-top:10px;">
+    <label style="display:flex; justify-content:space-between; align-items:center; margin-top:12px;">
+      <span>🎚️ مستوى الموسيقى</span>
+      <span id="musicVolVal" style="color:#ff80ab; font-weight:900; font-size:1.1rem;">70%</span>
+    </label>
+    <input type="range" id="musicVol" class="volume-slider" min="0" max="200" value="70" step="5">
+    <div id="musicInfo" class="hint" style="display:none; background:#e91e6310; border-right-color:#e91e63; color:#ff80ab; margin-top:10px;"></div>
+  </div>
+
   <div class="step" style="border-color:#00FF00;">
     <div class="step-title">
       <span class="num" style="background:#00FF00;color:#0a1a2e;">🔊</span>
@@ -454,6 +484,7 @@
 
   <div class="studio-tap-hint" id="studioTapHint">💡 المس الشاشة لإظهار/إخفاء الأزرار</div>
   <button class="studio-mini-ref" id="studioMiniRef">🎞️ عرض المرجعي</button>
+  <button class="studio-mini-music" id="studioMiniMusic">🎵 تشغيل الموسيقى</button>
   <div class="studio-video-area" id="studioVideoArea"></div>
 
   <div class="studio-bottom-bar">
@@ -473,7 +504,7 @@
 
 <script>
 // ============================================================
-//  استوديو الأخبار الاحترافي - مع إصلاح سماع الصوت
+//  استوديو الأخبار الاحترافي - مع موسيقى خلفية للمذيع
 // ============================================================
 
 const canvas = document.createElement('canvas');
@@ -508,10 +539,16 @@ let optLoopClip = true;
 let micBoostValue = 2.5;
 let mainVolValue = 1.0;
 let refVolValue = 1.0;
+let musicVolValue = 0.7;
 let micBoostNode = null;
 let micCompressor = null;
 let mainVolNode = null;
 let refVolNode = null;
+let musicGainNode = null;
+let musicSrcNode = null;
+
+let musicLoaded = false;
+let musicPlaying = false;
 
 let tickerX = 0;
 let tickerInited = false;
@@ -533,6 +570,12 @@ const refVideo = document.getElementById('refVideo');
 refVideo.playsInline = true; refVideo.muted = false; refVideo.volume = 1; refVideo.preload = 'auto';
 refVideo.setAttribute('playsinline', '');
 
+// ✅ عنصر الموسيقى
+const musicEl = document.createElement('audio');
+musicEl.loop = true;
+musicEl.preload = 'auto';
+musicEl.crossOrigin = 'anonymous';
+
 camVideo.style.cssText = 'position:fixed;left:-9999px;top:-9999px;width:2px;height:2px;opacity:0.01;pointer-events:none;';
 document.body.appendChild(camVideo);
 
@@ -547,6 +590,7 @@ const studioTimerText = $('studioTimerText');
 const studioLiveBadge = $('studioLiveBadge');
 const studioVideoArea = $('studioVideoArea');
 const studioMiniRef = $('studioMiniRef');
+const studioMiniMusic = $('studioMiniMusic');
 const studioTapHint = $('studioTapHint');
 const modeAnchor = $('modeAnchor');
 const modeRef = $('modeRef');
@@ -706,24 +750,15 @@ $('mainTrimReset').addEventListener('click', () => {
   if (mainTrimmer) mainTrimmer.render();
   setStatus('ok', '✅ الفيديو الرئيسي كاملاً');
 });
-
-// ✅ معاينة الفيديو الرئيسي - مع صوت
 $('mainTrimPreview').addEventListener('click', () => {
   if (!videoLoaded) return;
   if (mainPreviewing) {
-    video.pause(); 
-    mainPreviewing = false;
-    applyMix();
+    video.pause(); mainPreviewing = false; applyMix();
     $('mainTrimPreview').textContent = '▶️ استمع للمقطع المحدد';
     $('mainTrimPreview').classList.remove('playing');
     return;
   }
-  // ✅ تهيئة الصوت + ربط الفيديو + تطبيق المزيج
-  resumeAudio();
-  connectMain();
-  mainPreviewing = true;
-  applyMix();
-  
+  resumeAudio(); connectMain(); mainPreviewing = true; applyMix();
   video.currentTime = mainTrimStart;
   video.play().catch(()=>{});
   $('mainTrimPreview').textContent = '⏹️ إيقاف المعاينة';
@@ -738,24 +773,15 @@ $('refTrimReset').addEventListener('click', () => {
   if (refTrimmer) refTrimmer.render();
   setStatus('ok', '✅ الفيديو المرجعي كاملاً');
 });
-
-// ✅ معاينة الفيديو المرجعي - مع صوت
 $('refTrimPreview').addEventListener('click', () => {
   if (!refLoaded) return;
   if (refPreviewing) {
-    refVideo.pause(); 
-    refPreviewing = false;
-    applyMix();
+    refVideo.pause(); refPreviewing = false; applyMix();
     $('refTrimPreview').textContent = '▶️ استمع للمقطع المحدد';
     $('refTrimPreview').classList.remove('playing');
     return;
   }
-  // ✅ تهيئة الصوت + ربط المرجعي + تطبيق المزيج
-  resumeAudio();
-  connectRef();
-  refPreviewing = true;
-  applyMix();
-  
+  resumeAudio(); connectRef(); refPreviewing = true; applyMix();
   refVideo.currentTime = refTrimStart;
   refVideo.play().catch(()=>{});
   $('refTrimPreview').textContent = '⏹️ إيقاف المعاينة';
@@ -766,16 +792,13 @@ $('refTrimPreview').addEventListener('click', () => {
 video.addEventListener('timeupdate', () => {
   if (video.duration && videoLoaded) {
     const pct = (video.currentTime / video.duration) * 100;
-    const cursor = $('mainTrimCursor');
-    cursor.style.right = pct + '%';
-    cursor.style.display = 'block';
+    $('mainTrimCursor').style.right = pct + '%';
+    $('mainTrimCursor').style.display = 'block';
   }
   if ((mainPreviewing || (isRecording && !isPaused)) && mainTrimEnd < video.duration - 0.2) {
     if (video.currentTime >= mainTrimEnd - 0.05) {
       if (mainPreviewing) {
-        video.pause(); 
-        mainPreviewing = false;
-        applyMix();  // ✅
+        video.pause(); mainPreviewing = false; applyMix();
         $('mainTrimPreview').textContent = '▶️ استمع للمقطع المحدد';
         $('mainTrimPreview').classList.remove('playing');
         setStatus('ok', '✅ انتهت المعاينة');
@@ -791,16 +814,13 @@ video.addEventListener('timeupdate', () => {
 refVideo.addEventListener('timeupdate', () => {
   if (refVideo.duration && refLoaded) {
     const pct = (refVideo.currentTime / refVideo.duration) * 100;
-    const cursor = $('refTrimCursor');
-    cursor.style.right = pct + '%';
-    cursor.style.display = 'block';
+    $('refTrimCursor').style.right = pct + '%';
+    $('refTrimCursor').style.display = 'block';
   }
   if ((refPreviewing || (isRecording && !isPaused && layoutMode !== 'anchor')) && refTrimEnd < refVideo.duration - 0.2) {
     if (refVideo.currentTime >= refTrimEnd - 0.05) {
       if (refPreviewing) {
-        refVideo.pause(); 
-        refPreviewing = false;
-        applyMix();  // ✅
+        refVideo.pause(); refPreviewing = false; applyMix();
         $('refTrimPreview').textContent = '▶️ استمع للمقطع المحدد';
         $('refTrimPreview').classList.remove('playing');
         setStatus('ok', '✅ انتهت معاينة المرجعي');
@@ -814,11 +834,11 @@ refVideo.addEventListener('timeupdate', () => {
 });
 
 // ============================================================
-//  ✅ نظام الصوت مع سماع الصوت (المُصلَّح)
+//  ✅ نظام الصوت مع الموسيقى
 // ============================================================
 let audioCtx = null, audioDest = null;
 let srcMain = null, srcRef = null, micNode = null;
-let gainMain, gainMic, gainRef, refLimiter;
+let gainMain, gainMic, gainRef, refLimiter, musicLimiter;
 
 function ensureAudio() {
   if (audioCtx) return audioCtx;
@@ -830,6 +850,9 @@ function ensureAudio() {
     gainMain = audioCtx.createGain();
     gainMic = audioCtx.createGain();
     gainRef = audioCtx.createGain();
+    musicGainNode = audioCtx.createGain();
+    musicGainNode.gain.value = 0;
+    
     micBoostNode = audioCtx.createGain();
     micBoostNode.gain.value = micBoostValue;
     micCompressor = audioCtx.createDynamicsCompressor();
@@ -838,36 +861,51 @@ function ensureAudio() {
     micCompressor.ratio.value = 6;
     micCompressor.attack.value = 0.003;
     micCompressor.release.value = 0.25;
+    
     mainVolNode = audioCtx.createGain();
     mainVolNode.gain.value = mainVolValue;
     refVolNode = audioCtx.createGain();
     refVolNode.gain.value = refVolValue;
+    
     gainMain.gain.value = 1;
     gainMic.gain.value = 1;
     gainRef.gain.value = 1;
+    
     refLimiter = audioCtx.createDynamicsCompressor();
     refLimiter.threshold.value = -3;
     refLimiter.ratio.value = 20;
     refLimiter.attack.value = 0.003;
     refLimiter.release.value = 0.15;
     
-    // الميكروفون — للتسجيل فقط (بدون سماعة لمنع الصدى)
+    // ✅ ضاغط للموسيقى لمنع التشويش
+    musicLimiter = audioCtx.createDynamicsCompressor();
+    musicLimiter.threshold.value = -3;
+    musicLimiter.ratio.value = 20;
+    musicLimiter.attack.value = 0.003;
+    musicLimiter.release.value = 0.15;
+    
+    // الميكروفون — للتسجيل فقط
     gainMic.connect(micBoostNode);
     micBoostNode.connect(micCompressor);
     micCompressor.connect(audioDest);
     
-    // ✅ الفيديو الرئيسي — للتسجيل + السماعة
+    // الفيديو الرئيسي — للتسجيل + السماعة
     gainMain.connect(mainVolNode);
     mainVolNode.connect(audioDest);
     mainVolNode.connect(audioCtx.destination);
     
-    // ✅ الفيديو المرجعي — للتسجيل + السماعة
+    // الفيديو المرجعي — للتسجيل + السماعة
     gainRef.connect(refVolNode);
     refVolNode.connect(refLimiter);
     refLimiter.connect(audioDest);
     refLimiter.connect(audioCtx.destination);
     
-    console.log('✅ AudioContext جاهز - الصوت يسمع في السماعة + التسجيل');
+    // ✅ الموسيقى — للتسجيل + السماعة
+    musicGainNode.connect(musicLimiter);
+    musicLimiter.connect(audioDest);
+    musicLimiter.connect(audioCtx.destination);
+    
+    console.log('✅ AudioContext جاهز — مع دعم الموسيقى');
     return audioCtx;
   } catch (e) { 
     console.error('AudioContext error:', e);
@@ -888,6 +926,15 @@ function connectRef() {
   if (!ensureAudio() || srcRef) return; 
   try { srcRef = audioCtx.createMediaElementSource(refVideo); srcRef.connect(gainRef); } catch (e) {} 
 }
+// ✅ ربط الموسيقى
+function connectMusic() {
+  if (!ensureAudio() || musicSrcNode) return;
+  try { 
+    musicSrcNode = audioCtx.createMediaElementSource(musicEl); 
+    musicSrcNode.connect(musicGainNode); 
+    console.log('🎵 تم ربط الموسيقى');
+  } catch (e) { console.warn('Music connect:', e); }
+}
 function connectMic() {
   if (!ensureAudio() || !cameraStream) return false;
   if (!cameraStream.getAudioTracks().length) return false;
@@ -903,24 +950,93 @@ function applyMix() {
   if (!audioCtx) return;
   const t = audioCtx.currentTime;
   const muted = isPaused;
-  // ✅ يشمل المعاينة
   const refPlaying = (layoutMode === 'reference' || layoutMode === 'split' || refPreviewing);
   let duckFactor = 1.0;
   if (optAudioDuck) {
     if (layoutMode === 'reference') duckFactor = 0.15;
     else if (layoutMode === 'split') duckFactor = 0.5;
   }
-  // ✅ يشمل معاينة الفيديو الرئيسي
   const mainOn = (!muted && activeSource === 'file' && (layoutMode === 'anchor' || mainPreviewing)) ? 1 : 0;
   const micOn = (!muted && activeSource === 'camera') ? duckFactor : 0;
   const refOn = (!muted && refPlaying) ? 1 : 0;
+  // ✅ الموسيقى تعمل فقط عند التشغيل
+  const musicOn = (!muted && musicPlaying && musicLoaded) ? 1 : 0;
+  
   if (gainMain) gainMain.gain.setTargetAtTime(mainOn, t, 0.05);
   if (gainMic) gainMic.gain.setTargetAtTime(micOn, t, 0.05);
   if (gainRef) gainRef.gain.setTargetAtTime(refOn, t, 0.05);
   if (micBoostNode) micBoostNode.gain.setTargetAtTime(micBoostValue, t, 0.05);
   if (mainVolNode) mainVolNode.gain.setTargetAtTime(mainVolValue, t, 0.05);
   if (refVolNode) refVolNode.gain.setTargetAtTime(refVolValue, t, 0.05);
+  if (musicGainNode) musicGainNode.gain.setTargetAtTime(musicOn * musicVolValue, t, 0.05);
 }
+
+// ============================================================
+//  ✅ التحكم بالموسيقى
+// ============================================================
+$('musicFile').addEventListener('change', e => {
+  const f = e.target.files[0]; if (!f) return;
+  musicLoaded = false;
+  musicEl.src = URL.createObjectURL(f);
+  musicEl.load();
+  musicEl.onloadedmetadata = () => {
+    musicLoaded = true;
+    $('musicInfo').style.display = 'block';
+    $('musicInfo').innerHTML = '✅ تم تحميل الموسيقى — المدة: <b>' + fmtTime(musicEl.duration) + '</b>';
+    connectMusic();
+    updateIndicators();
+    setStatus('ok', '✅ تم تحميل الموسيقى! ستُدمج مع صوتك عند تشغيلها.');
+  };
+  musicEl.onerror = () => {
+    musicLoaded = false;
+    $('musicInfo').style.display = 'block';
+    $('musicInfo').innerHTML = '⚠️ تعذر تحميل ملف الموسيقى';
+  };
+});
+
+$('musicVol').addEventListener('input', e => {
+  musicVolValue = parseInt(e.target.value) / 100;
+  $('musicVolVal').textContent = e.target.value + '%';
+  if (musicGainNode && audioCtx && musicPlaying) {
+    musicGainNode.gain.setTargetAtTime(musicVolValue, audioCtx.currentTime, 0.05);
+  }
+});
+
+function toggleMusic() {
+  if (!musicLoaded) {
+    setStatus('err', '⚠️ ارفع ملف موسيقى أولاً من القسم 4');
+    return;
+  }
+  resumeAudio();
+  connectMusic();
+  
+  if (musicPlaying) {
+    musicEl.pause();
+    musicPlaying = false;
+  } else {
+    musicEl.currentTime = 0;
+    musicEl.play().catch((e) => console.warn('music play:', e));
+    musicPlaying = true;
+  }
+  applyMix();
+  updateMusicUI();
+  scheduleStudioHide();
+}
+
+function updateMusicUI() {
+  if (musicPlaying) {
+    studioMiniMusic.textContent = '⏸️ إيقاف الموسيقى';
+    studioMiniMusic.classList.add('playing');
+  } else {
+    studioMiniMusic.textContent = '🎵 تشغيل الموسيقى';
+    studioMiniMusic.classList.remove('playing');
+  }
+}
+
+studioMiniMusic.addEventListener('click', (e) => {
+  e.stopPropagation();
+  toggleMusic();
+});
 
 // ============================================================
 //  اختيار المصدر
@@ -1142,6 +1258,10 @@ function updateStudioUI() {
 
   if (isRecording && layoutMode === 'anchor' && refLoaded) studioMiniRef.classList.add('show');
   else studioMiniRef.classList.remove('show');
+  
+  // ✅ زر الموسيقى يظهر أثناء التسجيل فقط
+  if (isRecording && musicLoaded) studioMiniMusic.classList.add('show');
+  else studioMiniMusic.classList.remove('show');
 
   if (isPaused) {
     studioLiveBadge.className = 'studio-live-badge paused';
@@ -1181,6 +1301,7 @@ function startRecording() {
     if (activeSource === 'file') connectMain();
     else connectMic();
     if (refLoaded) connectRef();
+    if (musicLoaded) connectMusic(); // ✅ ربط الموسيقى
 
     layoutMode = 'anchor';
     targetLayoutMode = 'anchor';
@@ -1236,8 +1357,13 @@ function startRecording() {
       video.play().catch(()=>{});
     }
     refVideo._hasStarted = false;
+    
+    // ✅ إعادة تعيين حالة الموسيقى عند بدء التسجيل
+    musicPlaying = false;
+    updateMusicUI();
+    applyMix();
 
-    setStatus('busy', '<span class="live-dot"></span> التسجيل الاحترافي جارٍ');
+    setStatus('busy', '<span class="live-dot"></span> التسجيل جارٍ' + (musicLoaded ? ' — اضغط زر 🎵 لتشغيل الموسيقى' : ''));
   } catch (e) {
     setStatus('err', '⚠️ ' + e.message);
     isRecording = false;
@@ -1317,7 +1443,7 @@ function pauseRecording() {
   isPaused = true;
   const dur = (Date.now() - currentSegmentStart) / 1000;
   if (dur > 0.5) segments.push({ duration: dur });
-  try { video.pause(); refVideo.pause(); } catch (e) {}
+  try { video.pause(); refVideo.pause(); if (musicPlaying) musicEl.pause(); } catch (e) {}
   applyMix();
   studioPauseBtn.style.display = 'none';
   studioResumeBtn.style.display = 'flex';
@@ -1339,6 +1465,7 @@ function resumeRecording() {
   } else if (activeSource === 'file') {
     video.play().catch(()=>{});
   }
+  if (musicPlaying) musicEl.play().catch(()=>{}); // ✅ استئناف الموسيقى
   applyMix();
   studioPauseBtn.style.display = 'flex';
   studioResumeBtn.style.display = 'none';
@@ -1384,6 +1511,8 @@ function stopRecording() {
   if (isPaused) { const dur = (Date.now() - currentSegmentStart) / 1000; if (dur > 0.5) segments.push({ duration: dur }); }
   isRecording = false; isPaused = false;
   stopTimer(); stopPauseTimer();
+  // ✅ إيقاف الموسيقى عند إنهاء التسجيل
+  if (musicPlaying) { try { musicEl.pause(); } catch(e){} musicPlaying = false; updateMusicUI(); }
   try { if (mediaRecorder.state === 'recording') mediaRecorder.stop(); } catch (e) { finishRecording(); }
   try { video.pause(); refVideo.pause(); } catch (e) {}
   $('btnStop').style.display = 'none';
@@ -1421,6 +1550,9 @@ function updateIndicators() {
   $('indMic').textContent = (cameraStream && cameraStream.getAudioTracks().length > 0) ? '🎤 الميكروفون' : '🎤 مكتوم';
   $('indRef').classList.toggle('ref-on', refLoaded);
   $('indRef').textContent = refLoaded ? '🎞️ المرجعي جاهز' : '🎞️ المرجعي';
+  // ✅ مؤشر الموسيقى
+  $('indMusic').classList.toggle('ref-on', musicLoaded);
+  $('indMusic').textContent = musicPlaying ? '🎵 يعمل' : (musicLoaded ? '🎵 جاهزة' : '🎵 الموسيقى');
   const recInd = $('indRec');
   recInd.className = 'indicator';
   if (isPaused) { recInd.classList.add('paused'); recInd.textContent = '⏸️ إيقاف'; }
@@ -1609,6 +1741,7 @@ document.addEventListener('keydown', e => {
     case 'a': if (refLoaded) setLayout('anchor'); break;
     case 'r': if (refLoaded) setLayout('reference'); break;
     case 's': if (refLoaded) setLayout('split'); break;
+    case 'm': if (musicLoaded) toggleMusic(); break;
     case ' ': e.preventDefault(); togglePause(); break;
   }
   scheduleStudioHide();
@@ -1683,8 +1816,7 @@ updateSegmentsLog();
 animFrame = requestAnimationFrame(renderLoop);
 
 console.log('✅ الاستوديو جاهز!');
-console.log('🎧 سماع الصوت أثناء المعاينة مُفعّل');
-console.log('📺 الشريط يظهر "مباشر" دائماً');
+console.log('🎵 موسيقى خلفية متاحة — ارفع ملف ثم شغّل من الاستوديو');
 </script>
 </body>
 </html>
