@@ -34,9 +34,10 @@
   .btn-blue { background: #2e7d32; color: #fff; }
   .btn-cyan { background: #00bcd4; color: #0a1a2e; }
 
-  .preview-wrap { position: relative; width: 100%; background: #000; border-radius: 14px; border: 3px solid #2e4a6a; overflow: hidden; transition: border-color 0.3s; min-height: 200px; display: flex; align-items: center; justify-content: center; }
-  .preview-wrap.recording { border-color: #ff4757; box-shadow: 0 0 20px #ff475740; }
-  .preview-wrap canvas { max-width: 100%; display: block; }
+  /* ✅ الإطار الذكي */
+  .preview-wrap { position: relative; width: 100%; background: linear-gradient(135deg, #0a0f1a, #000); border-radius: 20px; border: 2px solid #2e4a6a; overflow: hidden; transition: border-color 0.3s; padding: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
+  .preview-wrap.recording { border-color: #ff4757; box-shadow: 0 0 24px #ff475740, 0 8px 32px rgba(0,0,0,0.5); }
+  .preview-wrap canvas { max-width: 100%; display: block; border-radius: 14px; box-shadow: 0 4px 20px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05); background: #000; }
 
   .ref-box { background: #1a0f2e; border: 2px solid #9c27b0; border-radius: 14px; padding: 12px; margin-top: 10px; }
   .ref-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; flex-wrap: wrap; gap: 6px; }
@@ -95,9 +96,17 @@
   .segment-item { display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; background: #1a2f3f; border-radius: 8px; margin-bottom: 4px; font-size: 0.8rem; color: #b8d0e8; }
   .segment-item .seg-num { background: #00FF00; color: #0a1a2e; padding: 2px 8px; border-radius: 10px; font-weight: 900; font-size: 0.75rem; }
 
-  #micVol { -webkit-appearance: none; appearance: none; width: 100%; height: 8px; border-radius: 8px; background: #2e4a6a; outline: none; border: none; margin-top: 10px; padding: 0; }
-  #micVol::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 26px; height: 26px; border-radius: 50%; background: #00bcd4; cursor: pointer; border: 3px solid #fff; box-shadow: 0 0 12px #00bcd4; }
-  #micVol::-moz-range-thumb { width: 26px; height: 26px; border-radius: 50%; background: #00bcd4; cursor: pointer; border: 3px solid #fff; box-shadow: 0 0 12px #00bcd4; }
+  /* ✅ منزلقات موحّدة */
+  .volume-slider { -webkit-appearance: none; appearance: none; width: 100%; height: 8px; border-radius: 8px; background: #2e4a6a; outline: none; border: none; margin-top: 10px; padding: 0; }
+  .volume-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 26px; height: 26px; border-radius: 50%; cursor: pointer; border: 3px solid #fff; }
+  .volume-slider::-moz-range-thumb { width: 26px; height: 26px; border-radius: 50%; cursor: pointer; border: 3px solid #fff; }
+
+  #micVol::-webkit-slider-thumb { background: #00bcd4; box-shadow: 0 0 12px #00bcd4; }
+  #micVol::-moz-range-thumb { background: #00bcd4; box-shadow: 0 0 12px #00bcd4; }
+  #mainVol::-webkit-slider-thumb { background: #00FF00; box-shadow: 0 0 12px #00FF00; }
+  #mainVol::-moz-range-thumb { background: #00FF00; box-shadow: 0 0 12px #00FF00; }
+  #refVolSlider::-webkit-slider-thumb { background: #9c27b0; box-shadow: 0 0 12px #9c27b0; }
+  #refVolSlider::-moz-range-thumb { background: #9c27b0; box-shadow: 0 0 12px #9c27b0; }
 
   .studio-overlay { display: none; position: fixed; inset: 0; z-index: 1000; background: #000; overflow: hidden; }
   body.studio-mode { overflow: hidden !important; padding: 0 !important; }
@@ -116,8 +125,9 @@
   .studio-live-badge { font-size: 0.8rem; font-weight: 700; padding: 6px 12px; border-radius: 30px; background: rgba(0,0,0,0.7); color: #00FF00; border: 2px solid #00FF0050; backdrop-filter: blur(8px); display: flex; align-items: center; gap: 6px; }
   .studio-live-badge.paused { color: #ffc107; border-color: #ffc10780; }
 
-  .studio-video-area { flex: 1; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #000; }
-  .studio-video-area canvas { max-width: 100%; max-height: 100%; width: auto; height: auto; display: block; object-fit: contain; }
+  /* ✅ الإطار الذكي في الاستوديو */
+  .studio-video-area { flex: 1; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; background: radial-gradient(ellipse at center, #0a1520 0%, #000 100%); padding: 16px; }
+  .studio-video-area canvas { max-width: 100%; max-height: 100%; width: auto; height: auto; display: block; object-fit: contain; border-radius: 18px; box-shadow: 0 12px 48px rgba(0,0,0,0.9), 0 0 0 2px rgba(0,255,0,0.15); background: #000; }
 
   .studio-bottom-bar { position: absolute; bottom: 0; left: 0; right: 0; padding: 14px; padding-bottom: max(14px, env(safe-area-inset-bottom)); background: linear-gradient(to top, rgba(0,0,0,0.95), transparent); z-index: 10; transition: opacity 0.4s ease; }
 
@@ -228,10 +238,33 @@
       <span>🔊 قوة صوتك</span>
       <span id="micVolVal" style="color:#00bcd4; font-weight:900; font-size:1.1rem;">250%</span>
     </label>
-    <input type="range" id="micVol" min="100" max="500" value="250" step="10">
+    <input type="range" id="micVol" class="volume-slider" min="100" max="500" value="250" step="10">
     <div class="hint" style="background:#00bcd410; border-right-color:#00bcd4; color:#00bcd4;">
-      💡 إذا كان صوتك منخفضاً، ارفع النسبة إلى 300% أو 400%.<br>
-      💡 يوجد Compressor يحمي من التشويش تلقائياً.
+      💡 إذا كان صوتك منخفضاً، ارفع النسبة إلى 300% أو 400%.
+    </div>
+  </div>
+
+  <!-- ✅ مستويات أصوات الفيديو -->
+  <div class="step" style="border-color:#00FF00;">
+    <div class="step-title">
+      <span class="num" style="background:#00FF00;color:#0a1a2e;">🔊</span>
+      <span style="color:#00FF00;">مستويات أصوات الفيديو</span>
+    </div>
+
+    <label style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
+      <span>📁 صوت الفيديو الرئيسي</span>
+      <span id="mainVolVal" style="color:#00FF00; font-weight:900; font-size:1.1rem;">100%</span>
+    </label>
+    <input type="range" id="mainVol" class="volume-slider" min="0" max="200" value="100" step="5">
+
+    <label style="display:flex; justify-content:space-between; align-items:center; margin-top:16px;">
+      <span>🎞️ صوت الفيديو المرجعي</span>
+      <span id="refVolVal" style="color:#9c27b0; font-weight:900; font-size:1.1rem;">100%</span>
+    </label>
+    <input type="range" id="refVolSlider" class="volume-slider" min="0" max="200" value="100" step="5">
+
+    <div class="hint" style="background:#00FF0010; border-right-color:#00FF00; color:#00FF00;">
+      💡 التحكم الكامل في كل فيديو. اسحب لـ 0% للكتم التام.
     </div>
   </div>
 
@@ -303,7 +336,7 @@
 
 <script>
 // ============================================================
-//  استوديو الأخبار الاحترافي - مع الشريط المتحرك
+//  استوديو الأخبار الاحترافي - النسخة النهائية
 // ============================================================
 
 const canvas = document.createElement('canvas');
@@ -337,10 +370,13 @@ let optShowPiP = true;
 let optShowTransition = true;
 
 let micBoostValue = 2.5;
+let mainVolValue = 1.0;
+let refVolValue = 1.0;
 let micBoostNode = null;
 let micCompressor = null;
+let mainVolNode = null;
+let refVolNode = null;
 
-// ✅ متغيرات الشريط المتحرك
 let tickerX = 0;
 let tickerInited = false;
 
@@ -402,7 +438,7 @@ function fmtTime(s) {
 }
 
 // ============================================================
-//  نظام الصوت مع Mic Boost
+//  نظام الصوت المُحدّث
 // ============================================================
 let audioCtx = null, audioDest = null;
 let srcMain = null, srcRef = null, micNode = null;
@@ -420,9 +456,9 @@ function ensureAudio() {
     gainMic = audioCtx.createGain();
     gainRef = audioCtx.createGain();
     
+    // ✅ Mic boost chain
     micBoostNode = audioCtx.createGain();
     micBoostNode.gain.value = micBoostValue;
-    
     micCompressor = audioCtx.createDynamicsCompressor();
     micCompressor.threshold.value = -6;
     micCompressor.knee.value = 3;
@@ -430,9 +466,17 @@ function ensureAudio() {
     micCompressor.attack.value = 0.003;
     micCompressor.release.value = 0.25;
     
+    // ✅ منافذ التحكم في مستوى الفيديو الرئيسي
+    mainVolNode = audioCtx.createGain();
+    mainVolNode.gain.value = mainVolValue;
+    
+    // ✅ منافذ التحكم في مستوى الفيديو المرجعي
+    refVolNode = audioCtx.createGain();
+    refVolNode.gain.value = refVolValue;
+    
     gainMain.gain.value = 1;
     gainMic.gain.value = 1;
-    gainRef.gain.value = 0;
+    gainRef.gain.value = 1;
     
     refLimiter = audioCtx.createDynamicsCompressor();
     refLimiter.threshold.value = -3;
@@ -440,16 +484,21 @@ function ensureAudio() {
     refLimiter.attack.value = 0.003;
     refLimiter.release.value = 0.15;
     
+    // ✅ سلسلة الميكروفون
     gainMic.connect(micBoostNode);
     micBoostNode.connect(micCompressor);
     micCompressor.connect(audioDest);
     
-    gainRef.connect(refLimiter);
+    // ✅ سلسلة الفيديو الرئيسي مع مستوى الصوت
+    gainMain.connect(mainVolNode);
+    mainVolNode.connect(audioDest);
+    
+    // ✅ سلسلة الفيديو المرجعي مع مستوى الصوت
+    gainRef.connect(refVolNode);
+    refVolNode.connect(refLimiter);
     refLimiter.connect(audioDest);
     
-    gainMain.connect(audioDest);
-    
-    console.log('✅ AudioContext جاهز — Mic boost:', micBoostValue + 'x');
+    console.log('✅ AudioContext جاهز — كل مستويات الصوت مفعّلة');
     return audioCtx;
   } catch (e) { 
     console.error('AudioContext error:', e);
@@ -480,7 +529,7 @@ function connectMic() {
     if (micNode) { try { micNode.disconnect(); } catch (e) {} }
     micNode = audioCtx.createMediaStreamSource(cameraStream);
     micNode.connect(gainMic);
-    console.log('🎤 ربط الميكروفون مع Boost:', micBoostValue + 'x');
+    console.log('🎤 ربط الميكروفون');
     return true;
   } catch (e) { return false; }
 }
@@ -507,6 +556,8 @@ function applyMix() {
   if (gainRef) gainRef.gain.setTargetAtTime(refOn, t, 0.05);
   
   if (micBoostNode) micBoostNode.gain.setTargetAtTime(micBoostValue, t, 0.05);
+  if (mainVolNode) mainVolNode.gain.setTargetAtTime(mainVolValue, t, 0.05);
+  if (refVolNode) refVolNode.gain.setTargetAtTime(refVolValue, t, 0.05);
 }
 
 // ============================================================
@@ -563,16 +614,10 @@ async function startCamera(facing) {
 
   const attempts = [
     {
-      name: '1280x720 + صوت boosted',
+      name: '1280x720 + صوت',
       c: {
         video: { facingMode: { ideal: facing }, width: { ideal: 1280 }, height: { ideal: 720 } },
-        audio: { 
-          echoCancellation: true, 
-          noiseSuppression: true, 
-          autoGainControl: true,
-          sampleRate: 48000,
-          channelCount: 1
-        }
+        audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true, sampleRate: 48000, channelCount: 1 }
       }
     },
     {
@@ -648,7 +693,7 @@ $('btnCamOn').addEventListener('click', async function() {
     updateIndicators();
     redraw(0);
     setTimeout(() => redraw(0), 300);
-    setStatus('ok', '✅ الكاميرا جاهزة!' + (result.hasAudio ? ' 🎤 الميكروفون يعمل (Boost ' + Math.round(micBoostValue * 100) + '%)' : '') + '<br><span style="font-size:0.85rem;">اضغط «ابدأ التسجيل الاحترافي»</span>');
+    setStatus('ok', '✅ الكاميرا جاهزة!' + (result.hasAudio ? ' 🎤 الميكروفون يعمل' : '') + '<br><span style="font-size:0.85rem;">اضغط «ابدأ التسجيل الاحترافي»</span>');
   } catch (e) {
     console.error('Camera error:', e);
     setStatus('err',
@@ -849,7 +894,7 @@ function startRecording() {
     targetLayoutMode = 'anchor';
     transitionProgress = 0;
     isPaused = false;
-    tickerInited = false; // ✅ إعادة تهيئة الشريط
+    tickerInited = false;
     applyMix();
 
     canvasStream = canvas.captureStream(30);
@@ -1199,7 +1244,7 @@ function drawPiP(el, W, H) {
   canvas._pipBounds = { x: px, y: py, w: pw, h: ph };
 }
 
-// ✅ الشريط الإخباري المتحرك
+// ✅ الشريط الإخباري المتحرك مع كلمة "مرجعي"
 function drawNewsLowerThird(W, H, dt) {
   const news = newsText.value.trim();
   if (!news) { 
@@ -1228,14 +1273,21 @@ function drawNewsLowerThird(W, H, dt) {
   ctx.fillStyle = '#ff4757';
   ctx.fillRect(0, barY, W, 4);
   
-  // شارة "مباشر / مرجعي"
+  // ✅ شارة "مباشر / مرجعي"
   const badgeW = fs * 4;
   const badgeH = fs * 1.6;
   const badgeX = W - badgeW - 20;
   const badgeY = barY + (barH - badgeH) / 2;
   const bGrad = ctx.createLinearGradient(badgeX, 0, badgeX + badgeW, 0);
-  bGrad.addColorStop(0, '#ff4757');
-  bGrad.addColorStop(1, '#c0392b');
+  
+  // ✅ كلمة "مرجعي" تظهر باللون البنفسجي، "مباشر" بالأحمر
+  if (layoutMode === 'reference' || layoutMode === 'split') {
+    bGrad.addColorStop(0, '#9c27b0');
+    bGrad.addColorStop(1, '#e91e63');
+  } else {
+    bGrad.addColorStop(0, '#ff4757');
+    bGrad.addColorStop(1, '#c0392b');
+  }
   ctx.fillStyle = bGrad;
   ctx.beginPath();
   ctx.roundRect(badgeX, badgeY, badgeW, badgeH, 4);
@@ -1245,26 +1297,25 @@ function drawNewsLowerThird(W, H, dt) {
   ctx.font = `900 ${fs * 0.85}px Cairo, sans-serif`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillText((layoutMode === 'reference') ? 'مرجعي' : 'مباشر', badgeX + badgeW / 2, badgeY + badgeH / 2);
+  // ✅ كلمة "مرجعي" تظهر عند عرض المرجعي
+  const badgeText = (layoutMode === 'reference' || layoutMode === 'split') ? 'مرجعي' : 'مباشر';
+  ctx.fillText(badgeText, badgeX + badgeW / 2, badgeY + badgeH / 2);
   
   // منطقة التمرير
   const tickerLeft = 20;
   const tickerRight = badgeX - 20;
   const textY = barY + barH / 2 + 2;
   
-  // تهيئة موضع التمرير
   if (!tickerInited) {
     tickerX = W + 40;
     tickerInited = true;
   }
   
-  // قص المنطقة
   ctx.save();
   ctx.beginPath();
   ctx.rect(tickerLeft, barY, tickerRight - tickerLeft, barH);
   ctx.clip();
   
-  // رسم النص المتحرك
   ctx.fillStyle = '#fff';
   ctx.font = `900 ${fs}px Cairo, Tahoma, sans-serif`;
   ctx.textAlign = 'right';
@@ -1273,11 +1324,9 @@ function drawNewsLowerThird(W, H, dt) {
   
   ctx.restore();
   
-  // ✅ تحريك النص من اليمين إلى اليسار
   const speed = W * 0.12;
   tickerX -= speed * (dt || 0.033);
   
-  // إعادة التمرير عند الخروج
   if (tickerX < tickerLeft - textWidth - 40) {
     tickerX = W + 40;
   }
@@ -1407,7 +1456,7 @@ function redraw(dt) {
   }
 
   drawLogo(W, H);
-  drawNewsLowerThird(W, H, dt); // ✅ تمرير dt للتحريك
+  drawNewsLowerThird(W, H, dt);
 }
 
 function drawEmptyState(W, H, msg) {
@@ -1436,7 +1485,7 @@ document.addEventListener('keydown', e => {
 });
 
 // ============================================================
-//  حلقة الرسم - ✅ مع دعم الشريط المتحرك
+//  حلقة الرسم
 // ============================================================
 function renderLoop(ts) {
   const dt = lastFrameTime ? Math.min(0.1, (ts - lastFrameTime) / 1000) : 0.033;
@@ -1448,8 +1497,7 @@ function renderLoop(ts) {
   const hasNews = !!newsText.value.trim();
   
   const needsAnim = isRecording || isPaused || layoutMode === 'reference' || 
-                    transitionProgress > 0 || camLive || videoLive || refLive ||
-                    hasNews; // ✅ الشريط يتحرك دائماً
+                    transitionProgress > 0 || camLive || videoLive || refLive || hasNews;
   
   if (needsAnim) redraw(dt);
   animFrame = requestAnimationFrame(renderLoop);
@@ -1495,11 +1543,10 @@ $('sizeButtons').addEventListener('click', e => {
   $('sizeButtons').querySelectorAll('button').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   newsSize = parseInt(btn.dataset.size);
-  tickerInited = false; // إعادة تهيئة عند تغيير الحجم
+  tickerInited = false;
   redraw(0);
 });
 
-// ✅ إعادة تهيئة الشريط عند تغيير النص
 newsText.addEventListener('input', () => { 
   tickerInited = false; 
   redraw(0); 
@@ -1511,6 +1558,24 @@ $('micVol').addEventListener('input', e => {
   $('micVolVal').textContent = e.target.value + '%';
   if (micBoostNode && audioCtx) {
     micBoostNode.gain.setTargetAtTime(micBoostValue, audioCtx.currentTime, 0.05);
+  }
+});
+
+// ✅ التحكم بمستوى الفيديو الرئيسي (الحل للمشكلة!)
+$('mainVol').addEventListener('input', e => {
+  mainVolValue = parseInt(e.target.value) / 100;
+  $('mainVolVal').textContent = e.target.value + '%';
+  if (mainVolNode && audioCtx) {
+    mainVolNode.gain.setTargetAtTime(mainVolValue, audioCtx.currentTime, 0.05);
+  }
+});
+
+// ✅ التحكم بمستوى الفيديو المرجعي
+$('refVolSlider').addEventListener('input', e => {
+  refVolValue = parseInt(e.target.value) / 100;
+  $('refVolVal').textContent = e.target.value + '%';
+  if (refVolNode && audioCtx) {
+    refVolNode.gain.setTargetAtTime(refVolValue, audioCtx.currentTime, 0.05);
   }
 });
 
@@ -1531,8 +1596,8 @@ updateSegmentsLog();
 animFrame = requestAnimationFrame(renderLoop);
 
 console.log('✅ الاستوديو جاهز!');
-console.log('🎤 Mic Boost: 250%');
-console.log('📜 الشريط الإخباري متحرك الآن');
+console.log('🔊 مستويات الصوت: ميكروفون + فيديو رئيسي + فيديو مرجعي');
+console.log('📺 كلمة "مرجعي" تظهر في الشريط عند العرض');
 </script>
 </body>
 </html>
