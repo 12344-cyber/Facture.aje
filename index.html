@@ -33,8 +33,6 @@
   .btn-red { background: #ff4757; color: #fff; }
   .btn-blue { background: #2e7d32; color: #fff; }
   .btn-cyan { background: #00bcd4; color: #0a1a2e; }
-  .btn-gold { background: linear-gradient(135deg, #FFD700, #DAA520); color: #0a1a2e; }
-  .btn-small { padding: 10px; font-size: 0.85rem; }
 
   .preview-wrap { position: relative; width: 100%; background: linear-gradient(135deg, #0a0f1a, #000); border-radius: 20px; border: 2px solid #2e4a6a; overflow: hidden; transition: border-color 0.3s; padding: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
   .preview-wrap.recording { border-color: #ff4757; box-shadow: 0 0 24px #ff475740, 0 8px 32px rgba(0,0,0,0.5); }
@@ -108,24 +106,6 @@
   #refVolSlider::-webkit-slider-thumb { background: #9c27b0; box-shadow: 0 0 12px #9c27b0; }
   #refVolSlider::-moz-range-thumb { background: #9c27b0; box-shadow: 0 0 12px #9c27b0; }
 
-  /* ✅ محدد المقاطع */
-  .range-box { background: #0a1a2a; border: 2px solid #FFD700; border-radius: 12px; padding: 12px; margin-top: 10px; }
-  .range-title { color: #FFD700; font-weight: 900; font-size: 0.9rem; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
-  .range-presets { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 10px; }
-  .range-presets button { padding: 10px 4px; background: #1a2f3f; border: 2px solid #2e4a6a; color: #fff; border-radius: 8px; font-family: 'Cairo'; font-weight: 700; font-size: 0.78rem; cursor: pointer; transition: 0.2s; }
-  .range-presets button:hover { background: #2e4a6a; }
-  .range-presets button.active { background: linear-gradient(135deg, #FFD700, #DAA520); color: #0a1a2e; border-color: #FFD700; }
-  .range-info { display: flex; justify-content: space-between; font-size: 0.8rem; color: #b8d0e8; margin-bottom: 4px; }
-  .range-info b { color: #FFD700; font-weight: 900; }
-  .range-slider { -webkit-appearance: none; appearance: none; width: 100%; height: 6px; border-radius: 6px; background: #2e4a6a; outline: none; border: none; margin: 4px 0; padding: 0; }
-  .range-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 22px; height: 22px; border-radius: 50%; background: #FFD700; cursor: pointer; border: 3px solid #fff; box-shadow: 0 0 10px #FFD700; }
-  .range-slider::-moz-range-thumb { width: 22px; height: 22px; border-radius: 50%; background: #FFD700; cursor: pointer; border: 3px solid #fff; box-shadow: 0 0 10px #FFD700; }
-  .range-preview-btn { width: 100%; padding: 12px; border: none; border-radius: 10px; background: linear-gradient(135deg, #00FF00, #2e7d32); color: #0a1a2e; font-family: 'Cairo'; font-weight: 900; font-size: 0.9rem; cursor: pointer; margin-top: 8px; }
-  .range-preview-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-  .range-preview-btn.playing { background: linear-gradient(135deg, #ff4757, #c0392b); color: #fff; }
-  .range-bar { position: relative; width: 100%; height: 24px; background: #2e4a6a; border-radius: 6px; margin: 6px 0; overflow: hidden; }
-  .range-bar-fill { position: absolute; top: 0; bottom: 0; background: linear-gradient(135deg, #FFD700, #DAA520); border-radius: 6px; }
-
   .studio-overlay { display: none; position: fixed; inset: 0; z-index: 1000; background: #000; overflow: hidden; }
   body.studio-mode { overflow: hidden !important; padding: 0 !important; }
   body.studio-mode .studio-overlay { display: flex; flex-direction: column; animation: fadeIn 0.3s ease; }
@@ -168,7 +148,7 @@
 
   @keyframes pulse-green-btn {
     0%, 100% { box-shadow: 0 4px 20px rgba(0,0,0,0.5), 0 0 0 0 rgba(0,255,0,0.5); }
-    50% { box-shadow: 0 4px 20px rgba(0,0,0,0.5), 0 0 0 0 rgba(0,255,0,0); }
+    50% { box-shadow: 0 4px 20px rgba(0,0,0,0.5), 0 0 0 12px rgba(0,255,0,0); }
   }
 
   .studio-tap-hint { position: absolute; bottom: 130px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.75); color: #fff; padding: 8px 18px; border-radius: 30px; font-size: 0.75rem; font-weight: 700; backdrop-filter: blur(8px); animation: hintFade 5s forwards; pointer-events: none; z-index: 20; white-space: nowrap; }
@@ -226,45 +206,6 @@
     <input type="file" id="logoFile" accept="image/*" style="margin-top:8px;">
   </div>
 
-  <!-- ✅ محدد المقطع للفيديو الرئيسي -->
-  <div class="step" style="border-color:#FFD700;">
-    <div class="step-title">
-      <span class="num" style="background:#FFD700;color:#0a1a2e;">✂️</span>
-      <span style="color:#FFD700;">تحديد المقطع (اختياري)</span>
-    </div>
-    <div class="hint" style="background:#FFD70010; border-right-color:#FFD700; color:#FFD700;">
-      💡 اختر الجزء الذي تريد بثه فقط من الفيديو الرئيسي. جرّب أولاً بالمعاينة قبل التسجيل.
-    </div>
-
-    <div class="range-box">
-      <div class="range-title">📁 الفيديو الرئيسي</div>
-      
-      <div class="range-presets" id="mainPresets">
-        <button data-preset="start">🎬 البداية</button>
-        <button data-preset="middle">🎯 الوسط</button>
-        <button data-preset="all" class="active">📺 الكل</button>
-        <button data-preset="end">🏁 النهاية</button>
-      </div>
-
-      <div class="range-info">
-        <span>البداية: <b id="mainStartLabel">00:00</b></span>
-        <span>النهاية: <b id="mainEndLabel">00:00</b></span>
-      </div>
-
-      <div class="range-bar">
-        <div class="range-bar-fill" id="mainRangeFill" style="left:0%; width:100%;"></div>
-      </div>
-
-      <input type="range" id="mainStartSlider" class="range-slider" min="0" max="100" value="0" step="1">
-      <input type="range" id="mainEndSlider" class="range-slider" min="0" max="100" value="100" step="1">
-
-      <div class="btn-row" style="margin-top:10px;">
-        <button class="range-preview-btn" id="mainPreviewBtn">▶️ معاينة المقطع</button>
-        <button class="range-preview-btn" id="mainResetBtn" style="background:linear-gradient(135deg,#9c27b0,#e91e63);color:#fff;">🔄 إلغاء التحديد</button>
-      </div>
-    </div>
-  </div>
-
   <div class="step" style="border-color:#9c27b0;">
     <div class="step-title"><span class="num" style="background:#9c27b0;color:#fff;">4</span> <span style="color:#d8b4ff;">الفيديو المرجعي</span></div>
     <div class="hint" style="background:#9c27b010; border-right-color:#9c27b0; color:#d8b4ff;">💡 سيظهر بأسلوب القنوات الإخبارية مع ظهورك في زاوية صغيرة.</div>
@@ -281,35 +222,6 @@
         <button id="refPlayBtn">▶️ تشغيل</button>
         <button id="refPauseBtn">⏸️ إيقاف</button>
         <button id="refRestartBtn">🔄 من البداية</button>
-      </div>
-
-      <!-- ✅ محدد مقطع المرجعي -->
-      <div class="range-box" style="margin-top:12px;">
-        <div class="range-title">✂️ تحديد مقطع المرجعي (اختياري)</div>
-        
-        <div class="range-presets" id="refPresets">
-          <button data-preset="start">🎬 البداية</button>
-          <button data-preset="middle">🎯 الوسط</button>
-          <button data-preset="all" class="active">📺 الكل</button>
-          <button data-preset="end">🏁 النهاية</button>
-        </div>
-
-        <div class="range-info">
-          <span>البداية: <b id="refStartLabel">00:00</b></span>
-          <span>النهاية: <b id="refEndLabel">00:00</b></span>
-        </div>
-
-        <div class="range-bar">
-          <div class="range-bar-fill" id="refRangeFill" style="left:0%; width:100%;"></div>
-        </div>
-
-        <input type="range" id="refStartSlider" class="range-slider" min="0" max="100" value="0" step="1">
-        <input type="range" id="refEndSlider" class="range-slider" min="0" max="100" value="100" step="1">
-
-        <div class="btn-row" style="margin-top:10px;">
-          <button class="range-preview-btn" id="refPreviewBtn">▶️ معاينة المرجعي</button>
-          <button class="range-preview-btn" id="refResetBtn" style="background:linear-gradient(135deg,#9c27b0,#e91e63);color:#fff;">🔄 إلغاء التحديد</button>
-        </div>
       </div>
     </div>
   </div>
@@ -361,11 +273,6 @@
       <div class="switch-row">
         <div class="label-text"><b>📺 عرض PiP عند المرجعي</b>ظهورك في زاوية صغيرة عند عرض المرجعي</div>
         <label class="switch"><input type="checkbox" id="optShowPiP" checked><span class="slider"></span></label>
-      </div>
-
-      <div class="switch-row">
-        <div class="label-text"><b>🔁 تكرار المقاطع المحددة</b>إعادة المقطع تلقائياً عند انتهائه</div>
-        <label class="switch"><input type="checkbox" id="optLoopRange" checked><span class="slider"></span></label>
       </div>
 
       <div class="switch-row">
@@ -421,7 +328,7 @@
 
 <script>
 // ============================================================
-//  استوديو الأخبار الاحترافي - مع الإطار الرقيق + محدد المقاطع
+//  استوديو الأخبار الاحترافي - النسخة النهائية
 // ============================================================
 
 const canvas = document.createElement('canvas');
@@ -453,7 +360,6 @@ let pipSize = 0.28;
 let optAudioDuck = true;
 let optShowPiP = true;
 let optShowTransition = true;
-let optLoopRange = true;
 
 let micBoostValue = 2.5;
 let mainVolValue = 1.0;
@@ -465,17 +371,6 @@ let refVolNode = null;
 
 let tickerX = 0;
 let tickerInited = false;
-
-// ✅ محدد المقاطع
-let mainRangeEnabled = false;
-let mainRangeStart = 0;
-let mainRangeEnd = 0;
-let mainPreviewActive = false;
-
-let refRangeEnabled = false;
-let refRangeStart = 0;
-let refRangeEnd = 0;
-let refPreviewActive = false;
 
 // ===== عناصر الفيديو =====
 const video = document.createElement('video');
@@ -815,7 +710,7 @@ $('btnCamOff').addEventListener('click', () => {
 });
 
 // ============================================================
-//  رفع الفيديو الرئيسي + تهيئة محدد المقطع
+//  الفيديوهات
 // ============================================================
 $('videoFile').addEventListener('change', e => {
   const f = e.target.files[0]; if (!f) return;
@@ -824,112 +719,11 @@ $('videoFile').addEventListener('change', e => {
   video.onloadedmetadata = () => {
     videoLoaded = true; video.currentTime = 0;
     if (activeSource === 'file') resizeCanvas();
-    // ✅ تهيئة محدد المقطع
-    mainRangeStart = 0;
-    mainRangeEnd = video.duration;
-    mainRangeEnabled = false;
-    $('mainStartSlider').value = 0;
-    $('mainEndSlider').value = 100;
-    updateMainRangeDisplay();
     refreshStartBtn(); redraw(0); updateIndicators();
     setStatus('ok', '✅ الفيديو جاهز! المدة: ' + fmtTime(video.duration));
   };
 });
 
-// ============================================================
-//  محدد مقطع الفيديو الرئيسي
-// ============================================================
-function updateMainRangeDisplay() {
-  if (!videoLoaded) return;
-  const dur = video.duration;
-  let s = parseFloat($('mainStartSlider').value);
-  let e = parseFloat($('mainEndSlider').value);
-  if (s >= e) {
-    if (document.activeElement === $('mainStartSlider')) s = e - 1;
-    else e = s + 1;
-    $('mainStartSlider').value = s;
-    $('mainEndSlider').value = e;
-  }
-  mainRangeStart = (s / 100) * dur;
-  mainRangeEnd = (e / 100) * dur;
-  mainRangeEnabled = (s > 0 || e < 100);
-  $('mainStartLabel').textContent = fmtTime(mainRangeStart);
-  $('mainEndLabel').textContent = fmtTime(mainRangeEnd);
-  $('mainRangeFill').style.left = s + '%';
-  $('mainRangeFill').style.width = (e - s) + '%';
-}
-
-$('mainStartSlider').addEventListener('input', updateMainRangeDisplay);
-$('mainEndSlider').addEventListener('input', updateMainRangeDisplay);
-
-$('mainPresets').addEventListener('click', e => {
-  const btn = e.target.closest('button');
-  if (!btn || !videoLoaded) return;
-  $('mainPresets').querySelectorAll('button').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  const p = btn.dataset.preset;
-  if (p === 'start') { $('mainStartSlider').value = 0; $('mainEndSlider').value = 20; }
-  else if (p === 'middle') { $('mainStartSlider').value = 40; $('mainEndSlider').value = 60; }
-  else if (p === 'all') { $('mainStartSlider').value = 0; $('mainEndSlider').value = 100; }
-  else if (p === 'end') { $('mainStartSlider').value = 80; $('mainEndSlider').value = 100; }
-  updateMainRangeDisplay();
-});
-
-// ✅ معاينة مقطع الفيديو الرئيسي
-$('mainPreviewBtn').addEventListener('click', () => {
-  if (!videoLoaded) return;
-  if (mainPreviewActive) {
-    video.pause();
-    mainPreviewActive = false;
-    $('mainPreviewBtn').textContent = '▶️ معاينة المقطع';
-    $('mainPreviewBtn').classList.remove('playing');
-    return;
-  }
-  try { refVideo.pause(); } catch(e) {}
-  video.currentTime = mainRangeStart;
-  video.play().catch(()=>{});
-  mainPreviewActive = true;
-  $('mainPreviewBtn').textContent = '⏹️ إيقاف المعاينة';
-  $('mainPreviewBtn').classList.add('playing');
-  setStatus('ok', '▶️ معاينة المقطع: ' + fmtTime(mainRangeStart) + ' ← ' + fmtTime(mainRangeEnd));
-});
-
-$('mainResetBtn').addEventListener('click', () => {
-  if (!videoLoaded) return;
-  $('mainStartSlider').value = 0;
-  $('mainEndSlider').value = 100;
-  updateMainRangeDisplay();
-  $('mainPresets').querySelectorAll('button').forEach(b => b.classList.remove('active'));
-  $('mainPresets').querySelector('[data-preset="all"]').classList.add('active');
-  setStatus('ok', '✅ تم إلغاء تحديد المقطع — سيبث الفيديو كاملاً');
-});
-
-// ✅ مراقبة نهاية المقطع
-video.addEventListener('timeupdate', () => {
-  if (isPreviewActive('main') || (isRecording && mainRangeEnabled && !isPaused)) {
-    if (mainRangeEnabled && video.currentTime >= mainRangeEnd - 0.05) {
-      if (mainPreviewActive) {
-        video.pause();
-        mainPreviewActive = false;
-        $('mainPreviewBtn').textContent = '▶️ معاينة المقطع';
-        $('mainPreviewBtn').classList.remove('playing');
-        setStatus('ok', '✅ انتهت المعاينة');
-      } else if (isRecording && optLoopRange) {
-        video.currentTime = mainRangeStart;
-      } else if (isRecording && !optLoopRange) {
-        video.pause();
-      }
-    }
-  }
-});
-
-function isPreviewActive(type) {
-  return type === 'main' ? mainPreviewActive : refPreviewActive;
-}
-
-// ============================================================
-//  الشعار
-// ============================================================
 $('logoFile').addEventListener('change', e => {
   const f = e.target.files[0]; if (!f) return;
   const img = new Image();
@@ -944,9 +738,6 @@ $('logoFile').addEventListener('change', e => {
   img.src = URL.createObjectURL(f);
 });
 
-// ============================================================
-//  الفيديو المرجعي + محدد مقطعه
-// ============================================================
 $('refFile').addEventListener('change', e => {
   const f = e.target.files[0]; if (!f) return;
   refLoaded = false;
@@ -960,13 +751,6 @@ $('refFile').addEventListener('change', e => {
     $('refStatus').textContent = '✅ جاهز';
     $('refStatus').classList.add('ready');
     $('refDuration').textContent = fmtTime(refVideo.duration);
-    // ✅ تهيئة محدد مقطع المرجعي
-    refRangeStart = 0;
-    refRangeEnd = refVideo.duration;
-    refRangeEnabled = false;
-    $('refStartSlider').value = 0;
-    $('refEndSlider').value = 100;
-    updateRefRangeDisplay();
     updateIndicators();
     connectRef();
     applyMix();
@@ -976,91 +760,11 @@ $('refFile').addEventListener('change', e => {
   };
 });
 
-function updateRefRangeDisplay() {
-  if (!refLoaded) return;
-  const dur = refVideo.duration;
-  let s = parseFloat($('refStartSlider').value);
-  let e = parseFloat($('refEndSlider').value);
-  if (s >= e) {
-    if (document.activeElement === $('refStartSlider')) s = e - 1;
-    else e = s + 1;
-    $('refStartSlider').value = s;
-    $('refEndSlider').value = e;
-  }
-  refRangeStart = (s / 100) * dur;
-  refRangeEnd = (e / 100) * dur;
-  refRangeEnabled = (s > 0 || e < 100);
-  $('refStartLabel').textContent = fmtTime(refRangeStart);
-  $('refEndLabel').textContent = fmtTime(refRangeEnd);
-  $('refRangeFill').style.left = s + '%';
-  $('refRangeFill').style.width = (e - s) + '%';
-}
-
-$('refStartSlider').addEventListener('input', updateRefRangeDisplay);
-$('refEndSlider').addEventListener('input', updateRefRangeDisplay);
-
-$('refPresets').addEventListener('click', e => {
-  const btn = e.target.closest('button');
-  if (!btn || !refLoaded) return;
-  $('refPresets').querySelectorAll('button').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  const p = btn.dataset.preset;
-  if (p === 'start') { $('refStartSlider').value = 0; $('refEndSlider').value = 20; }
-  else if (p === 'middle') { $('refStartSlider').value = 40; $('refEndSlider').value = 60; }
-  else if (p === 'all') { $('refStartSlider').value = 0; $('refEndSlider').value = 100; }
-  else if (p === 'end') { $('refStartSlider').value = 80; $('refEndSlider').value = 100; }
-  updateRefRangeDisplay();
-});
-
-// ✅ معاينة المرجعي
-$('refPreviewBtn').addEventListener('click', () => {
-  if (!refLoaded) return;
-  if (refPreviewActive) {
-    refVideo.pause();
-    refPreviewActive = false;
-    $('refPreviewBtn').textContent = '▶️ معاينة المرجعي';
-    $('refPreviewBtn').classList.remove('playing');
-    return;
-  }
-  try { video.pause(); } catch(e) {}
-  refVideo.currentTime = refRangeStart;
-  refVideo.play().catch(()=>{});
-  refPreviewActive = true;
-  $('refPreviewBtn').textContent = '⏹️ إيقاف المعاينة';
-  $('refPreviewBtn').classList.add('playing');
-  setStatus('ok', '▶️ معاينة المرجعي: ' + fmtTime(refRangeStart) + ' ← ' + fmtTime(refRangeEnd));
-});
-
-$('refResetBtn').addEventListener('click', () => {
-  if (!refLoaded) return;
-  $('refStartSlider').value = 0;
-  $('refEndSlider').value = 100;
-  updateRefRangeDisplay();
-  $('refPresets').querySelectorAll('button').forEach(b => b.classList.remove('active'));
-  $('refPresets').querySelector('[data-preset="all"]').classList.add('active');
-  setStatus('ok', '✅ تم إلغاء تحديد مقطع المرجعي');
-});
-
 refVideo.addEventListener('timeupdate', () => {
   if (refVideo.duration) {
     const pct = (refVideo.currentTime / refVideo.duration) * 100;
     $('refProgressFill').style.width = pct + '%';
     $('refCurrent').textContent = fmtTime(refVideo.currentTime);
-  }
-  if (refPreviewActive || (isRecording && refRangeEnabled && !isPaused && layoutMode !== 'anchor')) {
-    if (refRangeEnabled && refVideo.currentTime >= refRangeEnd - 0.05) {
-      if (refPreviewActive) {
-        refVideo.pause();
-        refPreviewActive = false;
-        $('refPreviewBtn').textContent = '▶️ معاينة المرجعي';
-        $('refPreviewBtn').classList.remove('playing');
-        setStatus('ok', '✅ انتهت معاينة المرجعي');
-      } else if (isRecording && optLoopRange) {
-        refVideo.currentTime = refRangeStart;
-      } else if (isRecording && !optLoopRange) {
-        refVideo.pause();
-      }
-    }
   }
 });
 
@@ -1071,45 +775,47 @@ $('refProgress').addEventListener('click', e => {
   refVideo.currentTime = Math.max(0, Math.min(1, x / rect.width)) * refVideo.duration;
 });
 
-$('refPlayBtn').addEventListener('click', () => { refVideo.currentTime = refRangeStart; refVideo.play().catch(()=>{}); });
+$('refPlayBtn').addEventListener('click', () => refVideo.play().catch(()=>{}));
 $('refPauseBtn').addEventListener('click', () => refVideo.pause());
-$('refRestartBtn').addEventListener('click', () => { refVideo.currentTime = refRangeStart; refVideo.play().catch(()=>{}); });
+$('refRestartBtn').addEventListener('click', () => { refVideo.currentTime = 0; refVideo.play().catch(()=>{}); });
 
 refVideo.addEventListener('ended', () => {
   if (isRecording && layoutMode === 'reference') setLayout('anchor');
 });
 
 // ============================================================
-//  الأنماط
+//  الأنماط الذكية
 // ============================================================
 function setLayout(mode) {
-  if (!isRecording) return;
+  if (!isRecording) {
+    setStatus('err', '⚠️ ابدأ التسجيل أولاً ثم بدّل الأنماط');
+    return;
+  }
   if (mode === 'reference' && !refLoaded) {
-    setStatus('err', '⚠️ ارفع الفيديو المرجعي أولاً');
+    setStatus('err', '⚠️ ارفع الفيديو المرجعي أولاً (القسم 4)');
     return;
   }
   targetLayoutMode = mode;
-  if (optShowTransition) transitionProgress = 1.0;
-  else { transitionProgress = 0; applyLayoutNow(mode); }
+  if (optShowTransition) {
+    transitionProgress = 1.0;
+  } else {
+    transitionProgress = 0;
+    applyLayoutNow(mode);
+  }
   updateStudioUI();
 }
 
 function applyLayoutNow(mode) {
   layoutMode = mode;
   if (mode === 'reference' || mode === 'split') {
-    if (refLoaded) {
-      refVideo.currentTime = refRangeStart;
-      refVideo.play().catch(()=>{});
-    }
+    if (refLoaded) refVideo.play().catch(()=>{});
     if (activeSource === 'file') video.pause();
   } else {
     if (refLoaded) refVideo.pause();
-    if (activeSource === 'file' && isRecording && !isPaused) {
-      if (mainRangeEnabled) video.currentTime = mainRangeStart;
-      video.play().catch(()=>{});
-    }
+    if (activeSource === 'file' && isRecording && !isPaused) video.play().catch(()=>{});
   }
   applyMix();
+  updateStudioUI();   // ✅ الإصلاح: تحديث الأزرار فوراً
 }
 
 function updateStudioUI() {
@@ -1137,10 +843,32 @@ function updateStudioUI() {
   modeSplit.classList.toggle('disabled', !refLoaded);
 }
 
-modeAnchor.addEventListener('click', () => { if (isRecording) setLayout('anchor'); });
-modeRef.addEventListener('click', () => { if (isRecording && refLoaded) setLayout('reference'); });
-modeSplit.addEventListener('click', () => { if (isRecording && refLoaded) setLayout('split'); });
-studioMiniRef.addEventListener('click', () => setLayout('reference'));
+// ✅ معالجات الأزرار الثلاثة - مع stopPropagation
+modeAnchor.addEventListener('click', (e) => {
+  e.stopPropagation();
+  if (!isRecording) { setStatus('err', '⚠️ ابدأ التسجيل أولاً'); return; }
+  setLayout('anchor');
+});
+
+modeRef.addEventListener('click', (e) => {
+  e.stopPropagation();
+  if (!isRecording) { setStatus('err', '⚠️ ابدأ التسجيل أولاً'); return; }
+  if (!refLoaded) { setStatus('err', '⚠️ ارفع الفيديو المرجعي أولاً (القسم 4)'); return; }
+  setLayout('reference');
+});
+
+modeSplit.addEventListener('click', (e) => {
+  e.stopPropagation();
+  if (!isRecording) { setStatus('err', '⚠️ ابدأ التسجيل أولاً'); return; }
+  if (!refLoaded) { setStatus('err', '⚠️ ارفع الفيديو المرجعي أولاً (القسم 4)'); return; }
+  setLayout('split');
+});
+
+studioMiniRef.addEventListener('click', (e) => {
+  e.stopPropagation();
+  if (!refLoaded) { setStatus('err', '⚠️ ارفع الفيديو المرجعي أولاً'); return; }
+  setLayout('reference');
+});
 
 // ============================================================
 //  التسجيل
@@ -1165,8 +893,6 @@ function startRecording() {
     targetLayoutMode = 'anchor';
     transitionProgress = 0;
     isPaused = false;
-    mainPreviewActive = false;
-    refPreviewActive = false;
     tickerInited = false;
     applyMix();
 
@@ -1212,10 +938,7 @@ function startRecording() {
     $('btnStop').style.display = 'flex';
     $('btnDownload').style.display = 'none';
 
-    if (activeSource === 'file') {
-      if (mainRangeEnabled) video.currentTime = mainRangeStart;
-      video.play().catch(()=>{});
-    }
+    if (activeSource === 'file') video.play().catch(()=>{});
     setStatus('busy', '<span class="live-dot"></span> التسجيل الاحترافي جارٍ');
   } catch (e) {
     setStatus('err', '⚠️ ' + e.message);
@@ -1271,7 +994,8 @@ studioVideoArea.addEventListener('click', e => {
   else hideStudioControls();
 });
 
-[modeAnchor, modeRef, modeSplit, studioPauseBtn, studioResumeBtn, studioStopBtn].forEach(btn => {
+// ✅ إخفاء تلقائي بعد 4 ثوان — لكن بدون التداخل مع أزرار الأنماط
+[studioPauseBtn, studioResumeBtn, studioStopBtn].forEach(btn => {
   btn.addEventListener('click', scheduleStudioHide);
 });
 
@@ -1307,12 +1031,8 @@ function resumeRecording() {
   isPaused = false;
   currentSegmentStart = Date.now();
   if (layoutMode === 'reference' || layoutMode === 'split') {
-    if (refLoaded) {
-      refVideo.currentTime = refRangeStart;
-      refVideo.play().catch(()=>{});
-    }
+    if (refLoaded) refVideo.play().catch(()=>{});
   } else if (activeSource === 'file') {
-    if (mainRangeEnabled) video.currentTime = mainRangeStart;
     video.play().catch(()=>{});
   }
   applyMix();
@@ -1666,11 +1386,8 @@ function drawEmptyState(W, H, msg) {
   ctx.fillText(msg || '🎥 اختر مصدراً', W / 2, H / 2);
 }
 
-// ============================================================
-//  ✅ الإطار الذهبي الرقيق (كالشعرة)
-// ============================================================
+// ✅ الإطار الذهبي الرقيق (كالشعرة)
 function drawThinGoldFrame(W, H, PAD) {
-  // ✅ إطار ذهبي رقيق جداً بتدرج لامع
   const grad = ctx.createLinearGradient(0, 0, W, H);
   grad.addColorStop(0,    '#B8860B');
   grad.addColorStop(0.2,  '#FFD700');
@@ -1682,7 +1399,6 @@ function drawThinGoldFrame(W, H, PAD) {
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, W, H);
   
-  // ✅ لمعة علوية خفيفة
   const shine = ctx.createLinearGradient(0, 0, 0, PAD);
   shine.addColorStop(0, 'rgba(255, 255, 255, 0.6)');
   shine.addColorStop(1, 'rgba(255, 255, 255, 0)');
@@ -1703,17 +1419,14 @@ function redraw(dt) {
   const innerW = W - PAD * 2;
   const innerH = H - PAD * 2;
 
-  // 1. رسم الإطار الذهبي الرقيق
   drawThinGoldFrame(W, H, PAD);
 
-  // 2. منطقة المحتوى
   ctx.save();
   ctx.beginPath();
   ctx.roundRect(PAD, PAD, innerW, innerH, RADIUS);
   ctx.clip();
   ctx.translate(PAD, PAD);
 
-  // معالجة الانتقال
   if (transitionProgress > 0) {
     transitionProgress -= (dt || 0.033) * 3.5;
     if (transitionProgress < 0.5 && layoutMode !== targetLayoutMode) applyLayoutNow(targetLayoutMode);
@@ -1723,7 +1436,6 @@ function redraw(dt) {
   ctx.fillStyle = '#000';
   ctx.fillRect(0, 0, innerW, innerH);
 
-  // وضع الإيقاف المؤقت
   if (isPaused && isRecording) {
     if (optShowTransition) {
       drawTransitionScreen(innerW, innerH);
@@ -1738,7 +1450,6 @@ function redraw(dt) {
       ctx.fillRect(0, 0, innerW, innerH);
     }
 
-    // العرض حسب النمط
     if (layoutMode === 'anchor') {
       if (activeSource === 'camera' && camVideo.readyState >= 2) drawCover(camVideo, 0, 0, innerW, innerH);
       else if (video.readyState >= 2) drawCover(video, 0, 0, innerW, innerH);
@@ -1780,7 +1491,6 @@ function redraw(dt) {
       canvas._pipBounds = null;
     }
 
-    // الشعار + الشريط
     drawLogo(innerW, innerH);
     drawNewsLowerThird(innerW, innerH, dt);
   }
@@ -1816,8 +1526,7 @@ function renderLoop(ts) {
   const hasNews = !!newsText.value.trim();
   
   const needsAnim = isRecording || isPaused || layoutMode === 'reference' || 
-                    transitionProgress > 0 || camLive || videoLive || refLive || hasNews ||
-                    mainPreviewActive || refPreviewActive;
+                    transitionProgress > 0 || camLive || videoLive || refLive || hasNews;
   
   if (needsAnim) redraw(dt);
   animFrame = requestAnimationFrame(renderLoop);
@@ -1856,7 +1565,6 @@ function pickBestMime(hasAudio) {
 $('optAudioDuck').addEventListener('change', e => { optAudioDuck = e.target.checked; applyMix(); });
 $('optShowPiP').addEventListener('change', e => { optShowPiP = e.target.checked; redraw(0); });
 $('optShowTransition').addEventListener('change', e => { optShowTransition = e.target.checked; });
-$('optLoopRange').addEventListener('change', e => { optLoopRange = e.target.checked; });
 
 $('sizeButtons').addEventListener('click', e => {
   const btn = e.target.closest('button');
@@ -1915,7 +1623,7 @@ animFrame = requestAnimationFrame(renderLoop);
 
 console.log('✅ الاستوديو جاهز!');
 console.log('🖼️ إطار ذهبي رقيق (4px)');
-console.log('✂️ محدد المقاطع الذكي مُفعّل');
+console.log('🎬 3 أنماط: مذيع / مرجعي / مقسوم');
 </script>
 </body>
 </html>
