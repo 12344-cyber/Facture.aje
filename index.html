@@ -1,827 +1,2601 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>مولد الفواتير — احترافي (مصحح روابط PDF)</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>استوديو الفيديو المباشر الذكي - مع الإيقاف المؤقت</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: 'Cairo', sans-serif;
+    background: #0a1a2e;
+    color: #fff;
+    padding: 8px;
+    min-height: 100vh;
+    direction: rtl;
+    overflow-x: hidden;
+  }
+  .app { max-width: 900px; margin: auto; padding-bottom: 100px; }
 
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+  h1 {
+    text-align: center;
+    color: #00FF00;
+    font-size: 1.2rem;
+    margin: 8px 0 12px;
+    padding: 10px;
+    background: #0f1f33;
+    border-radius: 15px;
+    border: 2px solid #00FF0040;
+  }
 
-  <style>
-    :root{
-      --primary:#0f6cff; --bg:#f4f7fb; --card:#ffffff; --text:#0b1a2b;
-      --muted:#64748b; --border:#e6eef6; --radius:10px; --shadow:0 6px 24px rgba(12,20,35,0.06);
-    }
-    [data-theme="dark"]{
-      --primary:#3b82f6; --bg:#071026; --card:#071426; --text:#e6eef8; --muted:#9fb4cd; --border:#0f2740; --shadow:none;
-    }
-    html,body{height:100%;margin:0;padding:0;font-family:"Cairo", Tahoma, Arial, sans-serif;background:var(--bg);color:var(--text)}
-    .wrap{max-width:1100px;margin:18px auto;padding:12px}
-    header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
-    h1{margin:0;font-size:18px}
-    .muted{color:var(--muted);font-size:13px}
-    .controls{display:flex;gap:8px;align-items:center}
-    .btn{background:var(--primary);color:#fff;border:0;padding:8px 12px;border-radius:8px;cursor:pointer;box-shadow:var(--shadow)}
-    .btn.ghost{background:transparent;color:var(--text);border:1px solid var(--border)}
-    .btn.small{padding:6px 8px;font-size:13px}
-    .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:12px;box-shadow:var(--shadow)}
-    .grid{display:grid;gap:12px}
-    .grid.cols-2{grid-template-columns:1fr 380px}
-    label{display:block;font-size:13px;margin-bottom:6px;color:var(--muted)}
-    input[type=text], input[type=url], input[type=number], textarea, select{width:100%;padding:8px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text)}
-    textarea{resize:vertical}
-    table{width:100%;border-collapse:collapse;font-size:14px}
-    thead th{background:transparent;text-align:right;padding:10px;border-bottom:1px solid var(--border)}
-    td, th{padding:8px;border-bottom:1px dashed var(--border);vertical-align:middle}
-    .right{text-align:right} .center{text-align:center}
-    .invoice-preview{max-width:820px;margin:0 auto;padding:20px;border-radius:10px;background:var(--card);border:1px solid var(--border)}
-    .inv-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
-    .inv-left{max-width:60%}
-    .logo-preview{max-height:80px;object-fit:contain}
-    .items-table{width:100%;border-collapse:collapse;margin-top:12px}
-    .summary{display:flex;justify-content:flex-end;margin-top:12px}
-    .summary .box{width:320px}
-    .qr-block{display:flex;align-items:center;gap:12px}
-    .qr-box{width:110px;height:110px;display:flex;align-items:center;justify-content:center;border-radius:8px;border:1px dashed var(--border);background:transparent;cursor:pointer}
-    @media (max-width:880px){ .grid.cols-2{grid-template-columns:1fr} .controls{flex-wrap:wrap} }
-    @media print{ body{background:#fff} .no-print{display:none !important} @page{size:A4;margin:0} .invoice-preview{box-shadow:none;border:none;margin:0;padding:10mm;border-radius:0} }
-    .saved-list {max-height:220px; overflow:auto; border:1px solid var(--border); padding:8px; border-radius:8px;}
-    .saved-item{display:flex;justify-content:space-between;align-items:center;padding:6px;border-bottom:1px dashed var(--border)}
-    .saved-item:last-child{border-bottom:none}
-  </style>
+  .step {
+    background: #0f1f33;
+    border-radius: 18px;
+    padding: 14px;
+    margin-bottom: 12px;
+    border: 2px solid #2e4a6a;
+  }
+  .step-title {
+    color: #00FF00;
+    font-size: 1.05rem;
+    font-weight: 900;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .step-title .num {
+    background: #00FF00;
+    color: #0a1a2e;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+
+  label { display: block; font-size: 0.9rem; color: #b8d0e8; margin-bottom: 6px; font-weight: 700; }
+
+  input[type="file"], input[type="text"], textarea, select {
+    width: 100%;
+    padding: 12px;
+    border-radius: 12px;
+    border: 2px solid #2e4a6a;
+    background: #0a1a2a;
+    color: #fff;
+    font-size: 0.95rem;
+    font-family: 'Cairo', sans-serif;
+    outline: none;
+  }
+  input:focus, textarea:focus { border-color: #00FF00; }
+  textarea { min-height: 70px; resize: vertical; font-size: 1rem; }
+
+  .size-buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    margin-top: 8px;
+  }
+  .size-buttons button {
+    padding: 12px 4px;
+    background: #1a2f3f;
+    border: 2px solid #2e4a6a;
+    color: #fff;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-family: 'Cairo';
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  .size-buttons button.active {
+    background: #00FF00;
+    color: #0a1a2e;
+    border-color: #00FF00;
+  }
+
+  .positions {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    max-width: 280px;
+    margin: 8px auto;
+  }
+  .positions button {
+    padding: 14px 4px;
+    background: #1a2f3f;
+    border: 2px solid #2e4a6a;
+    color: #fff;
+    border-radius: 10px;
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  .positions button.active {
+    background: #00FF00;
+    color: #0a1a2e;
+    border-color: #00FF00;
+  }
+
+  .logo-box {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .logo-box img {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    border: 3px solid #00FF00;
+    background: #000;
+    object-fit: cover;
+    display: none;
+  }
+  .logo-box img.visible { display: block; }
+  .logo-box .info {
+    flex: 1;
+    min-width: 140px;
+    font-size: 0.8rem;
+    color: #b8d0e8;
+  }
+
+  .big-btn {
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: 16px;
+    font-size: 1.05rem;
+    font-weight: 900;
+    font-family: 'Cairo';
+    cursor: pointer;
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: 0.2s;
+  }
+  .big-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn-green { background: #00FF00; color: #0a1a2e; }
+  .btn-red { background: #ff4757; color: #fff; }
+  .btn-blue { background: #2e7d32; color: #fff; }
+  .btn-orange { background: #ff9800; color: #0a1a2e; }
+  .btn-purple { background: #9c27b0; color: #fff; }
+  .btn-cyan { background: #00bcd4; color: #0a1a2e; }
+  .btn-pink { background: #e91e63; color: #fff; }
+  .btn-yellow { background: #ffc107; color: #0a1a2e; }
+  .btn-gray { background: #546e7a; color: #fff; }
+
+  /* ====== منطقة العرض الذكية ====== */
+  .preview-wrap {
+    position: relative;
+    width: 100%;
+    background: #000;
+    border-radius: 14px;
+    border: 3px solid #2e4a6a;
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+  .preview-wrap.paused {
+    border-color: #ffc107;
+    box-shadow: 0 0 20px #ffc10740;
+  }
+  .preview-wrap.recording {
+    border-color: #ff4757;
+    box-shadow: 0 0 20px #ff475740;
+  }
+  #previewCanvas {
+    width: 100%;
+    display: block;
+    touch-action: none;
+    cursor: move;
+  }
+  .preview-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(0,0,0,0.75);
+    color: #00FF00;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border: 1px solid #00FF0050;
+    z-index: 5;
+    display: none;
+    align-items: center;
+    gap: 6px;
+    backdrop-filter: blur(4px);
+  }
+  .preview-badge.show { display: flex; }
+  .preview-badge.paused {
+    color: #ffc107;
+    border-color: #ffc10780;
+    background: rgba(255,193,7,0.15);
+  }
+  .preview-badge .dot {
+    width: 8px; height: 8px;
+    background: #ff4757;
+    border-radius: 50%;
+    animation: blink 1s infinite;
+  }
+  .preview-badge.paused .dot {
+    background: #ffc107;
+    animation: none;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+  /* ====== قسم الفيديو المرجعي ====== */
+  .ref-box {
+    background: #1a0f2e;
+    border: 2px solid #9c27b0;
+    border-radius: 14px;
+    padding: 12px;
+    margin-top: 10px;
+  }
+  .ref-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .ref-title {
+    color: #d8b4ff;
+    font-weight: 900;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .ref-status {
+    font-size: 0.75rem;
+    padding: 4px 10px;
+    border-radius: 20px;
+    background: #9c27b020;
+    color: #d8b4ff;
+    border: 1px solid #9c27b050;
+  }
+  .ref-status.ready {
+    background: #00FF0020;
+    color: #00FF00;
+    border-color: #00FF0050;
+  }
+  .ref-video-wrap {
+    position: relative;
+    background: #000;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 8px;
+    display: none;
+  }
+  .ref-video-wrap.show { display: block; }
+  .ref-video-wrap video {
+    width: 100%;
+    display: block;
+    border-radius: 10px;
+  }
+  .ref-controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 6px;
+    margin-top: 8px;
+  }
+  .ref-controls button {
+    padding: 10px 6px;
+    background: #2a1a3f;
+    border: 2px solid #9c27b0;
+    color: #fff;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-family: 'Cairo';
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  .ref-controls button:active { transform: scale(0.95); }
+  .ref-controls button.playing {
+    background: #9c27b0;
+    box-shadow: 0 0 12px #9c27b0;
+  }
+  .ref-controls button:disabled { opacity: 0.4; }
+
+  .ref-progress {
+    width: 100%;
+    height: 6px;
+    background: #2a1a3f;
+    border-radius: 3px;
+    margin-top: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    position: relative;
+  }
+  .ref-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #9c27b0, #e91e63);
+    width: 0%;
+    transition: width 0.1s linear;
+    border-radius: 3px;
+  }
+  .ref-time {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.7rem;
+    color: #b8d0e8;
+    margin-top: 4px;
+  }
+
+  .ref-broadcast-btn {
+    background: #9c27b0;
+    color: #fff;
+    animation: pulse-purple 2s infinite;
+  }
+  @keyframes pulse-purple {
+    0%, 100% { box-shadow: 0 0 0 0 #9c27b080; }
+    50% { box-shadow: 0 0 0 12px #9c27b000; }
+  }
+
+  /* ====== الحالة ====== */
+  .status {
+    padding: 14px;
+    border-radius: 12px;
+    text-align: center;
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-top: 10px;
+    background: #0a1a2a;
+    border: 2px solid #2e4a6a;
+    color: #b8d0e8;
+    line-height: 1.6;
+  }
+  .status.ok { color: #00FF00; border-color: #00FF0050; background: #00FF0010; }
+  .status.err { color: #ff4757; border-color: #ff475750; background: #ff475710; }
+  .status.busy { color: #ffc107; border-color: #ffc10750; background: #ffc10710; }
+  .status.paused { color: #ffc107; border-color: #ffc10780; background: #ffc10720; }
+
+  .hint {
+    background: #00FF0010;
+    border-right: 4px solid #00FF00;
+    padding: 8px 10px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    color: #b8d0e8;
+    margin-top: 8px;
+    line-height: 1.6;
+  }
+
+  .timer {
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: #ff4757;
+    margin-top: 6px;
+    letter-spacing: 2px;
+    display: none;
+  }
+  .timer.show { display: block; }
+  .timer.paused { color: #ffc107; }
+
+  /* مؤقت الإيقاف المؤقت */
+  .pause-timer {
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: 900;
+    color: #ffc107;
+    margin-top: 4px;
+    letter-spacing: 1px;
+    display: none;
+  }
+  .pause-timer.show { display: block; }
+  .pause-timer .icon { animation: pulse-warn 1.5s infinite; }
+  @keyframes pulse-warn {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .live-dot {
+    display: inline-block;
+    width: 10px; height: 10px;
+    background: #ff4757;
+    border-radius: 50%;
+    margin-left: 4px;
+    animation: blink 1s infinite;
+  }
+
+  .music-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: #9c27b010;
+    border: 2px solid #9c27b050;
+    border-radius: 10px;
+    margin-top: 8px;
+    font-size: 0.85rem;
+    color: #d8b4ff;
+    font-weight: 700;
+  }
+  .music-indicator .bars {
+    display: flex; gap: 3px; align-items: flex-end; height: 16px;
+  }
+  .music-indicator .bars span {
+    width: 4px; background: #9c27b0; border-radius: 2px;
+    animation: eq 0.9s ease-in-out infinite;
+  }
+  .music-indicator .bars span:nth-child(1) { height: 40%; animation-delay: 0s; }
+  .music-indicator .bars span:nth-child(2) { height: 90%; animation-delay: 0.15s; }
+  .music-indicator .bars span:nth-child(3) { height: 60%; animation-delay: 0.3s; }
+  .music-indicator .bars span:nth-child(4) { height: 80%; animation-delay: 0.45s; }
+  .music-indicator.paused .bars span { animation-play-state: paused; opacity: 0.3; }
+  @keyframes eq { 0%,100%{transform:scaleY(0.4)} 50%{transform:scaleY(1)} }
+
+  .btn-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .btn-row-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 6px;
+  }
+  @media (max-width: 500px) {
+    .btn-row { grid-template-columns: 1fr; }
+    .btn-row-3 { grid-template-columns: 1fr 1fr; }
+  }
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 8px;
+    border-radius: 8px;
+    background: #2e4a6a;
+    outline: none;
+    padding: 0;
+    border: none;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #9c27b0;
+    cursor: pointer;
+    border: 3px solid #fff;
+    box-shadow: 0 0 8px #9c27b0;
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #9c27b0;
+    cursor: pointer;
+    border: 3px solid #fff;
+    box-shadow: 0 0 8px #9c27b0;
+  }
+
+  /* ====== شريط التحكم السريع أثناء التسجيل ====== */
+  .quick-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(10, 26, 46, 0.98);
+    border-top: 3px solid #ff4757;
+    padding: 10px;
+    display: none;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.5);
+    transition: border-color 0.3s;
+  }
+  .quick-bar.show { display: block; }
+  .quick-bar.paused { border-top-color: #ffc107; }
+  .quick-bar-inner {
+    max-width: 900px;
+    margin: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 6px;
+  }
+  .quick-bar button {
+    padding: 14px 6px;
+    border: none;
+    border-radius: 12px;
+    font-family: 'Cairo';
+    font-weight: 900;
+    font-size: 0.85rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    transition: 0.15s;
+  }
+  .quick-bar button:active { transform: scale(0.96); }
+  @media (max-width: 500px) {
+    .quick-bar button { font-size: 0.75rem; padding: 12px 4px; }
+  }
+
+  .scroll-top {
+    position: fixed;
+    bottom: 100px;
+    left: 20px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #00FF00;
+    color: #0a1a2e;
+    border: none;
+    font-size: 1.2rem;
+    font-weight: 900;
+    cursor: pointer;
+    display: none;
+    z-index: 50;
+    box-shadow: 0 4px 12px rgba(0,255,0,0.4);
+  }
+  .scroll-top.show { display: flex; align-items: center; justify-content: center; }
+
+  .top-indicators {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+  }
+  .indicator {
+    flex: 1;
+    min-width: 80px;
+    padding: 6px 10px;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-align: center;
+    background: #1a2f3f;
+    border: 1px solid #2e4a6a;
+    color: #5a7a9a;
+    transition: 0.3s;
+  }
+  .indicator.on {
+    background: #00FF0015;
+    border-color: #00FF0050;
+    color: #00FF00;
+  }
+  .indicator.ref-on {
+    background: #9c27b015;
+    border-color: #9c27b050;
+    color: #d8b4ff;
+  }
+  .indicator.paused {
+    background: #ffc10715;
+    border-color: #ffc10750;
+    color: #ffc107;
+  }
+
+  /* ====== خيارات الإيقاف المؤقت ====== */
+  .pause-options {
+    background: #1a1a2e;
+    border: 2px solid #ffc107;
+    border-radius: 14px;
+    padding: 12px;
+    margin-top: 10px;
+  }
+  .pause-options-title {
+    color: #ffc107;
+    font-weight: 900;
+    font-size: 0.95rem;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .switch-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #2e4a6a;
+  }
+  .switch-row:last-child { border-bottom: none; }
+  .switch-row .label-text {
+    font-size: 0.85rem;
+    color: #b8d0e8;
+    flex: 1;
+  }
+  .switch-row .label-text b { color: #fff; display: block; margin-bottom: 2px; }
+  .switch {
+    position: relative;
+    width: 48px;
+    height: 26px;
+    flex-shrink: 0;
+  }
+  .switch input { opacity: 0; width: 0; height: 0; }
+  .switch .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: #2e4a6a;
+    transition: 0.3s;
+    border-radius: 26px;
+  }
+  .switch .slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    bottom: 3px;
+    background: white;
+    transition: 0.3s;
+    border-radius: 50%;
+  }
+  .switch input:checked + .slider {
+    background: #ffc107;
+  }
+  .switch input:checked + .slider:before {
+    transform: translateX(22px);
+  }
+
+  .pause-text-input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+    border: 2px solid #2e4a6a;
+    background: #0a1a2a;
+    color: #fff;
+    font-size: 0.9rem;
+    font-family: 'Cairo', sans-serif;
+    outline: none;
+    margin-top: 6px;
+  }
+  .pause-text-input:focus { border-color: #ffc107; }
+
+  /* سجل المقاطع */
+  .segments-log {
+    margin-top: 10px;
+    max-height: 150px;
+    overflow-y: auto;
+    background: #0a1a2a;
+    border-radius: 10px;
+    padding: 8px;
+  }
+  .segment-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 10px;
+    background: #1a2f3f;
+    border-radius: 8px;
+    margin-bottom: 4px;
+    font-size: 0.8rem;
+    color: #b8d0e8;
+  }
+  .segment-item .seg-num {
+    background: #00FF00;
+    color: #0a1a2e;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: 900;
+    font-size: 0.75rem;
+  }
+  .segment-item .seg-time {
+    color: #ffc107;
+    font-weight: 700;
+  }
+</style>
 </head>
-<body data-theme="light">
-  <div class="wrap">
-    <header>
-      <div>
-        <h1>مولد الفواتير — احترافي</h1>
-        <div class="muted">ملف واحد PWA — يعمل أوفلاين بعد التثبيت</div>
-      </div>
+<body>
+<div class="app">
 
-      <div class="controls no-print">
-        <button id="newInvoiceBtn" class="btn small">فاتورة جديدة</button>
-        <select id="tplSelect" class="btn ghost small" title="قوالب"></select>
-        <button id="toggleThemeBtn" class="btn ghost small">ثيم</button>
-        <button id="installBtn" class="btn ghost small" style="display:none">تثبيت</button>
-      </div>
-    </header>
+  <h1>🎬 استوديو الفيديو المباشر الذكي</h1>
 
-    <section class="card no-print">
-      <div class="grid cols-2">
-        <div>
-          <label>اسم النشاط</label>
-          <input id="businessName" type="text" placeholder="اسم النشاط">
-
-          <label style="margin-top:8px">بيانات النشاط</label>
-          <textarea id="businessDetails" rows="3" placeholder="العنوان، الهاتف..."></textarea>
-
-          <label style="margin-top:8px">شعار (Logo)</label>
-          <div style="display:flex;gap:8px;align-items:center">
-            <input id="logoInput" type="file" accept="image/*">
-            <select id="logoPos" style="width:120px">
-              <option value="right">يمين</option>
-              <option value="left">يسار</option>
-            </select>
-          </div>
-          <div style="margin-top:8px">
-            <img id="logoPreview" class="logo-preview" style="display:none;border-radius:8px;border:1px solid var(--border);padding:6px;background:transparent">
-            <div><button id="removeLogoBtn" class="btn ghost small" style="display:none;margin-top:8px">إزالة الشعار</button></div>
-          </div>
-        </div>
-
-        <div>
-          <label>العميل</label>
-          <div style="display:flex;gap:8px;align-items:center">
-            <select id="clientsSelect" style="flex:1"></select>
-            <input id="clientName" type="text" placeholder="اسم عميل جديد" style="width:200px">
-            <button id="saveClientBtn" class="btn small">حفظ</button>
-          </div>
-          <div style="display:flex;gap:8px;margin-top:8px">
-            <button id="deleteClientBtn" class="btn ghost small">حذف العميل المحدد</button>
-            <button id="exportClientsBtn" class="btn ghost small">تصدير عملاء</button>
-          </div>
-
-          <label style="margin-top:8px">رقم الفاتورة</label>
-          <input id="invoiceNo" type="text" readonly>
-
-          <label style="margin-top:8px">تاريخ</label>
-          <input id="invoiceDate" type="text">
-
-          <label style="margin-top:8px">العملة</label>
-          <input id="currency" type="text" value="EGP">
-        </div>
-      </div>
-    </section>
-
-    <section class="card">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <h3 style="margin:0">بنود الفاتورة</h3>
-        <div style="display:flex;gap:8px;align-items:center">
-          <button id="addRowBtn" class="btn small">+ إضافة بند</button>
-          <button id="clearItemsBtn" class="btn ghost small">مسح البنود</button>
-        </div>
-      </div>
-
-      <div style="overflow:auto;margin-top:10px">
-        <table id="itemsTable">
-          <thead>
-            <tr>
-              <th style="text-align:right">الوصف</th>
-              <th style="width:90px">الكمية</th>
-              <th style="width:120px">السعر</th>
-              <th style="width:90px">خصم %</th>
-              <th style="width:120px">الإجمالي</th>
-              <th class="no-print" style="width:70px">حذف</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
-
-      <div style="display:flex;justify-content:flex-end;margin-top:12px">
-        <div style="width:360px">
-          <label>نسبة الضريبة (%)</label>
-          <input id="taxPercent" type="number" value="0">
-          <label style="margin-top:8px">رابط الدفع (URL)</label>
-          <input id="paymentLink" type="url" placeholder="https://">
-          <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
-            <div id="qrSmall" class="qr-box" title="اضغط لفتح رابط الدفع"></div>
-            <div style="flex:1">
-              <div class="muted">اضغط على الكود لفتح الرابط أو امسحه لقراءة المعلومات</div>
-              <a id="paymentAnchor" href="#" target="_blank" style="display:block;word-break:break-all;margin-top:6px;color:var(--primary)"></a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="card no-print" style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-start">
-      <div style="flex:1;min-width:260px">
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <button id="previewBtn" class="btn">معاينة</button>
-          <button id="printBtn" class="btn">طباعة</button>
-          <button id="downloadPdfBtn" class="btn">تنزيل PDF</button>
-          <button id="downloadPngBtn" class="btn">تنزيل PNG</button>
-          <button id="shareBtn" class="btn ghost">مشاركة</button>
-        </div>
-        <div style="margin-top:10px">
-          <button id="saveInvoiceBtn" class="btn">حفظ الفاتورة</button>
-          <button id="exportInvoiceBtn" class="btn ghost">تصدير JSON</button>
-        </div>
-      </div>
-
-      <div style="width:320px">
-        <label>الفواتير المحفوظة</label>
-        <div class="saved-list" id="savedInvoicesList"></div>
-      </div>
-    </section>
-
-    <section id="previewArea" class="card">
-      <div id="invoiceContainer"></div>
-    </section>
+  <div class="top-indicators">
+    <div class="indicator" id="indSource">📹 المصدر</div>
+    <div class="indicator" id="indMic">🎤 الميكروفون</div>
+    <div class="indicator" id="indRef">🎞️ المرجعي</div>
+    <div class="indicator" id="indMusic">🎵 الموسيقى</div>
+    <div class="indicator" id="indRec">🔴 التسجيل</div>
   </div>
 
-  <!-- مكتبات -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <!-- ============ 1 ============ -->
+  <div class="step">
+    <div class="step-title"><span class="num">1</span> مصدر البث الأساسي</div>
+    <div class="size-buttons" id="sourceButtons" style="grid-template-columns: repeat(2, 1fr);">
+      <button data-src="file" class="active">📁 رفع فيديو</button>
+      <button data-src="camera">🎥 تصوير مباشر</button>
+    </div>
+    <div id="fileBox" style="margin-top:10px;">
+      <input type="file" id="videoFile" accept="video/*">
+    </div>
+    <div id="cameraBox" style="display:none; margin-top:10px;">
+      <button class="big-btn btn-blue" id="btnCamOn" style="margin-top:0;">🎥 تشغيل الكاميرا والميكروفون</button>
+      <div class="btn-row" id="camControls" style="display:none;">
+        <button class="big-btn btn-red" id="btnCamOff">⏹️ إيقاف</button>
+        <button class="big-btn btn-cyan" id="btnSwitchCam">🔄 تبديل الكاميرا</button>
+      </div>
+      <div class="hint">سيطلب المتصفح السماح بالكاميرا والميكروفون.</div>
+    </div>
+  </div>
 
-  <script>
-    // Keys
-    const STATE_KEY = 'inv-state-v2';
-    const CLIENTS_KEY = 'inv-clients-v2';
-    const INVOICES_KEY = 'inv-list-v2';
-    const LAST_INV_KEY = 'inv-lastno-v2';
-    const CURRENT_INV_KEY = 'inv-current-v2';
-    const LOGO_KEY = 'inv-logo-v2';
-    const LOGO_POS_KEY = 'inv-logo-pos-v2';
-    const TEMPLATE_KEY = 'inv-tpl-v2';
+  <!-- ============ 2 ============ -->
+  <div class="step">
+    <div class="step-title"><span class="num">2</span> اكتب الخبر / التعليق</div>
+    <textarea id="newsText" placeholder="اكتب خبرك أو تعليقك هنا..."></textarea>
+    <label style="margin-top:10px;">نمط العرض</label>
+    <div class="size-buttons" id="newsModeButtons" style="grid-template-columns: repeat(2, 1fr);">
+      <button data-mode="static" class="active">📰 ثابت</button>
+      <button data-mode="ticker">📜 شريط متحرك</button>
+    </div>
+    <div id="tickerSpeedBox" style="display:none; margin-top:10px;">
+      <label>سرعة الشريط</label>
+      <div class="size-buttons" id="tickerSpeedButtons" style="grid-template-columns: repeat(3, 1fr);">
+        <button data-speed="0.5">بطيء</button>
+        <button data-speed="1" class="active">متوسط</button>
+        <button data-speed="2">سريع</button>
+      </div>
+    </div>
+  </div>
 
-    // DOM
-    const businessNameEl = document.getElementById('businessName');
-    const businessDetailsEl = document.getElementById('businessDetails');
-    const clientsSelectEl = document.getElementById('clientsSelect');
-    const clientNameEl = document.getElementById('clientName');
-    const saveClientBtn = document.getElementById('saveClientBtn');
-    const deleteClientBtn = document.getElementById('deleteClientBtn');
-    const exportClientsBtn = document.getElementById('exportClientsBtn');
-    const invoiceNoEl = document.getElementById('invoiceNo');
-    const invoiceDateEl = document.getElementById('invoiceDate');
-    const addRowBtn = document.getElementById('addRowBtn');
-    const itemsTableBody = document.querySelector('#itemsTable tbody');
-    const taxPercentEl = document.getElementById('taxPercent');
-    const currencyEl = document.getElementById('currency');
-    const paymentLinkEl = document.getElementById('paymentLink');
-    const paymentAnchor = document.getElementById('paymentAnchor');
-    const qrSmallEl = document.getElementById('qrSmall');
-    const previewBtn = document.getElementById('previewBtn');
-    const printBtn = document.getElementById('printBtn');
-    const downloadPdfBtn = document.getElementById('downloadPdfBtn');
-    const downloadPngBtn = document.getElementById('downloadPngBtn');
-    const shareBtn = document.getElementById('shareBtn');
-    const previewArea = document.getElementById('invoiceContainer');
-    const logoInput = document.getElementById('logoInput');
-    const logoPreview = document.getElementById('logoPreview');
-    const removeLogoBtn = document.getElementById('removeLogoBtn');
-    const logoPosEl = document.getElementById('logoPos');
-    const tplSelect = document.getElementById('tplSelect');
-    const newInvoiceBtn = document.getElementById('newInvoiceBtn');
-    const toggleThemeBtn = document.getElementById('toggleThemeBtn');
-    const installBtn = document.getElementById('installBtn');
-    const clearItemsBtn = document.getElementById('clearItemsBtn');
-    const saveInvoiceBtn = document.getElementById('saveInvoiceBtn');
-    const savedInvoicesList = document.getElementById('savedInvoicesList');
-    const exportInvoiceBtn = document.getElementById('exportInvoiceBtn');
+  <!-- ============ 3 ============ -->
+  <div class="step">
+    <div class="step-title"><span class="num">3</span> الشعار (اختياري)</div>
+    <div class="logo-box">
+      <img id="logoPreview" src="" alt="الشعار">
+      <div class="info">
+        <b style="color:#00FF00;">لم يتم اختيار شعار</b><br>
+        <span style="font-size:0.75rem;">اختر صورة شعارك 👇</span>
+      </div>
+    </div>
+    <input type="file" id="logoFile" accept="image/*" style="margin-top:8px;">
+  </div>
 
-    // state
-    let state = { businessName:'', businessDetails:'', client:'', items:[], taxPercent:0, currency:'EGP', paymentLink:'', template:'classic' };
-    let deferredPrompt = null;
+  <!-- ============ 4 ============ -->
+  <div class="step">
+    <div class="step-title"><span class="num">4</span> حجم وموضع الخبر</div>
+    <div class="size-buttons" id="sizeButtons">
+      <button data-size="2">صغير</button>
+      <button data-size="3" class="active">وسط</button>
+      <button data-size="4">كبير</button>
+      <button data-size="5">ضخم</button>
+    </div>
+    <div class="positions" id="posButtons">
+      <button data-pos="top">⬆️</button>
+      <button data-pos="middle">⏺️</button>
+      <button data-pos="bottom" class="active">⬇️</button>
+      <button data-pos="bottomleft">↙️</button>
+      <button data-pos="bottomright">↘️</button>
+      <button data-pos="center">🎯</button>
+    </div>
+  </div>
 
-    // ----- Helpers -----
-    function escapeHtml(s){ return String(s||'').replace(/&/g,'&').replace(/</g,'<').replace(/>/g,'>').replace(/"/g,'"'); }
+  <!-- ============ 5 ============ -->
+  <div class="step">
+    <div class="step-title"><span class="num">5</span> المعاينة الذكية</div>
+    <div class="preview-wrap" id="previewWrap">
+      <div class="preview-badge" id="previewBadge">
+        <span class="dot"></span>
+        <span id="previewBadgeText">جاري التسجيل</span>
+      </div>
+      <canvas id="previewCanvas"></canvas>
+    </div>
+    <div class="hint">👆 اسحب النص أو الشعار داخل الفيديو لتحريكهما</div>
+  </div>
 
-    function getLastInvoiceNo(){ return Number(localStorage.getItem(LAST_INV_KEY) || 0); }
-    function setLastInvoiceNo(n){ localStorage.setItem(LAST_INV_KEY, String(n)); }
-    function formatInvoiceNo(num){ return 'INV-' + String(num).padStart(4,'0'); }
-    function newInvoiceNumber(){ const last = getLastInvoiceNo()+1; setLastInvoiceNo(last); localStorage.setItem(CURRENT_INV_KEY, String(last)); return formatInvoiceNo(last); }
-    function getCurrentInvoiceNo(){ const cur = Number(localStorage.getItem(CURRENT_INV_KEY) || getLastInvoiceNo()); return formatInvoiceNo(cur); }
+  <!-- ============ 6 : الفيديو المرجعي ============ -->
+  <div class="step" style="border-color:#9c27b0;">
+    <div class="step-title"><span class="num" style="background:#9c27b0;color:#fff;">6</span> 
+      <span style="color:#d8b4ff;">الفيديو المرجعي (للتعليق عليه)</span>
+    </div>
+    <div class="hint" style="background:#9c27b010; border-right-color:#9c27b0; color:#d8b4ff;">
+      💡 ارفع فيديو الخطاب، وأثناء التسجيل اضغط «🎞️ تشغيل المرجعي» لعرضه وسماع صوته.
+    </div>
+    <input type="file" id="refFile" accept="video/*" style="margin-top:10px;">
+    <div class="ref-box" id="refBox" style="display:none;">
+      <div class="ref-header">
+        <div class="ref-title">🎞️ الفيديو المرجعي</div>
+        <div class="ref-status" id="refStatus">غير محمّل</div>
+      </div>
+      <div class="ref-video-wrap" id="refVideoWrap">
+        <video id="refVideo" playsinline webkit-playsinline preload="metadata"></video>
+      </div>
+      <div class="ref-progress" id="refProgress">
+        <div class="ref-progress-fill" id="refProgressFill"></div>
+      </div>
+      <div class="ref-time">
+        <span id="refCurrent">00:00</span>
+        <span id="refDuration">00:00</span>
+      </div>
+      <div class="ref-controls">
+        <button id="refPlayBtn">▶️ تشغيل</button>
+        <button id="refPauseBtn">⏸️ إيقاف</button>
+        <button id="refRestartBtn">🔄 من البداية</button>
+      </div>
+      <div class="btn-row-3" style="margin-top:6px;">
+        <button class="big-btn btn-yellow" id="refBack5" style="margin-top:0;">⏪ 5 ثوان</button>
+        <button class="big-btn btn-cyan" id="refFwd5" style="margin-top:0;">⏩ 5 ثوان</button>
+        <button class="big-btn btn-purple" id="refMuteBtn" style="margin-top:0;">🔇 كتم</button>
+      </div>
+    </div>
+  </div>
 
-    // ----- Storage -----
-    function loadState(){ try{ const s = localStorage.getItem(STATE_KEY); if(s) state = JSON.parse(s); }catch(e){console.warn(e);} }
-    function saveState(){ try{ localStorage.setItem(STATE_KEY, JSON.stringify(state)); }catch(e){console.warn(e);} }
+  <!-- ============ 7 : الإيقاف المؤقت الذكي ============ -->
+  <div class="step" style="border-color:#ffc107;">
+    <div class="step-title"><span class="num" style="background:#ffc107;color:#0a1a2e;">7</span> 
+      <span style="color:#ffc107;">الإيقاف المؤقت الذكي (Pause)</span>
+    </div>
+    <div class="hint" style="background:#ffc10710; border-right-color:#ffc107; color:#ffc107;">
+      💡 <b>الميزة الأهم:</b> أثناء التسجيل اضغط «⏸️ إيقاف مؤقت» → انتقل لمكان آخر → اضغط «▶️ استئناف».<br>
+      <b>النتيجة:</b> ملف واحد يجمع كل المقاطع من أماكن مختلفة 🎬
+    </div>
 
-    // ----- Clients -----
-    function loadClients(){
-      try{
-        const list = JSON.parse(localStorage.getItem(CLIENTS_KEY) || '[]');
-        clientsSelectEl.innerHTML = '<option value="">-- اختر عميل --</option>';
-        list.forEach(c=>{ const o=document.createElement('option'); o.value=c; o.textContent=c; clientsSelectEl.appendChild(o); });
-      }catch(e){ clientsSelectEl.innerHTML = '<option value="">-- لا يوجد --</option>'; }
-    }
-    function saveClient(){
-      const name = clientNameEl.value.trim();
-      if(!name) return alert('أدخل اسم العميل');
-      let list = JSON.parse(localStorage.getItem(CLIENTS_KEY) || '[]');
-      if(!list.includes(name)) list.push(name);
-      localStorage.setItem(CLIENTS_KEY, JSON.stringify(list));
-      clientNameEl.value='';
-      loadClients();
-      alert('تم حفظ العميل');
-    }
-    function deleteSelectedClient(){
-      const sel = clientsSelectEl.value;
-      if(!sel) return alert('اختر عميل للحذف');
-      if(!confirm(`حذف العميل "${sel}"؟`)) return;
-      let list = JSON.parse(localStorage.getItem(CLIENTS_KEY) || '[]');
-      list = list.filter(x=>x!==sel);
-      localStorage.setItem(CLIENTS_KEY, JSON.stringify(list));
-      loadClients();
-      alert('تم الحذف');
-    }
-    function exportClients(){
-      const list = JSON.parse(localStorage.getItem(CLIENTS_KEY) || '[]');
-      const blob = new Blob([JSON.stringify(list, null, 2)], {type:'application/json'});
-      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download='clients.json'; a.click();
-    }
+    <div class="pause-options">
+      <div class="pause-options-title">⚙️ إعدادات الإيقاف المؤقت</div>
 
-    // ----- Items -----
-    function addRow(item={desc:'',qty:1,price:0,disc:0}){
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td class="right"><input class="item-desc" type="text" value="${escapeHtml(item.desc)}" placeholder="وصف البند"></td>
-        <td><input class="item-qty" type="number" min="0" step="1" value="${item.qty}"></td>
-        <td><input class="item-price" type="number" min="0" step="0.01" value="${item.price}"></td>
-        <td><input class="item-disc" type="number" min="0" max="100" step="0.01" value="${item.disc}"></td>
-        <td class="center item-total">0.00</td>
-        <td class="center no-print"><button class="btn ghost small deleteRow">حذف</button></td>`;
-      itemsTableBody.appendChild(tr);
-      const inputs = tr.querySelectorAll('input');
-      inputs.forEach(i=>i.addEventListener('input', ()=>{ updateRowTotal(tr); }));
-      tr.querySelector('.deleteRow').addEventListener('click', ()=>{ tr.remove(); persist(); renderPreview(); });
-      updateRowTotal(tr);
-      persist();
-      renderPreview();
-    }
-    function updateRowTotal(tr){
-      const qty = parseFloat(tr.querySelector('.item-qty').value)||0;
-      const price = parseFloat(tr.querySelector('.item-price').value)||0;
-      const disc = parseFloat(tr.querySelector('.item-disc').value)||0;
-      const total = (qty*price)*(1-disc/100);
-      tr.querySelector('.item-total').textContent = total.toFixed(2);
-    }
-    function getRows(){ const rows=[]; document.querySelectorAll('#itemsTable tbody tr').forEach(tr=>{ const desc=tr.querySelector('.item-desc').value||''; const qty=+tr.querySelector('.item-qty').value||0; const price=+tr.querySelector('.item-price').value||0; const disc=+tr.querySelector('.item-disc').value||0; const total=Number(((qty*price)*(1-disc/100)).toFixed(2)); rows.push({desc,qty,price,disc,total}); }); return rows; }
-    function clearItems(){ if(confirm('مسح كل البنود؟')){ itemsTableBody.innerHTML=''; addRow(); persist(); renderPreview(); } }
-
-    // ----- Payment (QR clickable + scannable + link next to QR in preview) -----
-    function updatePaymentUI(){
-      const url = paymentLinkEl.value.trim();
-      paymentAnchor.href = url || '#';
-      paymentAnchor.textContent = url || '';
-      qrSmallEl.innerHTML = '';
-      qrSmallEl.onclick = null;
-      if(url){
-        try{
-          new QRCode(qrSmallEl, { text: url, width:110, height:110 });
-          qrSmallEl.style.cursor = 'pointer';
-          qrSmallEl.onclick = ()=>{ window.open(url, '_blank'); };
-          setTimeout(()=>{ const inner = qrSmallEl.querySelector('img,canvas,table'); if(inner) inner.style.pointerEvents = 'none'; }, 50);
-        }catch(e){ console.warn(e); }
-      } else {
-        qrSmallEl.style.cursor = 'default';
-      }
-    }
-
-    // ----- Build invoice HTML (preview/print) -----
-    function buildInvoiceHTML(dataState){
-      const rows = dataState.items || [];
-      let subtotal = 0; rows.forEach(r=> subtotal += r.total);
-      const tax = +(subtotal * (Number(dataState.taxPercent||0)/100));
-      const total = +(subtotal + tax);
-      const invNo = dataState.invoiceNo || getCurrentInvoiceNo();
-      const date = dataState.invoiceDate || new Date().toLocaleDateString('ar-EG');
-      const logoData = localStorage.getItem(LOGO_KEY);
-      const logoPos = localStorage.getItem(LOGO_POS_KEY) || 'right';
-      const tpl = dataState.template || localStorage.getItem(TEMPLATE_KEY) || 'classic';
-
-      const itemsHtml = rows.map(r=>`<tr>
-        <td style="text-align:right;padding:8px">${escapeHtml(r.desc)}</td>
-        <td style="text-align:center;padding:8px">${r.qty}</td>
-        <td style="text-align:center;padding:8px">${r.price} ${escapeHtml(dataState.currency||'EGP')}</td>
-        <td style="text-align:center;padding:8px">${r.disc}%</td>
-        <td style="text-align:center;padding:8px">${r.total} ${escapeHtml(dataState.currency||'EGP')}</td>
-      </tr>`).join('');
-
-      const logoHtml = logoData ? `<img src="${logoData}" style="max-height:70px;${logoPos==='left'?'margin-left:12px':'margin-right:12px'}">` : '';
-
-      return `
-        <div class="invoice-preview ${tpl}" id="invoicePrintable" style="position:relative;">
-          <div class="inv-head">
-            <div class="inv-left">
-              ${logoPos==='left'?logoHtml:''}
-              <div><h2 style="margin:0">${escapeHtml(dataState.businessName||'اسم النشاط')}</h2></div>
-              <div class="muted">${escapeHtml(dataState.businessDetails||'')}</div>
-            </div>
-            <div style="text-align:left">
-              ${logoPos==='right'?logoHtml:''}
-              <div class="muted"><strong>فاتورة:</strong> ${escapeHtml(invNo)}</div>
-              <div class="muted"><strong>تاريخ:</strong> ${escapeHtml(date)}</div>
-              <div class="muted"><strong>العملة:</strong> ${escapeHtml(dataState.currency||'EGP')}</div>
-            </div>
-          </div>
-
-          <hr style="border:none;border-top:1px solid var(--border);margin:12px 0">
-
-          <div>
-            <table class="items-table" style="width:100%;border-collapse:collapse">
-              <thead><tr><th style="text-align:right">الوصف</th><th style="text-align:center">الكمية</th><th style="text-align:center">السعر</th><th style="text-align:center">خصم</th><th style="text-align:center">الإجمالي</th></tr></thead>
-              <tbody>${itemsHtml}</tbody>
-            </table>
-          </div>
-
-          <div class="summary" style="margin-top:14px">
-            <div class="box">
-              <div style="display:flex;justify-content:space-between"><span>المجموع الفرعي</span><span>${subtotal.toFixed(2)} ${escapeHtml(dataState.currency||'EGP')}</span></div>
-              <div style="display:flex;justify-content:space-between"><span>الضريبة (${escapeHtml(dataState.taxPercent||0)}%)</span><span>${tax.toFixed(2)} ${escapeHtml(dataState.currency||'EGP')}</span></div>
-              <hr>
-              <div style="display:flex;justify-content:space-between;font-weight:700"><span>الإجمالي</span><span>${total.toFixed(2)} ${escapeHtml(dataState.currency||'EGP')}</span></div>
-            </div>
-          </div>
-
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px">
-            <div class="muted">شكرًا لتعاملكم</div>
-            <div style="display:flex;align-items:center;gap:12px">
-              <div style="display:flex;align-items:center;gap:12px">
-                <a id="qrPrintableAnchor" href="${escapeHtml(dataState.paymentLink||'#')}" target="_blank" style="text-decoration:none;">
-                  <div id="qrForPrintable" class="qr-box" title="اضغط لفتح رابط الدفع"></div>
-                </a>
-                <div style="min-width:160px;max-width:240px;word-break:break-all;font-size:13px">
-                  <div class="muted">رابط الدفع</div>
-                  <a id="payLinkText" href="${escapeHtml(dataState.paymentLink||'#')}" target="_blank" style="color:var(--primary)">${escapeHtml(dataState.paymentLink||'-')}</a>
-                </div>
-              </div>
-            </div>
-          </div>
+      <div class="switch-row">
+        <div class="label-text">
+          <b>🎬 عرض شاشة انتقالية</b>
+          عرض شاشة سوداء مع نص أثناء الإيقاف
         </div>
-      `;
-    }
+        <label class="switch">
+          <input type="checkbox" id="optShowTransition" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
 
-    // ----- Render preview -----
-    function renderPreview(){
-      persist(); // update state from UI
-      const previewState = Object.assign({}, state, {
-        items: getRows(),
-        invoiceNo: invoiceNoEl.value || getCurrentInvoiceNo(),
-        invoiceDate: invoiceDateEl.value || new Date().toLocaleDateString('ar-EG')
-      });
-      previewArea.innerHTML = buildInvoiceHTML(previewState);
-      // build QR for printable and make clickable
-      const qrContainer = document.getElementById('qrForPrintable');
-      const payText = document.getElementById('payLinkText');
-      if(payText) payText.href = previewState.paymentLink || '#';
-      if(qrContainer){
-        qrContainer.innerHTML = '';
-        if(previewState.paymentLink){
-          try{
-            new QRCode(qrContainer, { text: previewState.paymentLink, width:110, height:110 });
-            qrContainer.style.cursor = 'pointer';
-            qrContainer.onclick = ()=>{ window.open(previewState.paymentLink, '_blank'); };
-            setTimeout(()=>{ const inner = qrContainer.querySelector('img,canvas,table'); if(inner) inner.style.pointerEvents='none'; }, 50);
-          }catch(e){ console.warn(e); }
-        }
+      <div class="switch-row">
+        <div class="label-text">
+          <b>⏭️ تخطي الشاشة الانتقالية</b>
+          الانتقال مباشرة بدون فاصل
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="optSkipTransition">
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div id="transitionTextBox" style="margin-top:10px;">
+        <label style="font-size:0.85rem; color:#b8d0e8;">📝 نص الشاشة الانتقالية</label>
+        <input type="text" class="pause-text-input" id="transitionText" 
+               value="⏸️ جاري الانتقال إلى موقع آخر..." 
+               placeholder="مثال: ننتقل الآن إلى موقع آخر">
+      </div>
+    </div>
+
+    <!-- سجل المقاطع -->
+    <div class="hint" style="background:#ffc10710; border-right-color:#ffc107; color:#ffc107; margin-top:10px;">
+      📋 <b>سجل المقاطع المسجلة</b>
+    </div>
+    <div class="segments-log" id="segmentsLog">
+      <div style="text-align:center; color:#5a7a9a; padding:10px; font-size:0.8rem;">
+        لم يبدأ التسجيل بعد...
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 8 ============ -->
+  <div class="step">
+    <div class="step-title"><span class="num">8</span> فيديو بديل (اختياري)</div>
+    <input type="file" id="otherFile" accept="video/*">
+    <div class="hint">فيديو ثانوي للتبديل أثناء البث.</div>
+    <div id="otherInfo" class="hint" style="display:none;"></div>
+  </div>
+
+  <!-- ============ 9 ============ -->
+  <div class="step">
+    <div class="step-title"><span class="num">9</span> الموسيقى الخلفية (اختياري)</div>
+    <input type="file" id="musicFile" accept="audio/*">
+    <div class="hint">ارفع موسيقى واضغط «🎵 تشغيل الموسيقى» أثناء التسجيل.</div>
+    <div id="musicInfo" class="hint" style="display:none;"></div>
+    <div id="musicVolBox" style="display:none; margin-top:10px;">
+      <label style="display:flex; justify-content:space-between; align-items:center;">
+        <span>🔊 مستوى صوت الموسيقى</span>
+        <span id="musicVolVal" style="color:#d8b4ff; font-weight:900;">100%</span>
+      </label>
+      <input type="range" id="musicVol" min="0" max="200" value="100" step="5" style="margin-top:8px;">
+    </div>
+  </div>
+
+  <!-- ============ 10 ============ -->
+  <div class="step">
+    <div class="step-title"><span class="num">10</span> التسجيل والتحكم</div>
+
+    <button class="big-btn btn-green" id="btnStart" disabled>
+      ▶️ ابدأ التسجيل
+    </button>
+
+    <!-- أزرار التحكم الرئيسية أثناء التسجيل -->
+    <div id="recordingControls" style="display:none; margin-top:8px;">
+      
+      <!-- صف الإيقاف/الاستئناف - الأهم -->
+      <div class="btn-row" style="margin-bottom:8px;">
+        <button class="big-btn btn-yellow" id="btnPause" style="margin-top:0; display:none;">
+          ⏸️ إيقاف مؤقت
+        </button>
+        <button class="big-btn btn-green" id="btnResume" style="margin-top:0; display:none;">
+          ▶️ استئناف التسجيل
+        </button>
+      </div>
+
+      <!-- صف أزرار إضافية -->
+      <div class="btn-row" id="switchRow" style="display:none; margin-bottom:8px;">
+        <button class="big-btn btn-orange" id="btnSwitch" style="display:none; margin-top:0;">
+          🎬 بث الفيديو البديل
+        </button>
+        <button class="big-btn btn-purple" id="btnMusic" style="display:none; margin-top:0;">
+          🎵 تشغيل الموسيقى
+        </button>
+      </div>
+
+      <!-- زر الفيديو المرجعي -->
+      <button class="big-btn ref-broadcast-btn" id="btnRefBroadcast" style="display:none;">
+        🎞️ تشغيل الفيديو المرجعي
+      </button>
+
+      <div class="music-indicator paused" id="musicInd" style="display:none;">
+        <div class="bars"><span></span><span></span><span></span><span></span></div>
+        <span id="musicIndText">الموسيقى متوقفة</span>
+      </div>
+    </div>
+
+    <!-- زر الإنهاء النهائي -->
+    <button class="big-btn btn-red" id="btnStop" disabled style="display:none;">
+      ⏹️ إنهاء التسجيل نهائياً
+    </button>
+
+    <div class="timer" id="timer">00:00</div>
+    <div class="pause-timer" id="pauseTimer">
+      <span class="icon">⏸️</span> إيقاف مؤقت: <span id="pauseTimerValue">00:00</span>
+    </div>
+
+    <div class="status" id="status">👆 اختر مصدر البث أولاً</div>
+
+    <button class="big-btn btn-blue" id="btnDownload" style="display:none;">
+      ⬇️ تحميل الفيديو
+    </button>
+  </div>
+
+</div>
+
+<!-- شريط التحكم السريع -->
+<div class="quick-bar" id="quickBar">
+  <div class="quick-bar-inner">
+    <button id="quickPause" style="background:#ffc107;color:#0a1a2e;">⏸️ إيقاف</button>
+    <button id="quickRef" style="background:#9c27b0;color:#fff;">🎞️ المرجعي</button>
+    <button id="quickStop" style="background:#ff4757;color:#fff;">⏹️ إنهاء</button>
+  </div>
+</div>
+
+<button class="scroll-top" id="scrollTop">↑</button>
+
+<script>
+// ============================================================
+//  استوديو الفيديو المباشر الذكي
+//  ✅ إيقاف مؤقت ذكي (Pause/Resume) مع شاشة انتقالية
+//  ✅ الفيديو المرجعي للتعليق
+//  ✅ معاينة ذكية + شريط سريع
+// ============================================================
+
+// ===== الحالة =====
+let videoFile = null, logoImg = null;
+let videoLoaded = false;
+let cameraReady = false;
+let otherLoaded = false;
+let musicLoaded = false;
+let refLoaded = false;
+
+let activeSource = 'file';
+let broadcast    = 'main';
+let musicOn      = false;
+let musicBoost   = 1.0;
+let currentFacing = 'user';
+let refMuted     = false;
+
+let newsMode = 'static';
+let tickerSpeedFactor = 1;
+let tickerX = 0;
+let tickerInited = false;
+
+let isRecording = false;
+let isPaused    = false;         // ✅ حالة الإيقاف المؤقت
+let mediaRecorder = null;
+let recordedChunks = [];
+let canvasStream = null;
+let cameraStream = null;
+
+let animFrame = null;
+let outputBlob = null;
+let outputExt = 'mp4';
+let pickMime = '';
+let newsSize = 3;
+let newsPos = 'bottom';
+let newsX = 0.5, newsY = 0.85;
+let logoX = 0.5, logoY = 0.15;
+let isDragging = null;
+let dragOff = { x: 0, y: 0 };
+
+// المؤقتات
+let timerInterval = null;
+let pauseTimerInterval = null;
+let recordStartTime = 0;
+let pauseStartTime = 0;
+let accumulatedPauseTime = 0;
+let lastFrameTime = 0;
+
+// المقاطع
+let segments = [];              // [{ start, end, duration }]
+let currentSegmentStart = 0;
+
+// خيارات الإيقاف المؤقت
+let optShowTransition = true;
+let optSkipTransition = false;
+let transitionText = '⏸️ جاري الانتقال إلى موقع آخر...';
+
+// ===== عناصر الفيديو =====
+const video = document.createElement('video');
+video.playsInline = true; video.muted = false; video.volume = 1; video.preload = 'auto';
+video.setAttribute('playsinline', ''); video.setAttribute('webkit-playsinline', '');
+
+const camVideo = document.createElement('video');
+camVideo.playsInline = true; camVideo.muted = true;
+camVideo.setAttribute('playsinline', ''); camVideo.setAttribute('webkit-playsinline', '');
+
+const otherVideo = document.createElement('video');
+otherVideo.playsInline = true;
+otherVideo.setAttribute('playsinline', ''); otherVideo.setAttribute('webkit-playsinline', '');
+
+const musicEl = document.createElement('audio');
+musicEl.loop = true; musicEl.preload = 'auto'; musicEl.crossOrigin = 'anonymous';
+
+[video, camVideo, otherVideo].forEach(v => {
+  v.style.cssText = 'position:fixed;left:-9999px;top:-9999px;width:2px;height:2px;opacity:0.01;pointer-events:none;';
+  document.body.appendChild(v);
+});
+
+// ===== عناصر الواجهة =====
+const $ = id => document.getElementById(id);
+const videoFileInp = $('videoFile');
+const otherFileInp = $('otherFile');
+const musicFileInp = $('musicFile');
+const refFileInp = $('refFile');
+const newsText = $('newsText');
+const newsModeButtons = $('newsModeButtons');
+const tickerSpeedBox = $('tickerSpeedBox');
+const tickerSpeedButtons = $('tickerSpeedButtons');
+const logoFileInp = $('logoFile');
+const logoPreview = $('logoPreview');
+const sizeButtons = $('sizeButtons');
+const posButtons = $('posButtons');
+const sourceButtons = $('sourceButtons');
+const fileBox = $('fileBox');
+const cameraBox = $('cameraBox');
+const camControls = $('camControls');
+const btnCamOn = $('btnCamOn');
+const btnCamOff = $('btnCamOff');
+const btnSwitchCam = $('btnSwitchCam');
+const otherInfo = $('otherInfo');
+const musicInfo = $('musicInfo');
+const canvas = $('previewCanvas');
+const ctx = canvas.getContext('2d');
+const btnStart = $('btnStart');
+const btnStop = $('btnStop');
+const btnPause = $('btnPause');
+const btnResume = $('btnResume');
+const btnSwitch = $('btnSwitch');
+const btnMusic = $('btnMusic');
+const btnDownload = $('btnDownload');
+const switchRow = $('switchRow');
+const recordingControls = $('recordingControls');
+const musicInd = $('musicInd');
+const musicIndText = $('musicIndText');
+const statusEl = $('status');
+const timerEl = $('timer');
+const pauseTimerEl = $('pauseTimer');
+const pauseTimerValue = $('pauseTimerValue');
+const musicVolSlider = $('musicVol');
+const musicVolVal = $('musicVolVal');
+const musicVolBox = $('musicVolBox');
+const previewWrap = $('previewWrap');
+
+// الفيديو المرجعي
+const refVideo = $('refVideo');
+const refBox = $('refBox');
+const refStatus = $('refStatus');
+const refVideoWrap = $('refVideoWrap');
+const refPlayBtn = $('refPlayBtn');
+const refPauseBtn = $('refPauseBtn');
+const refRestartBtn = $('refRestartBtn');
+const refBack5 = $('refBack5');
+const refFwd5 = $('refFwd5');
+const refMuteBtn = $('refMuteBtn');
+const refProgress = $('refProgress');
+const refProgressFill = $('refProgressFill');
+const refCurrent = $('refCurrent');
+const refDuration = $('refDuration');
+const btnRefBroadcast = $('btnRefBroadcast');
+
+// المؤشرات
+const indSource = $('indSource');
+const indMic = $('indMic');
+const indRef = $('indRef');
+const indMusic = $('indMusic');
+const indRec = $('indRec');
+const previewBadge = $('previewBadge');
+const previewBadgeText = $('previewBadgeText');
+const quickBar = $('quickBar');
+const quickPause = $('quickPause');
+const quickRef = $('quickRef');
+const quickStop = $('quickStop');
+const scrollTop = $('scrollTop');
+
+// خيارات الإيقاف
+const optShowTransitionInp = $('optShowTransition');
+const optSkipTransitionInp = $('optSkipTransition');
+const transitionTextBox = $('transitionTextBox');
+const transitionTextInp = $('transitionText');
+const segmentsLog = $('segmentsLog');
+
+refVideo.muted = false;
+refVideo.volume = 1;
+
+function setStatus(type, msg) {
+  statusEl.className = 'status ' + (type || '');
+  statusEl.innerHTML = msg;
+}
+function fmtTime(s) {
+  if (!isFinite(s) || s < 0) return '00:00';
+  const m = Math.floor(s / 60), sec = Math.floor(s % 60);
+  return String(m).padStart(2, '0') + ':' + String(sec).padStart(2, '0');
+}
+
+// ============================================================
+//  نظام الصوت المختلط
+// ============================================================
+let audioCtx = null, audioDest = null;
+let srcMainEl = null, srcOtherEl = null, srcMusicEl = null, srcRefEl = null, micNode = null;
+let gainMain = null, gainOther = null, gainMic = null, gainMusic = null, gainRef = null;
+let musicLimiter = null, refLimiter = null;
+
+function ensureAudio() {
+  if (audioCtx) return audioCtx;
+  const AC = window.AudioContext || window.webkitAudioContext;
+  if (!AC) return null;
+  try {
+    audioCtx = new AC();
+    audioDest = audioCtx.createMediaStreamDestination();
+    gainMain  = audioCtx.createGain();
+    gainOther = audioCtx.createGain();
+    gainMic   = audioCtx.createGain();
+    gainMusic = audioCtx.createGain();
+    gainRef   = audioCtx.createGain();
+
+    gainMain.gain.value = 1; gainOther.gain.value = 0;
+    gainMic.gain.value = 1; gainMusic.gain.value = 0; gainRef.gain.value = 0;
+    musicBoost = 1.0;
+
+    musicLimiter = audioCtx.createDynamicsCompressor();
+    musicLimiter.threshold.value = -3; musicLimiter.knee.value = 6;
+    musicLimiter.ratio.value = 20; musicLimiter.attack.value = 0.003; musicLimiter.release.value = 0.15;
+
+    refLimiter = audioCtx.createDynamicsCompressor();
+    refLimiter.threshold.value = -3; refLimiter.knee.value = 6;
+    refLimiter.ratio.value = 20; refLimiter.attack.value = 0.003; refLimiter.release.value = 0.15;
+
+    gainMusic.connect(musicLimiter); musicLimiter.connect(audioDest); musicLimiter.connect(audioCtx.destination);
+    gainRef.connect(refLimiter); refLimiter.connect(audioDest); refLimiter.connect(audioCtx.destination);
+    gainMain.connect(audioDest); gainOther.connect(audioDest); gainMic.connect(audioDest);
+    gainMain.connect(audioCtx.destination); gainOther.connect(audioCtx.destination);
+    return audioCtx;
+  } catch (e) { audioCtx = null; return null; }
+}
+
+function resumeAudio() {
+  const c = ensureAudio();
+  if (c && c.state === 'suspended') c.resume().catch(()=>{});
+  return c;
+}
+
+function connectMainEl() {
+  if (!ensureAudio() || srcMainEl) return;
+  try { srcMainEl = audioCtx.createMediaElementSource(video); srcMainEl.connect(gainMain); } catch (e) {}
+}
+function connectOtherEl() {
+  if (!ensureAudio() || srcOtherEl) return;
+  try { srcOtherEl = audioCtx.createMediaElementSource(otherVideo); srcOtherEl.connect(gainOther); } catch (e) {}
+}
+function connectMusicEl() {
+  if (!ensureAudio() || srcMusicEl) return;
+  try { srcMusicEl = audioCtx.createMediaElementSource(musicEl); srcMusicEl.connect(gainMusic); } catch (e) {}
+}
+function connectRefEl() {
+  if (!ensureAudio() || srcRefEl) return;
+  try { srcRefEl = audioCtx.createMediaElementSource(refVideo); srcRefEl.connect(gainRef); } catch (e) {}
+}
+function connectMic() {
+  if (!ensureAudio() || !cameraStream) return false;
+  const at = cameraStream.getAudioTracks();
+  if (!at.length) return false;
+  try {
+    if (micNode) { try { micNode.disconnect(); } catch (e) {} micNode = null; }
+    micNode = audioCtx.createMediaStreamSource(cameraStream);
+    micNode.connect(gainMic);
+    return true;
+  } catch (e) { return false; }
+}
+
+function applyMix() {
+  if (!audioCtx) return;
+  const t = audioCtx.currentTime;
+
+  // ✅ أثناء الإيقاف المؤقت: كتم كل شيء
+  const muted = isPaused;
+
+  const mainOn  = (!muted && broadcast === 'main')  ? 1 : 0;
+  const otherOn = (!muted && broadcast === 'other') ? 1 : 0;
+  const refOn   = (!muted && broadcast === 'ref' && !refMuted) ? 1 : 0;
+  const micOn   = (!muted && mainOn && !musicOn && !refOn) ? 1 : 0;
+  const musicVol = (!muted && mainOn && musicOn && !refOn) ? musicBoost : 0;
+
+  if (gainMain)  gainMain.gain.setTargetAtTime(mainOn, t, 0.05);
+  if (gainMic)   gainMic.gain.setTargetAtTime(micOn, t, 0.05);
+  if (gainOther) gainOther.gain.setTargetAtTime(otherOn, t, 0.05);
+  if (gainMusic) gainMusic.gain.setTargetAtTime(musicVol, t, 0.08);
+  if (gainRef)   gainRef.gain.setTargetAtTime(refOn, t, 0.05);
+}
+
+// ============================================================
+//  المؤشرات
+// ============================================================
+function updateIndicators() {
+  indSource.classList.toggle('on', (activeSource === 'file' && videoLoaded) || (activeSource === 'camera' && cameraReady));
+  indSource.textContent = (activeSource === 'file' && videoLoaded) ? '📹 الفيديو' : (cameraReady ? '🎥 الكاميرا' : '📹 المصدر');
+
+  indMic.classList.toggle('on', cameraReady && cameraStream && cameraStream.getAudioTracks().length > 0);
+  indMic.textContent = (cameraStream && cameraStream.getAudioTracks().length > 0) ? '🎤 الميكروفون' : '🎤 مكتوم';
+
+  indRef.classList.toggle('ref-on', refLoaded);
+  indRef.textContent = refLoaded ? '🎞️ المرجعي جاهز' : '🎞️ المرجعي';
+
+  indMusic.classList.toggle('ref-on', musicLoaded && musicOn);
+  indMusic.textContent = musicOn ? '🎵 يعمل' : '🎵 الموسيقى';
+
+  // مؤشر التسجيل
+  if (isPaused) {
+    indRec.classList.remove('on');
+    indRec.classList.add('paused');
+    indRec.textContent = '⏸️ إيقاف مؤقت';
+  } else if (isRecording) {
+    indRec.classList.add('on');
+    indRec.classList.remove('paused');
+    indRec.textContent = '🔴 يسجل';
+  } else {
+    indRec.classList.remove('on', 'paused');
+    indRec.textContent = '🔴 التسجيل';
+  }
+}
+
+function updatePreviewBadge() {
+  if (!isRecording && !isPaused) { previewBadge.classList.remove('show'); return; }
+  previewBadge.classList.add('show');
+
+  if (isPaused) {
+    previewBadge.classList.add('paused');
+    previewBadgeText.textContent = '⏸️ إيقاف مؤقت — جاري الانتقال';
+  } else {
+    previewBadge.classList.remove('paused');
+    if (broadcast === 'ref') previewBadgeText.textContent = '🎞️ الفيديو المرجعي';
+    else if (broadcast === 'other') previewBadgeText.textContent = '🎬 فيديو بديل';
+    else if (musicOn) previewBadgeText.textContent = '🎵 موسيقى';
+    else previewBadgeText.textContent = '🔴 تسجيل مباشر';
+  }
+}
+
+// ============================================================
+//  اختيار مصدر الفيديو
+// ============================================================
+sourceButtons.addEventListener('click', e => {
+  const btn = e.target.closest('button');
+  if (!btn || isRecording || isPaused) return;
+  sourceButtons.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  activeSource = btn.dataset.src;
+  fileBox.style.display   = (activeSource === 'file')   ? 'block' : 'none';
+  cameraBox.style.display = (activeSource === 'camera') ? 'block' : 'none';
+  resizeCanvasForSource();
+  refreshStartBtn();
+  redraw(0);
+  updateIndicators();
+});
+
+function resizeCanvasForSource() {
+  let w = 640, h = 360;
+  if (activeSource === 'file' && videoLoaded && video.videoWidth) {
+    w = video.videoWidth; h = video.videoHeight;
+  } else if (activeSource === 'camera' && cameraReady && camVideo.videoWidth) {
+    w = camVideo.videoWidth; h = camVideo.videoHeight;
+  }
+  w -= w % 2; h -= h % 2;
+  if (w > 0 && h > 0) { canvas.width = w; canvas.height = h; }
+}
+
+function refreshStartBtn() {
+  const ready = (activeSource === 'file') ? videoLoaded : cameraReady;
+  btnStart.disabled = !ready || isRecording || isPaused;
+}
+
+// ============================================================
+//  رفع الفيديو الرئيسي
+// ============================================================
+videoFileInp.addEventListener('change', e => {
+  videoFile = e.target.files[0];
+  if (!videoFile) return;
+  try { video.src = URL.createObjectURL(videoFile); video.load(); }
+  catch (err) { setStatus('err', '⚠️ خطأ'); return; }
+  video.onloadedmetadata = () => {
+    videoLoaded = true; video.currentTime = 0;
+    if (activeSource === 'file') resizeCanvasForSource();
+    refreshStartBtn(); redraw(0); updateIndicators();
+    setStatus('ok', '✅ الفيديو جاهز!');
+  };
+  video.onerror = () => setStatus('err', '⚠️ خطأ في صيغة الفيديو');
+});
+
+// ============================================================
+//  الكاميرا
+// ============================================================
+async function startCameraStream(facing) {
+  if (cameraStream) {
+    try { cameraStream.getTracks().forEach(t => t.stop()); } catch (e) {}
+    cameraStream = null;
+  }
+  const constraints = {
+    video: { facingMode: { ideal: facing }, width: { ideal: 1280 }, height: { ideal: 720 } },
+    audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
+  };
+  cameraStream = await navigator.mediaDevices.getUserMedia(constraints);
+  camVideo.srcObject = cameraStream;
+  camVideo.muted = true;
+  await camVideo.play();
+  if (!camVideo.videoWidth) await new Promise(res => { camVideo.onloadedmetadata = res; });
+  currentFacing = facing;
+}
+
+btnCamOn.addEventListener('click', async function () {
+  try {
+    setStatus('busy', '⏳ جاري تشغيل الكاميرا...');
+    await startCameraStream('user');
+    cameraReady = true;
+    resizeCanvasForSource();
+    resumeAudio(); connectMic(); applyMix();
+    btnCamOn.style.display = 'none';
+    camControls.style.display = 'grid';
+    refreshStartBtn(); redraw(0); updateIndicators();
+    const hasMic = cameraStream.getAudioTracks().length > 0;
+    setStatus('ok', '✅ الكاميرا جاهزة' + (hasMic ? ' مع الميكروفون 🎤' : ''));
+  } catch (e) {
+    setStatus('err', '⚠️ تعذر تشغيل الكاميرا: ' + (e.message || e));
+  }
+});
+
+btnSwitchCam.addEventListener('click', async function () {
+  if (!cameraReady) return;
+  const newFacing = (currentFacing === 'user') ? 'environment' : 'user';
+  btnSwitchCam.disabled = true;
+  const oldText = btnSwitchCam.textContent;
+  btnSwitchCam.textContent = '⏳ جاري التبديل...';
+  try {
+    await startCameraStream(newFacing);
+    if (audioCtx) { connectMic(); applyMix(); }
+    resizeCanvasForSource(); redraw(0);
+    setStatus('ok', '✅ تم التبديل إلى الكاميرا ' + (newFacing === 'user' ? 'الأمامية' : 'الخلفية'));
+  } catch (e) {
+    setStatus('err', '⚠️ تعذر تبديل الكاميرا: ' + (e.message || e));
+  } finally {
+    btnSwitchCam.disabled = false;
+    btnSwitchCam.textContent = oldText;
+  }
+});
+
+btnCamOff.addEventListener('click', function () {
+  if (isRecording || isPaused) return;
+  stopCamera();
+  setStatus('', '👆 اضغط «تشغيل الكاميرا» من جديد');
+});
+
+function stopCamera() {
+  try { if (cameraStream) cameraStream.getTracks().forEach(t => t.stop()); } catch (e) {}
+  cameraStream = null; cameraReady = false; camVideo.srcObject = null;
+  btnCamOn.style.display = 'flex'; camControls.style.display = 'none';
+  refreshStartBtn(); redraw(0); updateIndicators();
+}
+
+// ============================================================
+//  الفيديو البديل
+// ============================================================
+otherFileInp.addEventListener('change', e => {
+  const f = e.target.files[0];
+  if (!f) return;
+  otherLoaded = false;
+  otherVideo.src = URL.createObjectURL(f);
+  otherVideo.load();
+  otherVideo.onloadedmetadata = () => {
+    otherLoaded = true;
+    otherInfo.style.display = 'block';
+    otherInfo.innerHTML = '✅ تم تحميل الفيديو البديل — المدة: <b style="color:#00FF00;">' + fmtTime(otherVideo.duration) + '</b>';
+    if (audioCtx) { connectOtherEl(); applyMix(); }
+  };
+});
+
+otherVideo.addEventListener('ended', () => {
+  if (isRecording && !isPaused && broadcast === 'other') switchBackToMain();
+});
+
+// ============================================================
+//  الموسيقى
+// ============================================================
+musicFileInp.addEventListener('change', e => {
+  const f = e.target.files[0];
+  if (!f) return;
+  musicLoaded = false;
+  musicEl.src = URL.createObjectURL(f);
+  musicEl.load();
+  musicVolBox.style.display = 'block';
+  musicEl.onloadedmetadata = () => {
+    musicLoaded = true;
+    musicInfo.style.display = 'block';
+    musicInfo.innerHTML = '✅ تم تحميل الموسيقى — المدة: <b style="color:#d8b4ff;">' + fmtTime(musicEl.duration) + '</b>';
+    if (audioCtx) { connectMusicEl(); applyMix(); }
+    updateIndicators();
+  };
+});
+
+musicVolSlider.addEventListener('input', () => {
+  musicBoost = parseInt(musicVolSlider.value, 10) / 100;
+  musicVolVal.textContent = musicVolSlider.value + '%';
+  if (audioCtx && musicOn && gainMusic) {
+    gainMusic.gain.setTargetAtTime(musicBoost, audioCtx.currentTime, 0.05);
+  }
+});
+
+btnMusic.addEventListener('click', function () {
+  if (!isRecording || isPaused || !musicLoaded) return;
+  if (!musicOn) {
+    musicOn = true;
+    if (broadcast === 'ref') stopRefBroadcast();
+    try { musicEl.currentTime = 0; musicEl.play().catch(()=>{}); } catch (e) {}
+    applyMix(); updateMusicUI();
+    setStatus('busy', '<span class="live-dot"></span> 🎵 البث الآن للموسيقى');
+  } else {
+    musicOn = false;
+    try { musicEl.pause(); } catch (e) {}
+    applyMix(); updateMusicUI();
+    if (isRecording && !isPaused) setStatus('busy', '🔴 جاري التسجيل — الصوت من الميكروفون 🎤');
+  }
+  updatePreviewBadge(); updateIndicators();
+});
+
+function updateMusicUI() {
+  if (musicOn) {
+    btnMusic.textContent = '🎤 العودة للكلام';
+    btnMusic.classList.remove('btn-purple'); btnMusic.classList.add('btn-pink');
+    musicInd.classList.remove('paused');
+    musicIndText.textContent = '🎵 الموسيقى تعمل — الميكروفون مكتوم';
+  } else {
+    btnMusic.textContent = '🎵 تشغيل الموسيقى';
+    btnMusic.classList.remove('btn-pink'); btnMusic.classList.add('btn-purple');
+    musicInd.classList.add('paused');
+    musicIndText.textContent = 'الموسيقى متوقفة';
+  }
+}
+
+// ============================================================
+//  الشعار
+// ============================================================
+logoFileInp.addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const img = new Image();
+  img.onload = () => {
+    logoImg = img;
+    logoPreview.src = img.src;
+    logoPreview.classList.add('visible');
+    const info = logoPreview.parentElement.querySelector('.info');
+    if (info) info.innerHTML = '<b style="color:#00FF00;">تم اختيار الشعار ✅</b>';
+    redraw(0);
+  };
+  img.src = URL.createObjectURL(file);
+});
+
+// ============================================================
+//  نمط الخبر / الحجم / الموضع
+// ============================================================
+newsModeButtons.addEventListener('click', e => {
+  const btn = e.target.closest('button');
+  if (!btn) return;
+  newsModeButtons.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  newsMode = btn.dataset.mode;
+  tickerSpeedBox.style.display = (newsMode === 'ticker') ? 'block' : 'none';
+  tickerInited = false; redraw(0);
+});
+
+tickerSpeedButtons.addEventListener('click', e => {
+  const btn = e.target.closest('button');
+  if (!btn) return;
+  tickerSpeedButtons.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  tickerSpeedFactor = parseFloat(btn.dataset.speed);
+});
+
+sizeButtons.addEventListener('click', e => {
+  const btn = e.target.closest('button');
+  if (!btn) return;
+  sizeButtons.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  newsSize = parseInt(btn.dataset.size); redraw(0);
+});
+
+const POS_MAP = {
+  top: { x: 0.5, y: 0.15 }, middle: { x: 0.5, y: 0.5 },
+  bottom: { x: 0.5, y: 0.85 }, bottomleft: { x: 0.2, y: 0.85 },
+  bottomright: { x: 0.8, y: 0.85 }, center: { x: 0.5, y: 0.5 }
+};
+posButtons.addEventListener('click', e => {
+  const btn = e.target.closest('button');
+  if (!btn) return;
+  posButtons.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  newsPos = btn.dataset.pos;
+  const p = POS_MAP[newsPos];
+  newsX = p.x; newsY = p.y; redraw(0);
+});
+
+// ============================================================
+//  خيارات الإيقاف المؤقت
+// ============================================================
+optShowTransitionInp.addEventListener('change', () => {
+  optShowTransition = optShowTransitionInp.checked;
+  transitionTextBox.style.display = optShowTransition ? 'block' : 'none';
+});
+optSkipTransitionInp.addEventListener('change', () => {
+  optSkipTransition = optSkipTransitionInp.checked;
+});
+transitionTextInp.addEventListener('input', () => {
+  transitionText = transitionTextInp.value;
+});
+
+// ============================================================
+//  الرسم
+// ============================================================
+if (!CanvasRenderingContext2D.prototype.roundRect) {
+  CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
+    this.beginPath();
+    this.moveTo(x + r, y);
+    this.lineTo(x + w - r, y);
+    this.quadraticCurveTo(x + w, y, x + w, y + r);
+    this.lineTo(x + w, y + h - r);
+    this.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    this.lineTo(x + r, y + h);
+    this.quadraticCurveTo(x, y + h, x, y + h - r);
+    this.lineTo(x, y + r);
+    this.quadraticCurveTo(x, y, x + r, y);
+    this.closePath();
+    return this;
+  };
+}
+
+function drawCover(el, W, H) {
+  const vw = el.videoWidth, vh = el.videoHeight;
+  if (!vw || !vh) return false;
+  const va = vw / vh, ca = W / H;
+  let dw, dh, dx, dy;
+  if (va > ca) { dw = W; dh = W / va; dx = 0; dy = (H - dh) / 2; }
+  else         { dh = H; dw = H * va; dx = (W - dw) / 2; dy = 0; }
+  try { ctx.drawImage(el, dx, dy, dw, dh); return true; }
+  catch (e) { return false; }
+}
+
+function drawPip(el, W, H) {
+  if (!el.videoWidth) return;
+  const pw = W * 0.24;
+  const ph = pw * (el.videoHeight / el.videoWidth);
+  const px = W - pw - W * 0.025;
+  const py = H * 0.03;
+  ctx.save();
+  ctx.beginPath(); ctx.roundRect(px, py, pw, ph, 14); ctx.clip();
+  ctx.drawImage(el, px, py, pw, ph);
+  ctx.restore();
+  ctx.save();
+  ctx.strokeStyle = '#00FF00'; ctx.lineWidth = 3;
+  ctx.beginPath(); ctx.roundRect(px, py, pw, ph, 14); ctx.stroke();
+  ctx.restore();
+}
+
+function drawStaticNews(W, H) {
+  const news = newsText.value.trim();
+  if (!news) { canvas._newsBounds = null; return; }
+  const sizes = { 2: 0.035, 3: 0.05, 4: 0.07, 5: 0.095 };
+  const fs = W * (sizes[newsSize] || 0.05);
+  ctx.font = `900 ${fs}px Cairo, Tahoma, sans-serif`;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+
+  const maxWidth = W * 0.9;
+  const words = news.split(' ');
+  const lines = []; let line = '';
+  for (const w of words) {
+    const test = line ? line + ' ' + w : w;
+    if (ctx.measureText(test).width > maxWidth && line) { lines.push(line); line = w; }
+    else line = test;
+  }
+  if (line) lines.push(line);
+
+  const lineH = fs * 1.3;
+  const totalH = lines.length * lineH;
+  const boxX = newsX * W, boxY = newsY * H;
+  const startY = boxY - totalH / 2 + lineH / 2;
+
+  let maxLineW = 0;
+  for (const l of lines) maxLineW = Math.max(maxLineW, ctx.measureText(l).width);
+
+  const padX = 20, padY = 12;
+  const bx = boxX - maxLineW / 2 - padX;
+  const by = boxY - totalH / 2 - padY;
+  const bw = maxLineW + padX * 2;
+  const bh = totalH + padY * 2;
+
+  ctx.fillStyle = 'rgba(0,0,0,0.7)';
+  ctx.beginPath(); ctx.roundRect(bx, by, bw, bh, 12); ctx.fill();
+  ctx.strokeStyle = '#00FF00'; ctx.lineWidth = 3; ctx.stroke();
+
+  ctx.fillStyle = '#00FF00';
+  ctx.shadowBlur = 12; ctx.shadowColor = '#00FF00';
+  lines.forEach((l, i) => ctx.fillText(l, boxX, startY + i * lineH));
+  ctx.shadowBlur = 0;
+
+  canvas._newsBounds = { x: bx, y: by, w: bw, h: bh };
+}
+
+function drawTickerNews(W, H, dt) {
+  const news = newsText.value.trim();
+  if (!news) { tickerInited = false; return; }
+  const sizes = { 2: 0.045, 3: 0.055, 4: 0.075, 5: 0.095 };
+  const fs = W * (sizes[newsSize] || 0.055);
+  ctx.font = `900 ${fs}px Cairo, Tahoma, sans-serif`;
+  ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+
+  const textW = ctx.measureText(news).width;
+  if (!tickerInited) { tickerX = W + 30; tickerInited = true; }
+
+  const y = newsY * H;
+  const bgH = fs * 1.8;
+  const top = y - bgH / 2;
+
+  ctx.fillStyle = 'rgba(0,0,0,0.75)';
+  ctx.fillRect(0, top, W, bgH);
+  ctx.strokeStyle = '#00FF00'; ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(0, top); ctx.lineTo(W, top);
+  ctx.moveTo(0, top + bgH); ctx.lineTo(W, top + bgH);
+  ctx.stroke();
+
+  tickerX -= (W * 0.25 * tickerSpeedFactor) * (dt || 0.033);
+  if (tickerX < -textW - 30) tickerX = W + 30;
+
+  ctx.fillStyle = '#00FF00';
+  ctx.shadowBlur = 10; ctx.shadowColor = '#00FF00';
+  ctx.fillText(news, tickerX, y);
+  ctx.shadowBlur = 0;
+  canvas._newsBounds = null;
+}
+
+function drawTickerOrNews(W, H, dt) {
+  if (newsMode === 'ticker') drawTickerNews(W, H, dt || 0);
+  else drawStaticNews(W, H);
+}
+
+// ✅ الشاشة الانتقالية الذكية
+function drawTransitionScreen(W, H) {
+  // خلفية متدرجة
+  const grad = ctx.createLinearGradient(0, 0, W, H);
+  grad.addColorStop(0, '#0a1a2e');
+  grad.addColorStop(0.5, '#1a0f2e');
+  grad.addColorStop(1, '#0a1a2e');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, H);
+
+  // إطار مضيء
+  const pulse = (Math.sin(Date.now() / 400) + 1) / 2;
+  ctx.strokeStyle = `rgba(255, 193, 7, ${0.3 + pulse * 0.4})`;
+  ctx.lineWidth = 4;
+  ctx.strokeRect(20, 20, W - 40, H - 40);
+
+  // الشعار إن وجد
+  if (logoImg && logoImg.width) {
+    const lw = W * 0.15;
+    const lh = (logoImg.height / logoImg.width) * lw;
+    const lx = W / 2 - lw / 2;
+    const ly = H * 0.25 - lh / 2;
+    ctx.save();
+    ctx.globalAlpha = 0.9;
+    ctx.drawImage(logoImg, lx, ly, lw, lh);
+    ctx.restore();
+  }
+
+  // النص الرئيسي
+  const fs = W * 0.05;
+  ctx.font = `900 ${fs}px Cairo, Tahoma, sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillStyle = '#ffc107';
+  ctx.shadowBlur = 20;
+  ctx.shadowColor = '#ffc107';
+  const displayText = transitionText || '⏸️ جاري الانتقال...';
+  ctx.fillText(displayText, W / 2, H * 0.5);
+  ctx.shadowBlur = 0;
+
+  // وقت الإيقاف
+  const pauseSec = Math.floor((Date.now() - pauseStartTime) / 1000);
+  const fs2 = W * 0.03;
+  ctx.font = `700 ${fs2}px Cairo, Tahoma, sans-serif`;
+  ctx.fillStyle = 'rgba(255,255,255,0.5)';
+  ctx.fillText('مدة الإيقاف: ' + fmtTime(pauseSec), W / 2, H * 0.7);
+
+  // نقاط متحركة
+  const dots = '.'.repeat((Math.floor(Date.now() / 400) % 4));
+  ctx.font = `900 ${fs * 0.7}px Cairo, sans-serif`;
+  ctx.fillStyle = 'rgba(255, 193, 7, 0.7)';
+  ctx.fillText(dots, W / 2, H * 0.85);
+}
+
+function redraw(dt) {
+  const W = canvas.width, H = canvas.height;
+  if (!W || !H) return;
+
+  ctx.fillStyle = '#000';
+  ctx.fillRect(0, 0, W, H);
+
+  // ✅ إذا كنا في وضع الإيقاف المؤقت
+  if (isPaused && isRecording) {
+    if (optShowTransition && !optSkipTransition) {
+      drawTransitionScreen(W, H);
+    } else {
+      // انتقال سلس: نعرض آخر إطار أو المصدر
+      if (activeSource === 'camera') {
+        if (camVideo.readyState >= 2) drawCover(camVideo, W, H);
+      } else {
+        if (videoLoaded && video.readyState >= 2) drawCover(video, W, H);
+      }
+      // نص صغير في الأسفل
+      ctx.fillStyle = 'rgba(255, 193, 7, 0.9)';
+      ctx.font = `700 ${W * 0.03}px Cairo, sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'bottom';
+      ctx.fillText('⏸️ إيقاف مؤقت...', W / 2, H - 20);
+    }
+    // لا نرسم الخبر أثناء الإيقاف المؤقت
+    canvas._newsBounds = null;
+    canvas._logoBounds = null;
+    return;
+  }
+
+  let drew = false;
+
+  // أولوية العرض: المرجعي > البديل > المصدر
+  if (broadcast === 'ref' && refLoaded && refVideo.readyState >= 2) {
+    drew = drawCover(refVideo, W, H);
+  } else if (broadcast === 'other' && otherLoaded && otherVideo.readyState >= 2) {
+    drew = drawCover(otherVideo, W, H);
+    if (activeSource === 'camera' && camVideo.readyState >= 2) drawPip(camVideo, W, H);
+  } else {
+    if (activeSource === 'camera') {
+      if (camVideo.readyState >= 2) drew = drawCover(camVideo, W, H);
+    } else {
+      if (videoLoaded && video.readyState >= 2) drew = drawCover(video, W, H);
+    }
+  }
+
+  if (!drew) {
+    ctx.fillStyle = '#5a7a9a';
+    ctx.font = `${Math.min(20, W * 0.03)}px Cairo, sans-serif`;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(
+      activeSource === 'camera' ? '🎥 اضغط «تشغيل الكاميرا»' : '🎥 اختر فيديو من الخطوة 1',
+      W / 2, H / 2
+    );
+  }
+
+  if (logoImg && logoImg.width) {
+    const lw = W * 0.18;
+    const lh = (logoImg.height / logoImg.width) * lw;
+    let lx = logoX * W - lw / 2;
+    let ly = logoY * H - lh / 2;
+    lx = Math.max(0, Math.min(W - lw, lx));
+    ly = Math.max(0, Math.min(H - lh, ly));
+    ctx.save();
+    ctx.shadowBlur = 10; ctx.shadowColor = '#00FF0080';
+    ctx.drawImage(logoImg, lx, ly, lw, lh);
+    ctx.restore();
+    canvas._logoBounds = { x: lx, y: ly, w: lw, h: lh };
+  } else {
+    canvas._logoBounds = null;
+  }
+
+  drawTickerOrNews(W, H, dt);
+}
+
+newsText.addEventListener('input', () => { tickerInited = false; redraw(0); });
+
+// ============================================================
+//  السحب
+// ============================================================
+function getPt(e) {
+  const r = canvas.getBoundingClientRect();
+  const sx = canvas.width / r.width, sy = canvas.height / r.height;
+  const cx = (e.touches ? e.touches[0].clientX : e.clientX);
+  const cy = (e.touches ? e.touches[0].clientY : e.clientY);
+  return { x: (cx - r.left) * sx, y: (cy - r.top) * sy };
+}
+function inside(pt, b) {
+  return b && pt.x >= b.x && pt.x <= b.x + b.w && pt.y >= b.y && pt.y <= b.y + b.h;
+}
+function down(e) {
+  if (isRecording || isPaused) return;
+  const pt = getPt(e);
+  if (newsMode === 'static' && inside(pt, canvas._newsBounds)) {
+    isDragging = 'news';
+    dragOff.x = pt.x - canvas._newsBounds.x;
+    dragOff.y = pt.y - canvas._newsBounds.y;
+    if (e.cancelable) e.preventDefault();
+  } else if (inside(pt, canvas._logoBounds)) {
+    isDragging = 'logo';
+    dragOff.x = pt.x - canvas._logoBounds.x;
+    dragOff.y = pt.y - canvas._logoBounds.y;
+    if (e.cancelable) e.preventDefault();
+  }
+}
+function move(e) {
+  if (!isDragging) return;
+  const pt = getPt(e);
+  const W = canvas.width, H = canvas.height;
+  if (isDragging === 'news') {
+    const b = canvas._newsBounds;
+    newsX = Math.max(0.1, Math.min(0.9, (pt.x - dragOff.x + b.w / 2) / W));
+    newsY = Math.max(0.1, Math.min(0.9, (pt.y - dragOff.y + b.h / 2) / H));
+  } else if (isDragging === 'logo') {
+    const b = canvas._logoBounds;
+    logoX = Math.max(0.1, Math.min(0.9, (pt.x - dragOff.x + b.w / 2) / W));
+    logoY = Math.max(0.1, Math.min(0.9, (pt.y - dragOff.y + b.h / 2) / H));
+  }
+  if (e.cancelable) e.preventDefault();
+  redraw(0);
+}
+function up() { isDragging = null; }
+
+canvas.addEventListener('mousedown', down);
+canvas.addEventListener('mousemove', move);
+canvas.addEventListener('mouseup', up);
+canvas.addEventListener('mouseleave', up);
+canvas.addEventListener('touchstart', down, { passive: false });
+canvas.addEventListener('touchmove', move, { passive: false });
+canvas.addEventListener('touchend', up);
+canvas.addEventListener('touchcancel', up);
+
+// ============================================================
+//  حلقة الرسم
+// ============================================================
+function renderLoop(ts) {
+  const dt = lastFrameTime ? Math.min(0.1, (ts - lastFrameTime) / 1000) : 0.033;
+  lastFrameTime = ts;
+  const needsAnim = (newsMode === 'ticker' && newsText.value.trim()) || 
+                    isRecording || isPaused || broadcast === 'ref';
+  if (needsAnim) redraw(dt);
+  animFrame = requestAnimationFrame(renderLoop);
+}
+
+// ============================================================
+//  المؤقتات
+// ============================================================
+function startTimer() {
+  recordStartTime = Date.now();
+  accumulatedPauseTime = 0;
+  timerEl.classList.add('show');
+  timerEl.classList.remove('paused');
+  timerEl.textContent = '00:00';
+  timerInterval = setInterval(() => {
+    const elapsed = Math.floor((Date.now() - recordStartTime - accumulatedPauseTime) / 1000);
+    timerEl.textContent = fmtTime(elapsed);
+  }, 250);
+}
+function stopTimer() {
+  if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+  timerEl.classList.remove('show', 'paused');
+}
+
+// ✅ مؤقت الإيقاف المؤقت
+function startPauseTimer() {
+  pauseStartTime = Date.now();
+  pauseTimerEl.classList.add('show');
+  pauseTimerValue.textContent = '00:00';
+  pauseTimerInterval = setInterval(() => {
+    const elapsed = Math.floor((Date.now() - pauseStartTime) / 1000);
+    pauseTimerValue.textContent = fmtTime(elapsed);
+  }, 250);
+}
+function stopPauseTimer() {
+  if (pauseTimerInterval) { clearInterval(pauseTimerInterval); pauseTimerInterval = null; }
+  pauseTimerEl.classList.remove('show');
+}
+
+// ============================================================
+//  سجل المقاطع
+// ============================================================
+function updateSegmentsLog() {
+  if (segments.length === 0) {
+    segmentsLog.innerHTML = '<div style="text-align:center; color:#5a7a9a; padding:10px; font-size:0.8rem;">لم يبدأ التسجيل بعد...</div>';
+    return;
+  }
+  let html = '';
+  segments.forEach((seg, i) => {
+    const isLast = i === segments.length - 1;
+    const label = isLast && isRecording && !isPaused ? '🔴 يسجل الآن' : '✅ مكتمل';
+    html += `
+      <div class="segment-item">
+        <span class="seg-num">مقطع ${i + 1}</span>
+        <span>${fmtTime(seg.duration)}</span>
+        <span class="seg-time">${label}</span>
+      </div>
+    `;
+  });
+  segmentsLog.innerHTML = html;
+}
+
+// ============================================================
+//  الإيقاف المؤقت الذكي
+// ============================================================
+btnPause.addEventListener('click', togglePause);
+quickPause.addEventListener('click', togglePause);
+
+function togglePause() {
+  if (!isRecording) return;
+  if (isPaused) resumeRecording();
+  else pauseRecording();
+}
+
+function pauseRecording() {
+  if (!isRecording || isPaused) return;
+
+  isPaused = true;
+
+  // إنهاء المقطع الحالي
+  const segDuration = (Date.now() - currentSegmentStart) / 1000;
+  if (segDuration > 0.5) {
+    segments.push({ start: currentSegmentStart, end: Date.now(), duration: segDuration });
+  }
+
+  // إيقاف المصادر الصوتية/المرئية
+  try { video.pause(); } catch (e) {}
+  try { otherVideo.pause(); } catch (e) {}
+  try { refVideo.pause(); } catch (e) {}
+  try { musicEl.pause(); } catch (e) {}
+
+  applyMix();
+
+  // تحديث الواجهة
+  btnPause.style.display = 'none';
+  btnResume.style.display = 'flex';
+
+  previewWrap.classList.remove('recording');
+  previewWrap.classList.add('paused');
+
+  quickBar.classList.add('paused');
+  quickPause.textContent = '▶️ استئناف';
+  quickPause.style.background = '#00FF00';
+
+  timerEl.classList.add('paused');
+
+  // بدء مؤقت الإيقاف
+  startPauseTimer();
+
+  updateIndicators();
+  updatePreviewBadge();
+  updateSegmentsLog();
+
+  setStatus('paused',
+    '⏸️ <b>إيقاف مؤقت</b> — انتقل لمكان آخر بحرية' +
+    '<br><span style="font-size:0.85rem;">اضغط «▶️ استئناف التسجيل» لمتابعة نفس الملف</span>' +
+    '<br><span style="font-size:0.75rem; color:#b8d0e8;">💡 لن يُفقد أي شيء، سنكمل من حيث توقفنا</span>'
+  );
+}
+
+function resumeRecording() {
+  if (!isRecording || !isPaused) return;
+
+  // حساب زمن الإيقاف
+  const pauseDuration = Date.now() - pauseStartTime;
+  accumulatedPauseTime += pauseDuration;
+
+  isPaused = false;
+
+  // بدء مقطع جديد
+  currentSegmentStart = Date.now();
+
+  // استئناف المصدر الأساسي
+  if (activeSource === 'file') {
+    video.play().catch(()=>{});
+  }
+  // (الكاميرا تعمل تلقائياً)
+
+  applyMix();
+
+  // تحديث الواجهة
+  btnPause.style.display = 'flex';
+  btnResume.style.display = 'none';
+
+  previewWrap.classList.remove('paused');
+  previewWrap.classList.add('recording');
+
+  quickBar.classList.remove('paused');
+  quickPause.textContent = '⏸️ إيقاف';
+  quickPause.style.background = '#ffc107';
+
+  timerEl.classList.remove('paused');
+
+  stopPauseTimer();
+  updateIndicators();
+  updatePreviewBadge();
+  updateSegmentsLog();
+
+  const pauseSec = Math.floor(pauseDuration / 1000);
+  setStatus('busy',
+    '🔴 <b>تم استئناف التسجيل</b> — نفس الملف يكمل' +
+    '<br><span style="font-size:0.85rem;">مدة الإيقاف كانت: ' + fmtTime(pauseSec) + '</span>'
+  );
+}
+
+// ============================================================
+//  التحكم بالفيديو المرجعي
+// ============================================================
+refFileInp.addEventListener('change', e => {
+  const f = e.target.files[0];
+  if (!f) return;
+  refLoaded = false;
+  refVideo.src = URL.createObjectURL(f);
+  refVideo.load();
+  refBox.style.display = 'block';
+  refVideoWrap.classList.add('show');
+  refStatus.textContent = '⏳ جاري التحميل...';
+  refVideo.onloadedmetadata = () => {
+    refLoaded = true;
+    refStatus.textContent = '✅ جاهز';
+    refStatus.classList.add('ready');
+    refDuration.textContent = fmtTime(refVideo.duration);
+    updateIndicators();
+    if (audioCtx) { connectRefEl(); applyMix(); }
+    setStatus('ok', '✅ تم تحميل الفيديو المرجعي!');
+  };
+  refVideo.onerror = () => {
+    refLoaded = false;
+    refStatus.textContent = '⚠️ خطأ';
+  };
+});
+
+refVideo.addEventListener('timeupdate', () => {
+  if (refVideo.duration) {
+    const pct = (refVideo.currentTime / refVideo.duration) * 100;
+    refProgressFill.style.width = pct + '%';
+    refCurrent.textContent = fmtTime(refVideo.currentTime);
+  }
+});
+
+refProgress.addEventListener('click', (e) => {
+  if (!refLoaded || !refVideo.duration) return;
+  const rect = refProgress.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const pct = Math.max(0, Math.min(1, x / rect.width));
+  refVideo.currentTime = pct * refVideo.duration;
+});
+
+refPlayBtn.addEventListener('click', () => {
+  if (!refLoaded) return;
+  refVideo.play().catch(()=>{});
+  refPlayBtn.classList.add('playing');
+  setTimeout(() => refPlayBtn.classList.remove('playing'), 300);
+});
+refPauseBtn.addEventListener('click', () => { if (refLoaded) refVideo.pause(); });
+refRestartBtn.addEventListener('click', () => {
+  if (!refLoaded) return;
+  refVideo.currentTime = 0;
+  refVideo.play().catch(()=>{});
+});
+refBack5.addEventListener('click', () => {
+  if (!refLoaded) return;
+  refVideo.currentTime = Math.max(0, refVideo.currentTime - 5);
+});
+refFwd5.addEventListener('click', () => {
+  if (!refLoaded) return;
+  refVideo.currentTime = Math.min(refVideo.duration, refVideo.currentTime + 5);
+});
+refMuteBtn.addEventListener('click', () => {
+  refMuted = !refMuted;
+  refVideo.muted = refMuted;
+  refMuteBtn.textContent = refMuted ? '🔊 تشغيل الصوت' : '🔇 كتم';
+  applyMix();
+});
+
+// ============================================================
+//  بث الفيديو المرجعي
+// ============================================================
+btnRefBroadcast.addEventListener('click', toggleRefBroadcast);
+quickRef.addEventListener('click', toggleRefBroadcast);
+
+function toggleRefBroadcast() {
+  if (!isRecording || isPaused || !refLoaded) return;
+
+  if (broadcast === 'ref') {
+    stopRefBroadcast();
+  } else {
+    broadcast = 'ref';
+    refMuted = false;
+    refVideo.muted = false;
+    refMuteBtn.textContent = '🔇 كتم';
+
+    try { video.pause(); } catch (e) {}
+    try { otherVideo.pause(); } catch (e) {}
+    try { musicEl.pause(); } catch (e) {}
+    musicOn = false;
+    updateMusicUI();
+
+    connectRefEl();
+    refVideo.currentTime = 0;
+    refVideo.play().catch(()=>{});
+    applyMix();
+
+    btnRefBroadcast.textContent = '🎤 العودة للتعليق';
+    btnRefBroadcast.classList.remove('ref-broadcast-btn');
+    btnRefBroadcast.classList.add('btn-green');
+    updatePreviewBadge();
+    updateIndicators();
+    setStatus('busy', '🎞️ البث الآن للفيديو المرجعي — اسمعوا معي 🎧');
+  }
+}
+
+function stopRefBroadcast() {
+  if (broadcast !== 'ref') return;
+  broadcast = 'main';
+  try { refVideo.pause(); } catch (e) {}
+  applyMix();
+
+  if (activeSource === 'file' && isRecording && !isPaused) {
+    video.play().catch(()=>{});
+  }
+
+  btnRefBroadcast.textContent = '🎞️ تشغيل الفيديو المرجعي';
+  btnRefBroadcast.classList.add('ref-broadcast-btn');
+  btnRefBroadcast.classList.remove('btn-green');
+  updatePreviewBadge();
+  updateIndicators();
+  if (isRecording && !isPaused) setStatus('busy', '🔴 جاري التسجيل — أنت على البث الآن 🎤');
+}
+
+refVideo.addEventListener('ended', () => {
+  if (isRecording && !isPaused && broadcast === 'ref') stopRefBroadcast();
+});
+
+// ============================================================
+//  الفيديو البديل
+// ============================================================
+btnSwitch.addEventListener('click', function () {
+  if (!isRecording || isPaused || !otherLoaded) return;
+
+  if (broadcast === 'main') {
+    broadcast = 'other';
+    try { if (activeSource === 'file') video.pause(); } catch (e) {}
+    try { refVideo.pause(); } catch (e) {}
+    try { musicEl.pause(); } catch (e) {}
+    musicOn = false;
+    updateMusicUI();
+
+    otherVideo.currentTime = 0;
+    otherVideo.play().catch(()=>{});
+    applyMix();
+    updateSwitchUI();
+    updatePreviewBadge();
+    setStatus('busy', '🎬 البث الآن للفيديو البديل');
+  } else {
+    switchBackToMain();
+  }
+});
+
+function switchBackToMain() {
+  broadcast = 'main';
+  try { otherVideo.pause(); } catch (e) {}
+  try { refVideo.pause(); } catch (e) {}
+  if (activeSource === 'file' && isRecording && !isPaused) {
+    video.play().catch(()=>{});
+  }
+  applyMix();
+  updateSwitchUI();
+  updatePreviewBadge();
+  if (isRecording && !isPaused) setStatus('busy', '🔴 جاري التسجيل — أنت على البث الآن 🎤');
+}
+
+function updateSwitchUI() {
+  if (broadcast === 'other') {
+    btnSwitch.textContent = '🎤 العودة للبث المباشر';
+    btnSwitch.classList.remove('btn-orange');
+    btnSwitch.classList.add('btn-green');
+  } else {
+    btnSwitch.textContent = '🎬 بث الفيديو البديل';
+    btnSwitch.classList.remove('btn-green');
+    btnSwitch.classList.add('btn-orange');
+  }
+}
+
+// ============================================================
+//  بدء التسجيل
+// ============================================================
+btnStart.addEventListener('click', function () {
+  const ready = (activeSource === 'file') ? videoLoaded : cameraReady;
+  if (!ready || isRecording || isPaused) return;
+
+  try {
+    resumeAudio();
+
+    if (activeSource === 'file') {
+      video.muted = false; video.volume = 1;
+      connectMainEl();
+    } else {
+      connectMic();
+    }
+    if (otherLoaded) connectOtherEl();
+    if (musicLoaded) connectMusicEl();
+    if (refLoaded) connectRefEl();
+
+    broadcast = 'main';
+    musicOn = false;
+    refMuted = false;
+    isPaused = false;
+    applyMix();
+    updateSwitchUI();
+    updateMusicUI();
+    updatePreviewBadge();
+
+    tickerInited = false;
+
+    canvasStream = canvas.captureStream(30);
+    if (!canvasStream || canvasStream.getVideoTracks().length === 0) {
+      throw new Error('تعذر التقاط صورة الفيديو');
+    }
+    const tracks = [];
+    canvasStream.getVideoTracks().forEach(t => tracks.push(t));
+
+    let audioAdded = false;
+    if (audioDest) {
+      const aTracks = audioDest.stream.getAudioTracks();
+      if (aTracks && aTracks.length > 0) {
+        aTracks.forEach(t => tracks.push(t));
+        audioAdded = true;
       }
     }
 
-    // ----- Persist UI -> state -----
-    function persist(){
-      state.businessName = businessNameEl.value;
-      state.businessDetails = businessDetailsEl.value;
-      state.client = clientsSelectEl.value || clientNameEl.value;
-      state.items = getRows();
-      state.taxPercent = Number(taxPercentEl.value) || 0;
-      state.currency = currencyEl.value || 'EGP';
-      state.paymentLink = paymentLinkEl.value || '';
-      state.template = tplSelect.value || 'classic';
-      saveState();
-      updatePaymentUI();
+    if (!audioAdded && activeSource === 'file') {
+      try {
+        const fn = video.captureStream || video.mozCaptureStream;
+        if (fn) {
+          const vs = fn.call(video);
+          const at = vs.getAudioTracks();
+          if (at && at.length > 0) { at.forEach(t => tracks.push(t)); audioAdded = true; }
+        }
+      } catch (e) {}
     }
 
-    // ----- Save / Load invoices -----
-    function readInvoices(){ try{ return JSON.parse(localStorage.getItem(INVOICES_KEY) || '[]'); }catch(e){return[];} }
-    function writeInvoices(list){ localStorage.setItem(INVOICES_KEY, JSON.stringify(list)); }
+    const fmt = pickBestMime(audioAdded);
+    pickMime = fmt.mime;
+    outputExt = fmt.ext;
 
-    function saveInvoice(){
-      persist();
-      const invoices = readInvoices();
-      // ensure invoice number - if empty create new
-      if(!invoiceNoEl.value || invoiceNoEl.value.trim() === '') invoiceNoEl.value = newInvoiceNumber();
-      const inv = {
-        id: Date.now(),
-        invoiceNo: invoiceNoEl.value,
-        invoiceDate: invoiceDateEl.value || new Date().toLocaleDateString('ar-EG'),
-        businessName: state.businessName,
-        businessDetails: state.businessDetails,
-        client: state.client,
-        items: state.items,
-        taxPercent: state.taxPercent,
-        currency: state.currency,
-        paymentLink: state.paymentLink,
-        logo: localStorage.getItem(LOGO_KEY) || null,
-        template: state.template
-      };
-      // if invoice with same invoiceNo exists, replace it (allow updating)
-      const existingIndex = invoices.findIndex(x => x.invoiceNo === inv.invoiceNo);
-      if(existingIndex >= 0) invoices[existingIndex] = inv;
-      else invoices.unshift(inv);
-      writeInvoices(invoices);
-      renderInvoicesList();
-      alert('تم حفظ الفاتورة');
+    const combined = new MediaStream(tracks);
+    const options = { videoBitsPerSecond: 5000000 };
+    if (pickMime) options.mimeType = pickMime;
+    if (audioAdded) options.audioBitsPerSecond = 128000;
+
+    mediaRecorder = new MediaRecorder(combined, options);
+    recordedChunks = [];
+    mediaRecorder.ondataavailable = ev => {
+      if (ev.data && ev.data.size > 0) recordedChunks.push(ev.data);
+    };
+    mediaRecorder.onerror = ev => console.error('MediaRecorder error:', ev);
+    mediaRecorder.onstop = () => finishRecording();
+
+    if (activeSource === 'file') video.currentTime = 0;
+    try { otherVideo.pause(); otherVideo.currentTime = 0; } catch (e) {}
+
+    mediaRecorder.start(500);
+    isRecording = true;
+    isPaused = false;
+
+    // سجل المقاطع: بدء المقطع الأول
+    segments = [];
+    currentSegmentStart = Date.now();
+
+    startTimer();
+
+    // تحديث الواجهة
+    btnStart.style.display = 'none';
+    recordingControls.style.display = 'block';
+    btnStop.style.display = 'flex';
+    btnStop.disabled = false;
+    btnDownload.style.display = 'none';
+    btnPause.style.display = 'flex';
+    btnResume.style.display = 'none';
+
+    previewWrap.classList.add('recording');
+
+    let showRow = false;
+    if (otherLoaded) { btnSwitch.style.display = 'flex'; showRow = true; updateSwitchUI(); }
+    else btnSwitch.style.display = 'none';
+
+    if (musicLoaded) {
+      btnMusic.style.display = 'flex';
+      musicInd.style.display = 'flex';
+      showRow = true;
+      updateMusicUI();
+    } else {
+      btnMusic.style.display = 'none';
+      musicInd.style.display = 'none';
+    }
+    switchRow.style.display = showRow ? 'grid' : 'none';
+
+    if (refLoaded) {
+      btnRefBroadcast.style.display = 'flex';
+      btnRefBroadcast.textContent = '🎞️ تشغيل الفيديو المرجعي';
+      btnRefBroadcast.classList.add('ref-broadcast-btn');
+      btnRefBroadcast.classList.remove('btn-green');
+    } else {
+      btnRefBroadcast.style.display = 'none';
     }
 
-    function renderInvoicesList(){
-      const invoices = readInvoices();
-      savedInvoicesList.innerHTML = '';
-      if(invoices.length===0){ savedInvoicesList.innerHTML = '<div class="muted">لا توجد فواتير محفوظة</div>'; return; }
-      invoices.forEach(inv=>{
-        const div = document.createElement('div'); div.className='saved-item';
-        const left = document.createElement('div'); left.innerHTML = `<strong>${escapeHtml(inv.invoiceNo)}</strong><div class="muted" style="font-size:12px">${escapeHtml(inv.businessName||'')}</div>`;
-        const right = document.createElement('div');
-        const loadBtn = document.createElement('button'); loadBtn.className='btn small'; loadBtn.textContent='تحميل'; loadBtn.onclick = ()=>loadInvoice(inv.id);
-        const delBtn = document.createElement('button'); delBtn.className='btn ghost small'; delBtn.textContent='حذف'; delBtn.onclick = ()=>{ if(confirm('حذف الفاتورة؟')){ deleteInvoice(inv.id); } };
-        right.appendChild(loadBtn); right.appendChild(delBtn);
-        div.appendChild(left); div.appendChild(right);
-        savedInvoicesList.appendChild(div);
+    // شريط التحكم السريع
+    quickBar.classList.add('show');
+    quickBar.classList.remove('paused');
+    quickPause.textContent = '⏸️ إيقاف';
+    quickPause.style.background = '#ffc107';
+    quickRef.style.display = refLoaded ? 'flex' : 'none';
+
+    updatePreviewBadge();
+    updateIndicators();
+    updateSegmentsLog();
+
+    setStatus('busy',
+      '<span class="live-dot"></span> جاري التسجيل' +
+      (audioAdded ? ' مع الصوت ✅' : ' (بدون صوت)') +
+      '<br><span style="font-size:0.85rem;">🎯 اضغط «⏸️ إيقاف مؤقت» للانتقال بين المواقع</span>'
+    );
+
+    if (activeSource === 'file') {
+      video.play().catch(err => {
+        setStatus('err', '⚠️ تعذر تشغيل الفيديو');
+        cancelRecording();
       });
     }
 
-    function loadInvoice(id){
-      const invoices = readInvoices();
-      const inv = invoices.find(x=>x.id===id);
-      if(!inv) return alert('الفاتورة غير موجودة');
-      businessNameEl.value = inv.businessName || '';
-      businessDetailsEl.value = inv.businessDetails || '';
-      clientNameEl.value = inv.client || '';
-      itemsTableBody.innerHTML = '';
-      if(inv.items && inv.items.length) inv.items.forEach(it=>addRow(it)); else addRow();
-      taxPercentEl.value = inv.taxPercent || 0;
-      currencyEl.value = inv.currency || 'EGP';
-      paymentLinkEl.value = inv.paymentLink || '';
-      invoiceNoEl.value = inv.invoiceNo || getCurrentInvoiceNo();
-      invoiceDateEl.value = inv.invoiceDate || new Date().toLocaleDateString('ar-EG');
-      if(inv.logo){ localStorage.setItem(LOGO_KEY, inv.logo); logoPreview.src = inv.logo; logoPreview.style.display='inline-block'; removeLogoBtn.style.display='inline-block'; }
-      state.template = inv.template || 'classic'; tplSelect.value = state.template;
-      persist(); renderPreview();
-      alert('تم تحميل الفاتورة');
+  } catch (e) {
+    console.error('Start error:', e);
+    setStatus('err', '⚠️ خطأ في بدء التسجيل: ' + (e.message || e));
+    isRecording = false;
+    isPaused = false;
+    btnStart.style.display = 'flex';
+    recordingControls.style.display = 'none';
+    btnStop.style.display = 'none';
+    btnRefBroadcast.style.display = 'none';
+    musicInd.style.display = 'none';
+    quickBar.classList.remove('show');
+    previewWrap.classList.remove('recording', 'paused');
+    stopTimer();
+    stopPauseTimer();
+  }
+});
+
+// ============================================================
+//  إنهاء التسجيل نهائياً
+// ============================================================
+btnStop.addEventListener('click', () => stopRecording());
+quickStop.addEventListener('click', () => stopRecording());
+
+function stopRecording() {
+  if (!isRecording) return;
+
+  // إذا كنا في وضع الإيقاف، نضيف المقطع الأخير
+  if (isPaused) {
+    const segDuration = (Date.now() - currentSegmentStart) / 1000;
+    if (segDuration > 0.5) {
+      segments.push({ start: currentSegmentStart, end: Date.now(), duration: segDuration });
     }
+  }
 
-    function deleteInvoice(id){
-      let invoices = readInvoices();
-      invoices = invoices.filter(x=>x.id!==id);
-      writeInvoices(invoices);
-      renderInvoicesList();
+  isRecording = false;
+  isPaused = false;
+
+  stopTimer();
+  stopPauseTimer();
+
+  try {
+    if (mediaRecorder && mediaRecorder.state === 'recording') mediaRecorder.stop();
+  } catch (e) { finishRecording(); }
+
+  try { video.pause(); } catch (e) {}
+  try { otherVideo.pause(); } catch (e) {}
+  try { refVideo.pause(); } catch (e) {}
+  try { musicEl.pause(); } catch (e) {}
+
+  broadcast = 'main';
+  musicOn = false;
+  applyMix();
+
+  // تحديث الواجهة
+  recordingControls.style.display = 'none';
+  btnStop.style.display = 'none';
+  btnStop.disabled = true;
+  btnPause.style.display = 'none';
+  btnResume.style.display = 'none';
+  btnStart.style.display = 'flex';
+  btnStart.disabled = false;
+
+  previewWrap.classList.remove('recording', 'paused');
+  quickBar.classList.remove('show', 'paused');
+  previewBadge.classList.remove('show', 'paused');
+  musicInd.style.display = 'none';
+
+  updateIndicators();
+  updateSegmentsLog();
+
+  setStatus('busy', '⏳ جاري تجهيز الملف النهائي...');
+}
+
+function cancelRecording() {
+  isRecording = false;
+  isPaused = false;
+  stopTimer();
+  stopPauseTimer();
+  try { if (mediaRecorder && mediaRecorder.state === 'recording') mediaRecorder.stop(); } catch (e) {}
+  try { musicEl.pause(); } catch (e) {}
+  recordingControls.style.display = 'none';
+  btnStop.style.display = 'none';
+  btnPause.style.display = 'none';
+  btnResume.style.display = 'none';
+  btnStart.style.display = 'flex';
+  quickBar.classList.remove('show', 'paused');
+  previewWrap.classList.remove('recording', 'paused');
+  previewBadge.classList.remove('show', 'paused');
+  updateIndicators();
+}
+
+video.addEventListener('ended', () => {
+  if (isRecording && !isPaused && activeSource === 'file' && broadcast === 'main') {
+    stopRecording();
+  }
+});
+
+// ============================================================
+//  تجهيز الملف النهائي
+// ============================================================
+function finishRecording() {
+  if (!recordedChunks || recordedChunks.length === 0) {
+    setStatus('err', '⚠️ لم يتم تسجيل أي بيانات');
+    return;
+  }
+
+  const mime = (mediaRecorder && mediaRecorder.mimeType) || pickMime || 'video/webm';
+  outputBlob = new Blob(recordedChunks, { type: mime });
+  outputExt = mime.indexOf('mp4') !== -1 ? 'mp4' : 'webm';
+
+  if (outputBlob.size < 1000) {
+    setStatus('err', '⚠️ التسجيل قصير جداً');
+    return;
+  }
+
+  const totalSegments = segments.length;
+  const totalDuration = segments.reduce((s, seg) => s + seg.duration, 0);
+
+  setStatus('ok',
+    '✅ <b>الفيديو جاهز!</b> بصيغة ' + outputExt.toUpperCase() +
+    '<br><span style="font-size:0.85rem;">📊 عدد المقاطع: ' + totalSegments + 
+    ' — المدة الفعلية: ' + fmtTime(totalDuration) + '</span>' +
+    '<br><span style="font-size:0.8rem;">اضغط زر التحميل ⬇️</span>'
+  );
+  btnDownload.style.display = 'flex';
+}
+
+// ============================================================
+//  التحميل
+// ============================================================
+btnDownload.addEventListener('click', function () {
+  if (!outputBlob) { setStatus('err', '⚠️ لا يوجد ملف جاهز'); return; }
+  try {
+    let namePart = 'فيديو';
+    const newsTxt = newsText.value.trim();
+    if (newsTxt) {
+      namePart = newsTxt.slice(0, 20).replace(/[\\/:*?"<>|\n\r]/g, ' ').trim() || 'فيديو';
     }
+    const filename = 'فيديو_' + namePart + '_' + segments.length + 'مقاطع.' + outputExt;
 
-    function exportCurrentInvoice(){
-      persist();
-      const inv = {
-        invoiceNo: invoiceNoEl.value || getCurrentInvoiceNo(),
-        invoiceDate: invoiceDateEl.value || new Date().toLocaleDateString('ar-EG'),
-        businessName: businessNameEl.value,
-        businessDetails: businessDetailsEl.value,
-        client: clientsSelectEl.value || clientNameEl.value,
-        items: getRows(),
-        taxPercent: Number(taxPercentEl.value)||0,
-        currency: currencyEl.value||'EGP',
-        paymentLink: paymentLinkEl.value||'',
-        logo: localStorage.getItem(LOGO_KEY) || null
-      };
-      const blob = new Blob([JSON.stringify(inv, null, 2)], {type:'application/json'});
-      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = (inv.invoiceNo || 'invoice') + '.json'; a.click();
-    }
+    const url = URL.createObjectURL(outputBlob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 15000);
 
-    // ----- Download / Share with PDF link annotation (FIXED coordinates) -----
-    async function downloadPDF(){
-      try{
-        renderPreview();
-        const target = document.getElementById('invoicePrintable');
-        if(!target){ alert('اضغط معاينة أولاً'); return; }
+    setStatus('ok', '✅ تم التحميل: ' + filename);
+  } catch (e) {
+    setStatus('err', '⚠️ تعذر التحميل: ' + e.message);
+  }
+});
 
-        // Render full canvas of the invoice element
-        const canvas = await html2canvas(target, {scale:2, useCORS:true, allowTaint:true});
-        const imgData = canvas.toDataURL('image/png');
-        const { jsPDF } = window.jspdf;
-        const pdf = new jsPDF('p','mm','a4');
+// ============================================================
+//  زر العودة للأعلى
+// ============================================================
+window.addEventListener('scroll', () => {
+  scrollTop.classList.toggle('show', window.scrollY > 400);
+});
+scrollTop.addEventListener('click', () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
 
-        const pageWidthMM = pdf.internal.pageSize.getWidth();
-        const pageHeightMM = pdf.internal.pageSize.getHeight();
-
-        // conversion factors
-        const canvasWidthPx = canvas.width;
-        const canvasHeightPx = canvas.height;
-        const mmPerPx = pageWidthMM / canvasWidthPx;
-
-        // page chunk in canvas pixels
-        const pxPageHeight = Math.floor((canvasWidthPx * pageHeightMM) / pageWidthMM);
-
-        // function to add a canvas slice to PDF page
-        const addCanvasSliceToPdf = (sx, sy, sWidth, sHeight, destYMM, isFirstPage) => {
-          // create temporary canvas for this slice
-          const tmpCanvas = document.createElement('canvas');
-          tmpCanvas.width = sWidth;
-          tmpCanvas.height = sHeight;
-          const ctx = tmpCanvas.getContext('2d');
-          ctx.drawImage(canvas, sx, sy, sWidth, sHeight, 0, 0, sWidth, sHeight);
-          const data = tmpCanvas.toDataURL('image/png');
-          const destHeightMM = sHeight * mmPerPx;
-          pdf.addImage(data, 'PNG', 0, destYMM, pageWidthMM, destHeightMM);
-        };
-
-        // compute QR rectangle on the canvas (in canvas pixels)
-        const qrEl = target.querySelector('#qrForPrintable');
-        let qrCanvasRect = null;
-        if(qrEl){
-          const targetRect = target.getBoundingClientRect();
-          const qrRect = qrEl.getBoundingClientRect();
-          const relX = qrRect.left - targetRect.left;
-          const relY = qrRect.top - targetRect.top;
-          const relW = qrRect.width;
-          const relH = qrRect.height;
-          const scale = canvas.width / target.offsetWidth; // canvas px per DOM px
-          const xCanvas = relX * scale;
-          const yCanvas = relY * scale;
-          const wCanvas = relW * scale;
-          const hCanvas = relH * scale;
-          qrCanvasRect = { x: xCanvas, y: yCanvas, w: wCanvas, h: hCanvas };
-        }
-
-        // iterate pages and add slices
-        let position = 0;
-        let pageIndex = 0;
-        while(position < canvasHeightPx){
-          const sliceHeight = Math.min(pxPageHeight, canvasHeightPx - position);
-          const destYMM = 0; // we place each slice at top of PDF page
-          if(pageIndex > 0) pdf.addPage();
-          addCanvasSliceToPdf(0, position, canvasWidthPx, sliceHeight, destYMM, pageIndex === 0);
-
-          // if QR exists, check overlap with this slice and add link annotation
-          if(qrCanvasRect){
-            const qrTop = qrCanvasRect.y;
-            const qrBottom = qrCanvasRect.y + qrCanvasRect.h;
-            const sliceTop = position;
-            const sliceBottom = position + sliceHeight;
-            const overlapTop = Math.max(qrTop, sliceTop);
-            const overlapBottom = Math.min(qrBottom, sliceBottom);
-            if(overlapBottom > overlapTop){
-              // there is overlap on this page
-              const yOnSlicePx = overlapTop - sliceTop;
-              const hOnSlicePx = overlapBottom - overlapTop;
-              const xOnSlicePx = qrCanvasRect.x;
-              const wOnSlicePx = qrCanvasRect.w;
-
-              // convert to mm
-              const xMM = xOnSlicePx * mmPerPx;
-              const yMM = yOnSlicePx * mmPerPx;
-              const wMM = wOnSlicePx * mmPerPx;
-              const hMM = hOnSlicePx * mmPerPx;
-
-              // ensure coordinates are within page bounds
-              const clamp = (v,min,max)=>Math.max(min,Math.min(max,v));
-              const xClamped = clamp(xMM, 0, pageWidthMM - 1);
-              const yClamped = clamp(yMM, 0, pageHeightMM - 1);
-              const wClamped = clamp(wMM, 1, pageWidthMM - xClamped);
-              const hClamped = clamp(hMM, 1, pageHeightMM - yClamped);
-
-              // add link annotation on current page
-              const url = paymentLinkEl.value.trim();
-              if(url){
-                try{
-                  pdf.link(xClamped, yClamped, wClamped, hClamped, { url });
-                }catch(err){
-                  // fallback: add text link near QR area (lower-left of QR)
-                  try{
-                    const textX = xClamped;
-                    const textY = Math.min(pageHeightMM - 10, yClamped + hClamped + 4);
-                    pdf.setTextColor(0,0,255);
-                    pdf.textWithLink('فتح رابط الدفع', textX, textY, { url });
-                    pdf.setTextColor(0,0,0);
-                  }catch(e){}
-                }
-              }
-            }
-          }
-
-          position += sliceHeight;
-          pageIndex++;
-        }
-
-        const invNo = invoiceNoEl.value || getCurrentInvoiceNo();
-        pdf.save(`${invNo}.pdf`);
-      }catch(e){ console.error(e); alert('فشل إنشاء PDF: ' + (e && e.message ? e.message : 'خطأ غير متوقع')); }
-    }
-
-    // ----- Image download -----
-    async function downloadAsImage(){
-      try{
-        renderPreview();
-        const target = document.getElementById('invoicePrintable');
-        if(!target){ alert('اضغط معاينة أولاً'); return; }
-        const canvas = await html2canvas(target, {scale:2, useCORS:true, allowTaint:true});
-        const link = document.createElement('a'); link.download = (invoiceNoEl.value || getCurrentInvoiceNo()) + '.png'; link.href = canvas.toDataURL('image/png'); link.click();
-      }catch(e){ console.error(e); alert('فشل تنزيل الصورة'); }
-    }
-
-    async function shareInvoice(){
-      try{
-        persist();
-        const rows = getRows(); let subtotal = 0; rows.forEach(r=>subtotal += r.total);
-        const tax = +(subtotal * (Number(taxPercentEl.value||0)/100)); const total = +(subtotal + tax);
-        const text = `فاتورة ${invoiceNoEl.value || getCurrentInvoiceNo()}\nالإجمالي: ${total.toFixed(2)} ${currencyEl.value||'EGP'}\n${paymentLinkEl.value||''}`;
-        if(navigator.share){ await navigator.share({title:'فاتورة', text, url: paymentLinkEl.value||undefined}); }
-        else if(navigator.clipboard){ await navigator.clipboard.writeText(text); alert('تم نسخ ملخص الفاتورة'); }
-        else alert('المشاركة غير مدعومة');
-      }catch(e){ console.warn(e); alert('فشل المشاركة'); }
-    }
-
-    // ----- Logo handling -----
-    logoInput.addEventListener('change', (e)=>{
-      const f = e.target.files[0];
-      if(!f) return;
-      const reader = new FileReader();
-      reader.onload = ()=>{ localStorage.setItem(LOGO_KEY, reader.result); localStorage.setItem(LOGO_POS_KEY, logoPosEl.value||'right'); logoPreview.src = reader.result; logoPreview.style.display='inline-block'; removeLogoBtn.style.display='inline-block'; persist(); renderPreview(); };
-      reader.readAsDataURL(f);
-    });
-    removeLogoBtn.addEventListener('click', ()=>{ localStorage.removeItem(LOGO_KEY); localStorage.removeItem(LOGO_POS_KEY); logoPreview.src=''; logoPreview.style.display='none'; removeLogoBtn.style.display='none'; persist(); renderPreview(); });
-    function loadLogoPreview(){ const d = localStorage.getItem(LOGO_KEY); if(d){ logoPreview.src = d; logoPreview.style.display='inline-block'; removeLogoBtn.style.display='inline-block'; logoPosEl.value = localStorage.getItem(LOGO_POS_KEY) || 'right'; } }
-
-    // ----- Persist / state save -----
-    function persist(){ state.businessName = businessNameEl.value; state.businessDetails = businessDetailsEl.value; state.client = clientsSelectEl.value || clientNameEl.value; state.items = getRows(); state.taxPercent = Number(taxPercentEl.value) || 0; state.currency = currencyEl.value || 'EGP'; state.paymentLink = paymentLinkEl.value || ''; state.template = tplSelect.value || 'classic'; saveState(); updatePaymentUI(); }
-
-    function saveState(){ try{ localStorage.setItem(STATE_KEY, JSON.stringify(state)); }catch(e){console.warn(e);} }
-
-    // ----- Save/load invoices list rendering -----
-    function initInvoicesList(){ renderInvoicesList(); }
-    function renderInvoicesList(){ const invoices = readInvoices(); savedInvoicesList.innerHTML=''; if(invoices.length===0){ savedInvoicesList.innerHTML = '<div class="muted">لا توجد فواتير محفوظة</div>'; return; } invoices.forEach(inv=>{ const div=document.createElement('div'); div.className='saved-item'; const left=document.createElement('div'); left.innerHTML=`<strong>${escapeHtml(inv.invoiceNo)}</strong><div class="muted" style="font-size:12px">${escapeHtml(inv.businessName||'')}</div>`; const right=document.createElement('div'); const loadBtn=document.createElement('button'); loadBtn.className='btn small'; loadBtn.textContent='تحميل'; loadBtn.onclick=()=>loadInvoice(inv.id); const delBtn=document.createElement('button'); delBtn.className='btn ghost small'; delBtn.textContent='حذف'; delBtn.onclick=()=>{ if(confirm('حذف الفاتورة؟')) deleteInvoice(inv.id); }; right.appendChild(loadBtn); right.appendChild(delBtn); div.appendChild(left); div.appendChild(right); savedInvoicesList.appendChild(div); }); }
-
-    function readInvoices(){ try{ return JSON.parse(localStorage.getItem(INVOICES_KEY) || '[]'); }catch(e){return[];} }
-    function writeInvoices(list){ localStorage.setItem(INVOICES_KEY, JSON.stringify(list)); }
-
-    function loadInvoice(id){
-      const invoices = readInvoices();
-      const inv = invoices.find(x=>x.id===id);
-      if(!inv) return alert('الفاتورة غير موجودة');
-      businessNameEl.value = inv.businessName || '';
-      businessDetailsEl.value = inv.businessDetails || '';
-      clientNameEl.value = inv.client || '';
-      itemsTableBody.innerHTML = '';
-      if(inv.items && inv.items.length) inv.items.forEach(it=>addRow(it)); else addRow();
-      taxPercentEl.value = inv.taxPercent || 0;
-      currencyEl.value = inv.currency || 'EGP';
-      paymentLinkEl.value = inv.paymentLink || '';
-      invoiceNoEl.value = inv.invoiceNo || getCurrentInvoiceNo();
-      invoiceDateEl.value = inv.invoiceDate || new Date().toLocaleDateString('ar-EG');
-      if(inv.logo){ localStorage.setItem(LOGO_KEY, inv.logo); logoPreview.src = inv.logo; logoPreview.style.display='inline-block'; removeLogoBtn.style.display='inline-block'; }
-      state.template = inv.template || 'classic'; tplSelect.value = state.template;
-      persist(); renderPreview();
-      alert('تم تحميل الفاتورة');
-    }
-
-    function deleteInvoice(id){ let invoices=readInvoices(); invoices=invoices.filter(x=>x.id!==id); writeInvoices(invoices); renderInvoicesList(); }
-
-    // ----- Manifest & SW registration (inline) -----
-    (function registerManifestAndSW(){
-      try{
-        const manifest = {
-          name: "مولد الفواتير",
-          short_name: "فواتيري",
-          start_url: ".",
-          display: "standalone",
-          background_color: "#ffffff",
-          theme_color: "#0f6cff",
-          icons: [
-            { src: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='192' height='192'><rect width='100%' height='100%' fill='%230f6cff'></rect><text x='50%' y='55%' font-size='72' text-anchor='middle' fill='white'>ف</text></svg>", sizes:"192x192", type:"image/svg+xml" },
-            { src: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='512' height='512'><rect width='100%' height='100%' fill='%230f6cff'></rect><text x='50%' y='55%' font-size='240' text-anchor='middle' fill='white'>ف</text></svg>", sizes:"512x512", type:"image/svg+xml" }
-          ]
-        };
-        const mfBlob = new Blob([JSON.stringify(manifest)], {type:'application/json'});
-        const mfUrl = URL.createObjectURL(mfBlob);
-        const link = document.querySelector('link[rel="manifest"]') || document.createElement('link');
-        link.rel = 'manifest'; link.href = mfUrl; if(!document.querySelector('link[rel="manifest"]')) document.head.appendChild(link);
-      }catch(e){ console.warn(e); }
-
-      const swSource = `
-        const CACHE_NAME = 'invoice-pwa-cache-v2';
-        const ASSETS = ['./'];
-        self.addEventListener('install', e => { self.skipWaiting(); e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(ASSETS).catch(()=>{}))); });
-        self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k=>k!==CACHE_NAME).map(k=>caches.delete(k))))); self.clients.claim(); });
-        self.addEventListener('fetch', e => { e.respondWith(caches.match(e.request).then(cached=>cached||fetch(e.request).then(resp=>{ if(e.request.method==='GET'){ caches.open(CACHE_NAME).then(cache=>{ try{ cache.put(e.request, resp.clone()); }catch(e){} }); } return resp.clone(); }).catch(()=>caches.match('/')))); });
-      `;
-      if('serviceWorker' in navigator){
-        try{
-          const blob = new Blob([swSource], {type:'application/javascript'});
-          const swUrl = URL.createObjectURL(blob);
-          navigator.serviceWorker.register(swUrl).then(()=>console.log('SW registered')).catch(err=>console.warn('SW failed',err));
-        }catch(e){ console.warn('SW create fail', e); }
+// ============================================================
+//  اختيار أفضل صيغة
+// ============================================================
+function pickBestMime(hasAudio) {
+  if (typeof MediaRecorder === 'undefined') return { mime: '', ext: 'webm' };
+  const withAudio = [
+    'video/mp4;codecs=avc1.42E01E,mp4a.40.2',
+    'video/mp4;codecs=avc1,mp4a.40.2',
+    'video/mp4;codecs=h264,aac',
+    'video/mp4;codecs=avc1,aac',
+    'video/mp4',
+    'video/webm;codecs=vp9,opus',
+    'video/webm;codecs=vp8,opus',
+    'video/webm'
+  ];
+  const withoutAudio = [
+    'video/mp4;codecs=avc1.42E01E',
+    'video/mp4;codecs=avc1',
+    'video/mp4;codecs=h264',
+    'video/mp4',
+    'video/webm;codecs=vp9',
+    'video/webm;codecs=vp8',
+    'video/webm'
+  ];
+  const list = hasAudio ? withAudio : withoutAudio;
+  for (const m of list) {
+    try {
+      if (MediaRecorder.isTypeSupported(m)) {
+        const isMp4 = m.indexOf('mp4') !== -1;
+        return { mime: m, ext: isMp4 ? 'mp4' : 'webm' };
       }
-    })();
+    } catch (e) {}
+  }
+  return { mime: '', ext: 'webm' };
+}
 
-    // ----- Init -----
-    function init(){
-      tplSelect.innerHTML = '<option value="classic">كلاسيك</option><option value="modern">مودرن</option><option value="compact">مضغوط</option>';
-      try{ const s = JSON.parse(localStorage.getItem(STATE_KEY) || '{}'); if(s) state = Object.assign(state, s); }catch(e){}
-      businessNameEl.value = state.businessName || '';
-      businessDetailsEl.value = state.businessDetails || '';
-      taxPercentEl.value = state.taxPercent || 0;
-      currencyEl.value = state.currency || 'EGP';
-      paymentLinkEl.value = state.paymentLink || '';
-      tplSelect.value = state.template || 'classic';
-      invoiceDateEl.value = new Date().toLocaleDateString('ar-EG');
-      // ensure there is a current invoice number (generate if none)
-      if(!localStorage.getItem(CURRENT_INV_KEY) || Number(localStorage.getItem(CURRENT_INV_KEY))===0){ invoiceNoEl.value = newInvoiceNumber(); } else invoiceNoEl.value = getCurrentInvoiceNo();
-
-      loadClients();
-      renderInvoicesList();
-
-      itemsTableBody.innerHTML = '';
-      if(state.items && state.items.length) state.items.forEach(it=>addRow(it)); else addRow();
-
-      loadLogoPreview();
-      updatePaymentUI();
-      renderPreview();
-
-      // events
-      addRowBtn.addEventListener('click', ()=>addRow());
-      clearItemsBtn.addEventListener('click', clearItems);
-      saveClientBtn.addEventListener('click', saveClient);
-      deleteClientBtn.addEventListener('click', deleteSelectedClient);
-      exportClientsBtn.addEventListener('click', exportClients);
-      paymentLinkEl.addEventListener('input', updatePaymentUI);
-      previewBtn.addEventListener('click', ()=>{ renderPreview(); window.scrollTo({top:0,behavior:'smooth'}); });
-      printBtn.addEventListener('click', ()=>{ renderPreview(); window.print(); });
-      downloadPdfBtn.addEventListener('click', downloadPDF);
-      downloadPngBtn.addEventListener('click', downloadAsImage);
-      shareBtn.addEventListener('click', shareInvoice);
-      saveInvoiceBtn.addEventListener('click', saveInvoice);
-      exportInvoiceBtn.addEventListener('click', exportCurrentInvoice);
-      tplSelect.addEventListener('change', ()=>{ state.template = tplSelect.value; localStorage.setItem(TEMPLATE_KEY, state.template); renderPreview(); });
-      newInvoiceBtn.addEventListener('click', ()=>{
-        invoiceNoEl.value = newInvoiceNumber();
-        invoiceDateEl.value = new Date().toLocaleDateString('ar-EG');
-        itemsTableBody.innerHTML=''; addRow(); persist(); renderPreview();
-      });
-      toggleThemeBtn.addEventListener('click', ()=>{
-        const cur = document.documentElement.getAttribute('data-theme') || 'light';
-        const next = cur==='dark'?'light':'dark';
-        document.documentElement.setAttribute('data-theme', next);
-        document.body.setAttribute('data-theme', next);
-        localStorage.setItem('theme', next);
-      });
-
-      window.addEventListener('beforeinstallprompt', (e)=>{ e.preventDefault(); deferredPrompt = e; installBtn.style.display='inline-block'; });
-      installBtn.addEventListener('click', async ()=>{ if(!deferredPrompt) return; deferredPrompt.prompt(); await deferredPrompt.userChoice; deferredPrompt=null; installBtn.style.display='none'; });
-
-      qrSmallEl.addEventListener('click', ()=>{ const url = paymentLinkEl.value.trim(); if(url) window.open(url,'_blank'); });
-    }
-
-    window.addEventListener('load', init);
-  </script>
+// ============================================================
+//  التهيئة
+// ============================================================
+canvas.width = 640;
+canvas.height = 360;
+redraw(0);
+updateIndicators();
+updateSegmentsLog();
+animFrame = requestAnimationFrame(renderLoop);
+</script>
 </body>
 </html>
