@@ -2,8 +2,8 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>استوديو الفيديو المباشر الذكي - النسخة الكاملة</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>استوديو الفيديو المباشر الذكي - النسخة النهائية</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -490,7 +490,6 @@
     z-index: 100;
     backdrop-filter: blur(10px);
     box-shadow: 0 -4px 20px rgba(0,0,0,0.5);
-    transition: border-color 0.3s;
   }
   .quick-bar.show { display: block; }
   .quick-bar.paused { border-top-color: #ffc107; }
@@ -679,6 +678,241 @@
     color: #ffc107;
     font-weight: 700;
   }
+
+  /* ============================================================
+     وضع التسجيل بملء الشاشة
+     ============================================================ */
+  .recording-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: #000;
+    overflow: hidden;
+  }
+
+  body.recording-mode {
+    overflow: hidden !important;
+    padding: 0 !important;
+  }
+
+  body.recording-mode .recording-overlay {
+    display: flex;
+    flex-direction: column;
+    animation: fadeIn 0.3s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  body.recording-mode .app,
+  body.recording-mode .scroll-top,
+  body.recording-mode .quick-bar {
+    display: none !important;
+  }
+
+  .rec-top-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 12px 16px;
+    padding-top: max(12px, env(safe-area-inset-top));
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 10;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+    transition: opacity 0.4s ease;
+  }
+
+  .rec-controls-hidden .rec-top-bar,
+  .rec-controls-hidden .rec-bottom-bar {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .rec-timer-main {
+    font-size: 1.3rem;
+    font-weight: 900;
+    color: #ff4757;
+    background: rgba(0,0,0,0.6);
+    padding: 6px 16px;
+    border-radius: 30px;
+    letter-spacing: 2px;
+    font-variant-numeric: tabular-nums;
+    border: 2px solid #ff475780;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    backdrop-filter: blur(8px);
+  }
+
+  .rec-timer-main.paused {
+    color: #ffc107;
+    border-color: #ffc10780;
+  }
+
+  .rec-timer-main .dot {
+    width: 10px;
+    height: 10px;
+    background: #ff4757;
+    border-radius: 50%;
+    animation: blink 1s infinite;
+  }
+
+  .rec-timer-main.paused .dot {
+    background: #ffc107;
+    animation: none;
+  }
+
+  .rec-badge-status {
+    font-size: 0.85rem;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 30px;
+    background: rgba(0,0,0,0.6);
+    color: #00FF00;
+    border: 2px solid #00FF0050;
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .rec-badge-status.paused {
+    color: #ffc107;
+    border-color: #ffc10780;
+  }
+
+  .rec-video-area {
+    flex: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: #000;
+    cursor: pointer;
+  }
+
+  .rec-video-area canvas {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    display: block;
+    object-fit: contain;
+  }
+
+  .rec-bottom-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 16px;
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
+    background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+    z-index: 10;
+    transition: opacity 0.4s ease;
+  }
+
+  .rec-btn-row {
+    max-width: 700px;
+    margin: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .rec-btn-row:last-child {
+    margin-bottom: 0;
+  }
+
+  .rec-btn {
+    padding: 18px 12px;
+    border: none;
+    border-radius: 16px;
+    font-family: 'Cairo';
+    font-weight: 900;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+
+  .rec-btn:active {
+    transform: scale(0.96);
+  }
+
+  .rec-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .rec-btn-pause {
+    background: #ffc107;
+    color: #0a1a2e;
+  }
+
+  .rec-btn-resume {
+    background: #00FF00;
+    color: #0a1a2e;
+    animation: pulse-green-btn 1.5s infinite;
+  }
+
+  @keyframes pulse-green-btn {
+    0%, 100% { box-shadow: 0 4px 20px rgba(0,0,0,0.4), 0 0 0 0 rgba(0,255,0,0.5); }
+    50% { box-shadow: 0 4px 20px rgba(0,0,0,0.4), 0 0 0 10px rgba(0,255,0,0); }
+  }
+
+  .rec-btn-ref {
+    background: #9c27b0;
+    color: #fff;
+  }
+
+  .rec-btn-ref.active {
+    background: #00FF00;
+    color: #0a1a2e;
+    animation: pulse-green-btn 1.5s infinite;
+  }
+
+  .rec-btn-stop {
+    background: #ff4757;
+    color: #fff;
+  }
+
+  .rec-tap-hint {
+    position: absolute;
+    bottom: 90px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.7);
+    color: #fff;
+    padding: 8px 18px;
+    border-radius: 30px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    backdrop-filter: blur(8px);
+    animation: hintFade 4s forwards;
+    pointer-events: none;
+    z-index: 20;
+    white-space: nowrap;
+  }
+
+  @keyframes hintFade {
+    0%, 70% { opacity: 1; }
+    100% { opacity: 0; }
+  }
 </style>
 </head>
 <body>
@@ -694,7 +928,6 @@
     <div class="indicator" id="indRec">🔴 التسجيل</div>
   </div>
 
-  <!-- ============ 1 ============ -->
   <div class="step">
     <div class="step-title"><span class="num">1</span> مصدر البث الأساسي</div>
     <div class="size-buttons" id="sourceButtons" style="grid-template-columns: repeat(2, 1fr);">
@@ -713,12 +946,10 @@
       <button class="big-btn btn-gray" id="btnDiagnose" style="margin-top:8px; font-size:0.9rem;">
         🔍 فحص حالة الكاميرا والمتصفح
       </button>
-      <div class="hint">سيطلب المتصفح السماح بالكاميرا والميكروفون.<br>
-      <b>⚠️ مهم:</b> يجب فتح الصفحة عبر HTTPS أو localhost، وليس file://</div>
+      <div class="hint">⚠️ <b>مهم:</b> يجب فتح الصفحة عبر HTTPS أو localhost</div>
     </div>
   </div>
 
-  <!-- ============ 2 ============ -->
   <div class="step">
     <div class="step-title"><span class="num">2</span> اكتب الخبر / التعليق</div>
     <textarea id="newsText" placeholder="اكتب خبرك أو تعليقك هنا..."></textarea>
@@ -737,7 +968,6 @@
     </div>
   </div>
 
-  <!-- ============ 3 ============ -->
   <div class="step">
     <div class="step-title"><span class="num">3</span> الشعار (اختياري)</div>
     <div class="logo-box">
@@ -750,7 +980,6 @@
     <input type="file" id="logoFile" accept="image/*" style="margin-top:8px;">
   </div>
 
-  <!-- ============ 4 ============ -->
   <div class="step">
     <div class="step-title"><span class="num">4</span> حجم وموضع الخبر</div>
     <div class="size-buttons" id="sizeButtons">
@@ -769,7 +998,6 @@
     </div>
   </div>
 
-  <!-- ============ 5 ============ -->
   <div class="step">
     <div class="step-title"><span class="num">5</span> المعاينة الذكية</div>
     <div class="preview-wrap" id="previewWrap">
@@ -782,7 +1010,6 @@
     <div class="hint">👆 اسحب النص أو الشعار داخل الفيديو لتحريكهما</div>
   </div>
 
-  <!-- ============ 6 ============ -->
   <div class="step" style="border-color:#9c27b0;">
     <div class="step-title"><span class="num" style="background:#9c27b0;color:#fff;">6</span> 
       <span style="color:#d8b4ff;">الفيديو المرجعي (للتعليق عليه)</span>
@@ -819,14 +1046,12 @@
     </div>
   </div>
 
-  <!-- ============ 7 ============ -->
   <div class="step" style="border-color:#ffc107;">
     <div class="step-title"><span class="num" style="background:#ffc107;color:#0a1a2e;">7</span> 
       <span style="color:#ffc107;">الإيقاف المؤقت الذكي (Pause)</span>
     </div>
     <div class="hint" style="background:#ffc10710; border-right-color:#ffc107; color:#ffc107;">
-      💡 <b>الميزة الأهم:</b> أثناء التسجيل اضغط «⏸️ إيقاف مؤقت» → انتقل لمكان آخر → اضغط «▶️ استئناف».<br>
-      <b>النتيجة:</b> ملف واحد يجمع كل المقاطع من أماكن مختلفة 🎬
+      💡 <b>الميزة الأهم:</b> أثناء التسجيل اضغط «⏸️ إيقاف مؤقت» → انتقل لمكان آخر → اضغط «▶️ استئناف».
     </div>
 
     <div class="pause-options">
@@ -872,7 +1097,6 @@
     </div>
   </div>
 
-  <!-- ============ 8 ============ -->
   <div class="step">
     <div class="step-title"><span class="num">8</span> فيديو بديل (اختياري)</div>
     <input type="file" id="otherFile" accept="video/*">
@@ -880,7 +1104,6 @@
     <div id="otherInfo" class="hint" style="display:none;"></div>
   </div>
 
-  <!-- ============ 9 ============ -->
   <div class="step">
     <div class="step-title"><span class="num">9</span> الموسيقى الخلفية (اختياري)</div>
     <input type="file" id="musicFile" accept="audio/*">
@@ -895,7 +1118,6 @@
     </div>
   </div>
 
-  <!-- ============ 10 ============ -->
   <div class="step">
     <div class="step-title"><span class="num">10</span> التسجيل والتحكم</div>
 
@@ -960,9 +1182,52 @@
 
 <button class="scroll-top" id="scrollTop">↑</button>
 
+<!-- ============================================================
+     وضع التسجيل بملء الشاشة
+     ============================================================ -->
+<div class="recording-overlay" id="recordingOverlay">
+  
+  <div class="rec-top-bar">
+    <div class="rec-timer-main" id="recTimerMain">
+      <span class="dot"></span>
+      <span id="recTimerText">00:00</span>
+    </div>
+    <div class="rec-badge-status" id="recBadgeStatus">
+      🔴 يسجل مباشر
+    </div>
+  </div>
+
+  <div class="rec-tap-hint" id="recTapHint">
+    💡 المس الشاشة لإظهار/إخفاء الأزرار
+  </div>
+
+  <div class="rec-video-area" id="recVideoArea"></div>
+
+  <div class="rec-bottom-bar">
+    <div class="rec-btn-row" id="recMainRow">
+      <button class="rec-btn rec-btn-pause" id="recPauseBtn">
+        ⏸️ إيقاف مؤقت
+      </button>
+      <button class="rec-btn rec-btn-resume" id="recResumeBtn" style="display:none;">
+        ▶️ استئناف
+      </button>
+      <button class="rec-btn rec-btn-ref" id="recRefBtn" style="display:none;">
+        🎞️ المرجعي
+      </button>
+    </div>
+    
+    <div class="rec-btn-row" id="recStopRow">
+      <button class="rec-btn rec-btn-stop" id="recStopBtn" style="grid-column: 1 / -1;">
+        ⏹️ إنهاء التسجيل
+      </button>
+    </div>
+  </div>
+
+</div>
+
 <script>
 // ============================================================
-//  استوديو الفيديو المباشر الذكي - النسخة الكاملة المُحدّثة
+//  استوديو الفيديو المباشر الذكي - النسخة النهائية
 // ============================================================
 
 // ===== الحالة =====
@@ -1119,6 +1384,22 @@ const transitionTextBox = $('transitionTextBox');
 const transitionTextInp = $('transitionText');
 const segmentsLog = $('segmentsLog');
 
+// عناصر وضع التسجيل الكامل
+const recordingOverlay = $('recordingOverlay');
+const recTimerMain = $('recTimerMain');
+const recTimerText = $('recTimerText');
+const recBadgeStatus = $('recBadgeStatus');
+const recVideoArea = $('recVideoArea');
+const recPauseBtn = $('recPauseBtn');
+const recResumeBtn = $('recResumeBtn');
+const recRefBtn = $('recRefBtn');
+const recStopBtn = $('recStopBtn');
+const recTapHint = $('recTapHint');
+const recMainRow = $('recMainRow');
+
+let recControlsHideTimer = null;
+let recControlsHidden = false;
+
 refVideo.muted = false;
 refVideo.volume = 1;
 
@@ -1133,7 +1414,7 @@ function fmtTime(s) {
 }
 
 // ============================================================
-//  نظام الصوت المختلط
+//  نظام الصوت
 // ============================================================
 let audioCtx = null, audioDest = null;
 let srcMainEl = null, srcOtherEl = null, srcMusicEl = null, srcRefEl = null, micNode = null;
@@ -1225,6 +1506,108 @@ function applyMix() {
 }
 
 // ============================================================
+//  وضع التسجيل بملء الشاشة
+// ============================================================
+function enterRecordingMode() {
+  document.body.classList.add('recording-mode');
+
+  if (canvas.parentElement !== recVideoArea) {
+    recVideoArea.appendChild(canvas);
+  }
+
+  recRefBtn.style.display = refLoaded ? 'flex' : 'none';
+
+  recPauseBtn.style.display = 'flex';
+  recResumeBtn.style.display = 'none';
+
+  // ضبط الشبكة حسب وجود المرجعي
+  if (refLoaded) {
+    recMainRow.style.gridTemplateColumns = '1fr 1fr';
+    recPauseBtn.style.gridColumn = 'auto';
+    recResumeBtn.style.gridColumn = 'auto';
+    recRefBtn.style.gridColumn = 'auto';
+    recRefBtn.style.display = 'flex';
+  } else {
+    recMainRow.style.gridTemplateColumns = '1fr';
+    recPauseBtn.style.gridColumn = '1 / -1';
+    recResumeBtn.style.gridColumn = '1 / -1';
+    recRefBtn.style.display = 'none';
+  }
+
+  recTapHint.style.display = 'block';
+  recTapHint.style.animation = 'none';
+  void recTapHint.offsetWidth;
+  recTapHint.style.animation = 'hintFade 4s forwards';
+
+  scheduleControlsHide();
+  document.body.style.overflow = 'hidden';
+  console.log('🎬 دخل وضع التسجيل');
+}
+
+function exitRecordingMode() {
+  document.body.classList.remove('recording-mode');
+  document.body.style.overflow = '';
+
+  if (previewWrap && canvas.parentElement !== previewWrap) {
+    previewWrap.appendChild(canvas);
+    canvas.style.maxWidth = '';
+    canvas.style.maxHeight = '';
+    canvas.style.width = '100%';
+    canvas.style.height = 'auto';
+  }
+
+  if (recControlsHideTimer) {
+    clearTimeout(recControlsHideTimer);
+    recControlsHideTimer = null;
+  }
+  recControlsHidden = false;
+  recordingOverlay.classList.remove('rec-controls-hidden');
+  console.log('🎬 خرج من وضع التسجيل');
+}
+
+function scheduleControlsHide() {
+  if (recControlsHideTimer) clearTimeout(recControlsHideTimer);
+  showControls();
+  recControlsHideTimer = setTimeout(() => hideControls(), 3500);
+}
+function hideControls() {
+  recControlsHidden = true;
+  recordingOverlay.classList.add('rec-controls-hidden');
+}
+function showControls() {
+  recControlsHidden = false;
+  recordingOverlay.classList.remove('rec-controls-hidden');
+}
+
+recVideoArea.addEventListener('click', (e) => {
+  if (e.target.tagName === 'BUTTON') return;
+  if (recControlsHidden) {
+    showControls();
+    scheduleControlsHide();
+  } else {
+    hideControls();
+  }
+});
+
+[recPauseBtn, recResumeBtn, recRefBtn, recStopBtn].forEach(btn => {
+  btn.addEventListener('click', () => scheduleControlsHide());
+});
+
+// ربط أزرار الوضع الكامل
+recPauseBtn.addEventListener('click', () => togglePause());
+recResumeBtn.addEventListener('click', () => togglePause());
+
+recRefBtn.addEventListener('click', () => {
+  if (!refLoaded) return;
+  toggleRefBroadcast();
+  setTimeout(updatePreviewBadge, 100);
+});
+
+recStopBtn.addEventListener('click', () => {
+  stopRecording();
+});
+
+// ============================================================
 //  المؤشرات
 // ============================================================
 function updateIndicators() {
@@ -1255,18 +1638,44 @@ function updateIndicators() {
 }
 
 function updatePreviewBadge() {
-  if (!isRecording && !isPaused) { previewBadge.classList.remove('show'); return; }
+  if (!isRecording && !isPaused) { 
+    previewBadge.classList.remove('show'); 
+    return; 
+  }
   previewBadge.classList.add('show');
 
   if (isPaused) {
     previewBadge.classList.add('paused');
-    previewBadgeText.textContent = '⏸️ إيقاف مؤقت — جاري الانتقال';
+    previewBadgeText.textContent = '⏸️ إيقاف مؤقت';
+    recBadgeStatus.className = 'rec-badge-status paused';
+    recBadgeStatus.textContent = '⏸️ إيقاف مؤقت';
+    recTimerMain.classList.add('paused');
+    recPauseBtn.style.display = 'none';
+    recResumeBtn.style.display = 'flex';
   } else {
     previewBadge.classList.remove('paused');
     if (broadcast === 'ref') previewBadgeText.textContent = '🎞️ الفيديو المرجعي';
     else if (broadcast === 'other') previewBadgeText.textContent = '🎬 فيديو بديل';
     else if (musicOn) previewBadgeText.textContent = '🎵 موسيقى';
     else previewBadgeText.textContent = '🔴 تسجيل مباشر';
+
+    recBadgeStatus.className = 'rec-badge-status';
+    if (broadcast === 'ref') recBadgeStatus.textContent = '🎞️ الفيديو المرجعي';
+    else if (broadcast === 'other') recBadgeStatus.textContent = '🎬 فيديو بديل';
+    else if (musicOn) recBadgeStatus.textContent = '🎵 موسيقى';
+    else recBadgeStatus.textContent = '🔴 يسجل مباشر';
+
+    recTimerMain.classList.remove('paused');
+    recPauseBtn.style.display = 'flex';
+    recResumeBtn.style.display = 'none';
+  }
+
+  if (broadcast === 'ref') {
+    recRefBtn.textContent = '🎤 العودة للتعليق';
+    recRefBtn.classList.add('active');
+  } else {
+    recRefBtn.textContent = '🎞️ المرجعي';
+    recRefBtn.classList.remove('active');
   }
 }
 
@@ -1321,7 +1730,7 @@ videoFileInp.addEventListener('change', e => {
 });
 
 // ============================================================
-//  ✅ دالة تشغيل الكاميرا الذكية (مع محاولات متعددة)
+//  دالة تشغيل الكاميرا الذكية
 // ============================================================
 async function startCameraStream(facing) {
   if (cameraStream) {
@@ -1330,14 +1739,7 @@ async function startCameraStream(facing) {
   }
 
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-    throw new Error('متصفحك لا يدعم الوصول للكاميرا. استخدم Chrome أو Safari حديث.');
-  }
-
-  if (location.protocol !== 'https:' &&
-      location.hostname !== 'localhost' &&
-      location.hostname !== '127.0.0.1' &&
-      !location.hostname.startsWith('192.168.')) {
-    throw new Error('يجب فتح الصفحة عبر HTTPS أو localhost للوصول للكاميرا.');
+    throw new Error('متصفحك لا يدعم الوصول للكاميرا.');
   }
 
   const attempts = [
@@ -1369,7 +1771,7 @@ async function startCameraStream(facing) {
       }
     },
     {
-      name: 'الأبسط (فيديو فقط)',
+      name: 'الأبسط',
       constraints: { video: true }
     }
   ];
@@ -1380,47 +1782,25 @@ async function startCameraStream(facing) {
   for (let i = 0; i < attempts.length; i++) {
     const attempt = attempts[i];
     try {
-      console.log(`🎥 محاولة ${i + 1}: ${attempt.name}...`);
-      setStatus('busy', `⏳ محاولة تشغيل الكاميرا (${i + 1}/${attempts.length}): ${attempt.name}...`);
+      setStatus('busy', `⏳ محاولة (${i + 1}/${attempts.length}): ${attempt.name}...`);
       stream = await navigator.mediaDevices.getUserMedia(attempt.constraints);
-      console.log(`✅ نجحت المحاولة ${i + 1}: ${attempt.name}`);
       break;
     } catch (err) {
-      console.warn(`❌ فشلت المحاولة ${i + 1}:`, err.name, err.message);
       lastError = err;
       if (err.name === 'NotAllowedError' || err.name === 'SecurityError') {
-        throw new Error('تم رفض الإذن. اضغط على أيقونة القفل 🔒 بجانب العنوان واسمح بالكاميرا.');
+        throw new Error('تم رفض الإذن. اضغط على القفل 🔒 واسمح بالكاميرا.');
       }
       if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
-        throw new Error('لم يتم العثور على كاميرا في الجهاز.');
+        throw new Error('لم يتم العثور على كاميرا.');
       }
       continue;
     }
   }
 
   if (!stream) {
-    let reason = 'سبب غير معروف';
-    if (lastError) {
-      switch (lastError.name) {
-        case 'NotReadableError':
-        case 'TrackStartError':
-          reason = 'الكاميرا مشغولة في تطبيق آخر. أغلق (Zoom، Teams، Camera، متصفح آخر) وحاول مجدداً.';
-          break;
-        case 'OverconstrainedError':
-          reason = 'الدقة المطلوبة غير مدعومة. جرب دقة أقل.';
-          break;
-        case 'NotAllowedError':
-          reason = 'تم رفض الإذن. اضغط على القفل 🔒 بجانب العنوان واسمح بالكاميرا.';
-          break;
-        case 'NotFoundError':
-          reason = 'لا توجد كاميرا في هذا الجهاز.';
-          break;
-        case 'AbortError':
-          reason = 'تم إلغاء العملية. حاول مرة أخرى.';
-          break;
-        default:
-          reason = lastError.message || lastError.name;
-      }
+    let reason = lastError ? lastError.message || lastError.name : 'سبب غير معروف';
+    if (lastError && (lastError.name === 'NotReadableError' || lastError.name === 'TrackStartError')) {
+      reason = 'الكاميرا مشغولة في تطبيق آخر. أغلق كل التطبيقات الأخرى.';
     }
     throw new Error(reason);
   }
@@ -1429,8 +1809,7 @@ async function startCameraStream(facing) {
   camVideo.srcObject = stream;
   camVideo.muted = true;
 
-  try { await camVideo.play(); }
-  catch (e) { camVideo.play().catch(()=>{}); }
+  try { await camVideo.play(); } catch (e) { camVideo.play().catch(()=>{}); }
 
   if (!camVideo.videoWidth) {
     await new Promise(res => {
@@ -1444,20 +1823,14 @@ async function startCameraStream(facing) {
   const vTrack = stream.getVideoTracks()[0];
   const aTracks = stream.getAudioTracks();
   const settings = vTrack ? vTrack.getSettings() : {};
-  console.log('📹 إعدادات الكاميرا:', settings);
-  console.log('🎤 مسارات صوتية:', aTracks.length);
 
   return {
     hasAudio: aTracks.length > 0,
     width: settings.width,
-    height: settings.height,
-    facingMode: settings.facingMode || facing
+    height: settings.height
   };
 }
 
-// ============================================================
-//  ✅ زر تشغيل الكاميرا مع معالجة أخطاء مفصلة
-// ============================================================
 btnCamOn.addEventListener('click', async function () {
   btnCamOn.disabled = true;
   const oldText = btnCamOn.textContent;
@@ -1482,40 +1855,27 @@ btnCamOn.addEventListener('click', async function () {
     if (result.hasAudio) info.push('🎤 ميكروفون');
     if (result.width && result.height) info.push(`📐 ${result.width}×${result.height}`);
 
-    setStatus('ok',
-      '✅ الكاميرا جاهزة' +
-      (info.length ? ' (' + info.join(' • ') + ')' : '') +
-      '<br><span style="font-size:0.85rem;">اضغط الزر الأخضر للبدء</span>'
-    );
-
+    setStatus('ok', '✅ الكاميرا جاهزة' + (info.length ? ' (' + info.join(' • ') + ')' : ''));
   } catch (e) {
-    console.error('❌ Camera error:', e);
-    let errorHTML = `<b style="color:#ff4757;">⚠️ تعذر تشغيل الكاميرا</b><br>`;
-    errorHTML += `<span style="font-size:0.85rem;">${e.message || e}</span>`;
-    errorHTML += `<div style="margin-top:8px; padding:8px; background:#ff475710; border-radius:8px; font-size:0.8rem; text-align:right; line-height:1.8;">`;
-    errorHTML += `<b>الحلول المقترحة:</b><br>`;
-    errorHTML += `🔹 أغلق أي تطبيق يستخدم الكاميرا (Zoom، Teams، Camera)<br>`;
-    errorHTML += `🔹 اضغط على أيقونة القفل 🔒 بجانب العنوان واسمح بالكاميرا<br>`;
-    errorHTML += `🔹 أعد تحميل الصفحة (F5) وحاول مجدداً<br>`;
-    errorHTML += `🔹 تأكد أن الصفحة تُفتح عبر HTTPS أو localhost<br>`;
-    errorHTML += `🔹 جرب متصفحاً آخر (Chrome / Safari)<br>`;
-    errorHTML += `</div>`;
-
-    setStatus('err', errorHTML);
+    setStatus('err',
+      `<b style="color:#ff4757;">⚠️ تعذر تشغيل الكاميرا</b><br>
+      <span style="font-size:0.85rem;">${e.message || e}</span>
+      <div style="margin-top:8px; padding:8px; background:#ff475710; border-radius:8px; font-size:0.8rem; text-align:right; line-height:1.8;">
+      🔹 أغلق كل التطبيقات التي تستخدم الكاميرا<br>
+      🔹 اضغط 🔒 بجانب العنوان واسمح بالكاميرا<br>
+      🔹 أعد تحميل الصفحة<br>
+      🔹 تأكد من فتح الصفحة عبر HTTPS
+      </div>`
+    );
     btnCamOn.style.display = 'flex';
     camControls.style.display = 'none';
     cameraReady = false;
-
   } finally {
     btnCamOn.disabled = false;
-    if (cameraReady) btnCamOn.textContent = oldText;
-    else btnCamOn.textContent = '🎥 إعادة المحاولة';
+    btnCamOn.textContent = cameraReady ? oldText : '🎥 إعادة المحاولة';
   }
 });
 
-// ============================================================
-//  زر تبديل الكاميرا
-// ============================================================
 btnSwitchCam.addEventListener('click', async function () {
   if (!cameraReady) return;
   const newFacing = (currentFacing === 'user') ? 'environment' : 'user';
@@ -1550,20 +1910,19 @@ function stopCamera() {
 }
 
 // ============================================================
-//  ✅ زر التشخيص
+//  زر التشخيص
 // ============================================================
 btnDiagnose.addEventListener('click', async function () {
   let html = '<b style="color:#ffc107;">🔍 تقرير التشخيص</b><br><br>';
 
   html += `<b>1. البروتوكول:</b> ${location.protocol}//${location.hostname}<br>`;
   if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
-    html += `<span style="color:#ff4757;">⚠️ يجب استخدام HTTPS أو localhost</span><br>`;
+    html += `<span style="color:#ff4757;">⚠️ يجب استخدام HTTPS</span><br>`;
   } else {
     html += `<span style="color:#00FF00;">✅ آمن</span><br>`;
   }
 
   html += `<br><b>2. دعم المتصفح:</b><br>`;
-  html += `navigator.mediaDevices: ${!!navigator.mediaDevices ? '✅' : '❌'}<br>`;
   html += `getUserMedia: ${!!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) ? '✅' : '❌'}<br>`;
 
   try {
@@ -1571,36 +1930,15 @@ btnDiagnose.addEventListener('click', async function () {
       const devices = await navigator.mediaDevices.enumerateDevices();
       const cams = devices.filter(d => d.kind === 'videoinput');
       const mics = devices.filter(d => d.kind === 'audioinput');
-
-      html += `<br><b>3. الأجهزة المكتشفة:</b><br>`;
+      html += `<br><b>3. الأجهزة:</b><br>`;
       html += `📹 كاميرات: <b style="color:#00FF00;">${cams.length}</b><br>`;
       html += `🎤 ميكروفونات: <b style="color:#00FF00;">${mics.length}</b><br>`;
-
-      if (cams.length === 0) {
-        html += `<span style="color:#ff4757;">⚠️ لا توجد كاميرا! قد تكون الأذونات مرفوضة.</span><br>`;
-      } else {
-        cams.forEach((cam, i) => {
-          html += `<span style="font-size:0.7rem;"> • ${cam.label || 'كاميرا ' + (i + 1)}</span><br>`;
-        });
-      }
-    }
-  } catch (e) {
-    html += `<span style="color:#ff4757;">فشل فحص الأجهزة: ${e.message}</span><br>`;
-  }
-
-  try {
-    if (navigator.permissions && navigator.permissions.query) {
-      const camPerm = await navigator.permissions.query({ name: 'camera' });
-      const micPerm = await navigator.permissions.query({ name: 'microphone' });
-      html += `<br><b>4. حالة الإذن:</b><br>`;
-      html += `📹 الكاميرا: <b>${camPerm.state}</b><br>`;
-      html += `🎤 الميكروفون: <b>${micPerm.state}</b><br>`;
     }
   } catch (e) {}
 
-  html += `<br><b>5. حالة النظام:</b><br>`;
-  html += `هل الكاميرا تعمل حالياً؟ ${cameraReady ? '✅ نعم' : '❌ لا'}<br>`;
-  html += `هل التسجيل جارٍ؟ ${isRecording ? '🔴 نعم' : '⚪ لا'}<br>`;
+  html += `<br><b>4. الحالة:</b><br>`;
+  html += `الكاميرا: ${cameraReady ? '✅ جاهزة' : '❌ لا'}<br>`;
+  html += `التسجيل: ${isRecording ? '🔴 يعمل' : '⚪ لا'}<br>`;
 
   setStatus('busy', html);
 });
@@ -2085,9 +2423,13 @@ function startTimer() {
   timerEl.classList.add('show');
   timerEl.classList.remove('paused');
   timerEl.textContent = '00:00';
+  recTimerText.textContent = '00:00';
+
   timerInterval = setInterval(() => {
     const elapsed = Math.floor((Date.now() - recordStartTime - accumulatedPauseTime) / 1000);
-    timerEl.textContent = fmtTime(elapsed);
+    const t = fmtTime(elapsed);
+    timerEl.textContent = t;
+    recTimerText.textContent = t;
   }, 250);
 }
 function stopTimer() {
@@ -2146,7 +2488,6 @@ function togglePause() {
 
 function pauseRecording() {
   if (!isRecording || isPaused) return;
-
   isPaused = true;
 
   const segDuration = (Date.now() - currentSegmentStart) / 1000;
@@ -2178,10 +2519,11 @@ function pauseRecording() {
   updatePreviewBadge();
   updateSegmentsLog();
 
+  scheduleControlsHide();
+
   setStatus('paused',
     '⏸️ <b>إيقاف مؤقت</b> — انتقل لمكان آخر بحرية' +
-    '<br><span style="font-size:0.85rem;">اضغط «▶️ استئناف التسجيل» لمتابعة نفس الملف</span>' +
-    '<br><span style="font-size:0.75rem; color:#b8d0e8;">💡 لن يُفقد أي شيء، سنكمل من حيث توقفنا</span>'
+    '<br><span style="font-size:0.85rem;">اضغط «▶️ استئناف التسجيل» لمتابعة نفس الملف</span>'
   );
 }
 
@@ -2217,15 +2559,17 @@ function resumeRecording() {
   updatePreviewBadge();
   updateSegmentsLog();
 
+  scheduleControlsHide();
+
   const pauseSec = Math.floor(pauseDuration / 1000);
   setStatus('busy',
-    '🔴 <b>تم استئناف التسجيل</b> — نفس الملف يكمل' +
+    '🔴 <b>تم استئناف التسجيل</b>' +
     '<br><span style="font-size:0.85rem;">مدة الإيقاف كانت: ' + fmtTime(pauseSec) + '</span>'
   );
 }
 
 // ============================================================
-//  التحكم بالفيديو المرجعي
+//  الفيديو المرجعي
 // ============================================================
 refFileInp.addEventListener('change', e => {
   const f = e.target.files[0];
@@ -2327,6 +2671,7 @@ function toggleRefBroadcast() {
     btnRefBroadcast.classList.add('btn-green');
     updatePreviewBadge();
     updateIndicators();
+    scheduleControlsHide();
     setStatus('busy', '🎞️ البث الآن للفيديو المرجعي — اسمعوا معي 🎧');
   }
 }
@@ -2346,6 +2691,7 @@ function stopRefBroadcast() {
   btnRefBroadcast.classList.remove('btn-green');
   updatePreviewBadge();
   updateIndicators();
+  scheduleControlsHide();
   if (isRecording && !isPaused) setStatus('busy', '🔴 جاري التسجيل — أنت على البث الآن 🎤');
 }
 
@@ -2490,6 +2836,9 @@ btnStart.addEventListener('click', function () {
 
     startTimer();
 
+    // ✅ دخول وضع التسجيل بملء الشاشة
+    enterRecordingMode();
+
     btnStart.style.display = 'none';
     recordingControls.style.display = 'block';
     btnStop.style.display = 'flex';
@@ -2536,8 +2885,7 @@ btnStart.addEventListener('click', function () {
 
     setStatus('busy',
       '<span class="live-dot"></span> جاري التسجيل' +
-      (audioAdded ? ' مع الصوت ✅' : ' (بدون صوت)') +
-      '<br><span style="font-size:0.85rem;">🎯 اضغط «⏸️ إيقاف مؤقت» للانتقال بين المواقع</span>'
+      (audioAdded ? ' مع الصوت ✅' : ' (بدون صوت)')
     );
 
     if (activeSource === 'file') {
@@ -2561,6 +2909,7 @@ btnStart.addEventListener('click', function () {
     previewWrap.classList.remove('recording', 'paused');
     stopTimer();
     stopPauseTimer();
+    exitRecordingMode();
   }
 });
 
@@ -2572,6 +2921,8 @@ quickStop.addEventListener('click', () => stopRecording());
 
 function stopRecording() {
   if (!isRecording) return;
+
+  exitRecordingMode();
 
   if (isPaused) {
     const segDuration = (Date.now() - currentSegmentStart) / 1000;
@@ -2619,6 +2970,7 @@ function stopRecording() {
 }
 
 function cancelRecording() {
+  exitRecordingMode();
   isRecording = false;
   isPaused = false;
   stopTimer();
