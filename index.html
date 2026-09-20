@@ -107,8 +107,72 @@
   #refVolSlider::-moz-range-thumb { background: #9c27b0; box-shadow: 0 0 12px #9c27b0; }
 
   /* ============================================================
-     وضع الاستوديو — ✅ مُصلح
+     ✅ نظام "ابدأ من هنا"
      ============================================================ */
+  .start-point-box {
+    background: #0a1a2a;
+    border: 2px solid #FFD700;
+    border-radius: 12px;
+    padding: 10px;
+    margin-top: 10px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+  .start-point-info {
+    flex: 1;
+    min-width: 100px;
+  }
+  .start-point-label {
+    font-size: 0.7rem;
+    color: #FFD700;
+    font-weight: 900;
+    margin-bottom: 2px;
+  }
+  .start-point-time {
+    font-size: 1.1rem;
+    color: #fff;
+    font-weight: 900;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 1px;
+  }
+  .start-point-actions {
+    display: flex;
+    gap: 6px;
+  }
+  .start-point-actions button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Cairo';
+    font-weight: 900;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: 0.2s;
+    white-space: nowrap;
+  }
+  .btn-set-start { background: #FFD700; color: #0a1a2e; }
+  .btn-set-start:active { transform: scale(0.95); }
+  .btn-reset-start { background: #2e4a6a; color: #fff; }
+  .btn-reset-start:active { transform: scale(0.95); }
+  .start-point-box.ref {
+    border-color: #9c27b0;
+  }
+  .start-point-box.ref .start-point-label {
+    color: #d8b4ff;
+  }
+  .start-point-box.ref .btn-set-start {
+    background: #9c27b0;
+    color: #fff;
+  }
+  .start-point-box.ref .btn-reset-start {
+    background: #2a1a3f;
+    color: #fff;
+  }
+
+  /* وضع الاستوديو */
   .studio-overlay { display: none; position: fixed; inset: 0; z-index: 1000; background: #000; overflow: hidden; }
   body.studio-mode { overflow: hidden !important; padding: 0 !important; }
   body.studio-mode .studio-overlay { display: flex; flex-direction: column; animation: fadeIn 0.3s ease; }
@@ -126,7 +190,6 @@
   .studio-live-badge { font-size: 0.8rem; font-weight: 700; padding: 6px 12px; border-radius: 30px; background: rgba(0,0,0,0.7); color: #00FF00; border: 2px solid #00FF0050; backdrop-filter: blur(8px); display: flex; align-items: center; gap: 6px; }
   .studio-live-badge.paused { color: #ffc107; border-color: #ffc10780; }
 
-  /* ✅ منطقة الفيديو — إصلاح */
   .studio-video-area {
     flex: 1;
     min-height: 0;
@@ -200,7 +263,24 @@
       <button data-src="file" class="active">📁 رفع فيديو</button>
       <button data-src="camera">🎥 تصوير مباشر</button>
     </div>
-    <div id="fileBox" style="margin-top:10px;"><input type="file" id="videoFile" accept="video/*"></div>
+    <div id="fileBox" style="margin-top:10px;">
+      <input type="file" id="videoFile" accept="video/*">
+      
+      <!-- ✅ نقطة بداية الفيديو الرئيسي -->
+      <div id="mainStartBox" class="start-point-box" style="display:none;">
+        <div class="start-point-info">
+          <div class="start-point-label">📍 نقطة البداية</div>
+          <div class="start-point-time" id="mainStartTime">00:00.0</div>
+        </div>
+        <div class="start-point-actions">
+          <button class="btn-set-start" id="btnSetMainStart">📍 ابدأ من هنا</button>
+          <button class="btn-reset-start" id="btnResetMainStart">🔄 البداية</button>
+        </div>
+      </div>
+      <div id="mainStartHint" class="hint" style="display:none; background:#FFD70010; border-right-color:#FFD700; color:#FFD700; margin-top:6px;">
+        💡 شغّل الفيديو في المعاينة، توقف عند النقطة المطلوبة، ثم اضغط «📍 ابدأ من هنا»
+      </div>
+    </div>
     <div id="cameraBox" style="display:none; margin-top:10px;">
       <button class="big-btn btn-blue" id="btnCamOn" style="margin-top:0;">🎥 تشغيل الكاميرا</button>
       <div class="btn-row" id="camControls" style="display:none;">
@@ -247,6 +327,21 @@
         <button id="refPlayBtn">▶️ تشغيل</button>
         <button id="refPauseBtn">⏸️ إيقاف</button>
         <button id="refRestartBtn">🔄 من البداية</button>
+      </div>
+
+      <!-- ✅ نقطة بداية المرجعي -->
+      <div id="refStartBox" class="start-point-box ref" style="margin-top:10px;">
+        <div class="start-point-info">
+          <div class="start-point-label">📍 نقطة بداية المرجعي</div>
+          <div class="start-point-time" id="refStartTime">00:00.0</div>
+        </div>
+        <div class="start-point-actions">
+          <button class="btn-set-start" id="btnSetRefStart">📍 ابدأ من هنا</button>
+          <button class="btn-reset-start" id="btnResetRefStart">🔄 البداية</button>
+        </div>
+      </div>
+      <div class="hint" style="background:#9c27b010; border-right-color:#9c27b0; color:#d8b4ff; margin-top:6px;">
+        💡 شغّل المرجعي في المشغل أعلاه، توقف عند النقطة المطلوبة، ثم اضغط «📍 ابدأ من هنا»
       </div>
     </div>
   </div>
@@ -353,7 +448,7 @@
 
 <script>
 // ============================================================
-//  استوديو الأخبار الاحترافي - النسخة النهائية المُصلحة
+//  استوديو الأخبار الاحترافي - مع "📍 ابدأ من هنا"
 // ============================================================
 
 const canvas = document.createElement('canvas');
@@ -395,6 +490,10 @@ let refVolNode = null;
 
 let tickerX = 0;
 let tickerInited = false;
+
+// ✅ نقاط البداية
+let mainStartPoint = 0;
+let refStartPoint = 0;
 
 // ===== عناصر الفيديو =====
 const video = document.createElement('video');
@@ -457,8 +556,15 @@ function fmtTime(s) {
   return String(m).padStart(2, '0') + ':' + String(sec).padStart(2, '0');
 }
 
+function fmtPrecise(s) {
+  if (!isFinite(s) || s < 0) return '00:00.0';
+  const m = Math.floor(s / 60), sec = Math.floor(s % 60);
+  const dec = Math.floor((s % 1) * 10);
+  return String(m).padStart(2, '0') + ':' + String(sec).padStart(2, '0') + '.' + dec;
+}
+
 // ============================================================
-//  ✅ ضبط أبعاد canvas حسب المساحة المتاحة
+//  ✅ ضبط أبعاد canvas
 // ============================================================
 function fitCanvasToArea() {
   const area = studioVideoArea.getBoundingClientRect();
@@ -774,7 +880,7 @@ $('btnCamOff').addEventListener('click', () => {
 });
 
 // ============================================================
-//  الفيديوهات
+//  رفع الفيديو الرئيسي + عرض صندوق نقطة البداية
 // ============================================================
 $('videoFile').addEventListener('change', e => {
   const f = e.target.files[0]; if (!f) return;
@@ -782,6 +888,10 @@ $('videoFile').addEventListener('change', e => {
   video.load();
   video.onloadedmetadata = () => {
     videoLoaded = true; video.currentTime = 0;
+    mainStartPoint = 0;
+    $('mainStartTime').textContent = '00:00.0';
+    $('mainStartBox').style.display = 'flex';
+    $('mainStartHint').style.display = 'block';
     if (activeSource === 'file') resizeCanvas();
     refreshStartBtn(); redraw(0); updateIndicators();
     setStatus('ok', '✅ الفيديو جاهز! المدة: ' + fmtTime(video.duration));
@@ -802,6 +912,9 @@ $('logoFile').addEventListener('change', e => {
   img.src = URL.createObjectURL(f);
 });
 
+// ============================================================
+//  الفيديو المرجعي + عرض صندوق نقطة البداية
+// ============================================================
 $('refFile').addEventListener('change', e => {
   const f = e.target.files[0]; if (!f) return;
   refLoaded = false;
@@ -812,6 +925,8 @@ $('refFile').addEventListener('change', e => {
   $('refStatus').textContent = '⏳ جاري التحميل...';
   refVideo.onloadedmetadata = () => {
     refLoaded = true;
+    refStartPoint = 0;
+    $('refStartTime').textContent = '00:00.0';
     $('refStatus').textContent = '✅ جاهز';
     $('refStatus').classList.add('ready');
     $('refDuration').textContent = fmtTime(refVideo.duration);
@@ -841,10 +956,53 @@ $('refProgress').addEventListener('click', e => {
 
 $('refPlayBtn').addEventListener('click', () => refVideo.play().catch(()=>{}));
 $('refPauseBtn').addEventListener('click', () => refVideo.pause());
-$('refRestartBtn').addEventListener('click', () => { refVideo.currentTime = 0; refVideo.play().catch(()=>{}); });
+$('refRestartBtn').addEventListener('click', () => { 
+  refVideo.currentTime = 0; 
+  refStartPoint = 0;
+  $('refStartTime').textContent = '00:00.0';
+  refVideo.play().catch(()=>{}); 
+});
 
 refVideo.addEventListener('ended', () => {
   if (isRecording && layoutMode === 'reference') setLayout('anchor');
+});
+
+// ============================================================
+//  ✅ نظام "ابدأ من هنا"
+// ============================================================
+
+// --- الفيديو الرئيسي ---
+$('btnSetMainStart').addEventListener('click', (e) => {
+  e.stopPropagation();
+  if (!videoLoaded) return;
+  mainStartPoint = video.currentTime;
+  $('mainStartTime').textContent = fmtPrecise(mainStartPoint);
+  setStatus('ok', '📍 سيبدأ الفيديو الرئيسي من: <b>' + fmtPrecise(mainStartPoint) + '</b>');
+});
+
+$('btnResetMainStart').addEventListener('click', (e) => {
+  e.stopPropagation();
+  mainStartPoint = 0;
+  $('mainStartTime').textContent = '00:00.0';
+  try { video.currentTime = 0; } catch(err) {}
+  setStatus('ok', '✅ تم إرجاع الفيديو الرئيسي للبداية');
+});
+
+// --- الفيديو المرجعي ---
+$('btnSetRefStart').addEventListener('click', (e) => {
+  e.stopPropagation();
+  if (!refLoaded) return;
+  refStartPoint = refVideo.currentTime;
+  $('refStartTime').textContent = fmtPrecise(refStartPoint);
+  setStatus('ok', '📍 سيبدأ الفيديو المرجعي من: <b>' + fmtPrecise(refStartPoint) + '</b>');
+});
+
+$('btnResetRefStart').addEventListener('click', (e) => {
+  e.stopPropagation();
+  refStartPoint = 0;
+  $('refStartTime').textContent = '00:00.0';
+  try { refVideo.currentTime = 0; } catch(err) {}
+  setStatus('ok', '✅ تم إرجاع الفيديو المرجعي للبداية');
 });
 
 // ============================================================
@@ -872,11 +1030,29 @@ function setLayout(mode) {
 function applyLayoutNow(mode) {
   layoutMode = mode;
   if (mode === 'reference' || mode === 'split') {
-    if (refLoaded) refVideo.play().catch(()=>{});
+    if (refLoaded) {
+      // ✅ المرجعي يبدأ من نقطة البداية
+      if (!refVideo._hasStarted) {
+        refVideo.currentTime = refStartPoint;
+        refVideo._hasStarted = true;
+      } else if (refVideo.currentTime < refStartPoint - 0.1) {
+        refVideo.currentTime = refStartPoint;
+      }
+      refVideo.play().catch(()=>{});
+    }
     if (activeSource === 'file') video.pause();
   } else {
-    if (refLoaded) refVideo.pause();
-    if (activeSource === 'file' && isRecording && !isPaused) video.play().catch(()=>{});
+    if (refLoaded) {
+      refVideo.pause();
+      refVideo._hasStarted = false;
+    }
+    if (activeSource === 'file' && isRecording && !isPaused) {
+      // ✅ الفيديو الرئيسي يبدأ من نقطة البداية
+      if (video.currentTime < mainStartPoint - 0.1) {
+        video.currentTime = mainStartPoint;
+      }
+      video.play().catch(()=>{});
+    }
   }
   applyMix();
   updateStudioUI();
@@ -1001,7 +1177,15 @@ function startRecording() {
     $('btnStop').style.display = 'flex';
     $('btnDownload').style.display = 'none';
 
-    if (activeSource === 'file') video.play().catch(()=>{});
+    // ✅ الفيديو الرئيسي يبدأ من نقطة البداية
+    if (activeSource === 'file') {
+      video.currentTime = mainStartPoint;
+      video.play().catch(()=>{});
+    }
+    
+    // إعادة تعيين علم البداية للمرجعي
+    refVideo._hasStarted = false;
+
     setStatus('busy', '<span class="live-dot"></span> التسجيل الاحترافي جارٍ');
   } catch (e) {
     setStatus('err', '⚠️ ' + e.message);
@@ -1009,7 +1193,6 @@ function startRecording() {
   }
 }
 
-// ✅ دالة دخول الاستوديو مع ضبط الأبعاد
 function enterStudio() {
   document.body.classList.add('studio-mode');
   
@@ -1017,7 +1200,6 @@ function enterStudio() {
     studioVideoArea.appendChild(canvas);
   }
   
-  // ✅ إعادة ضبط حجم canvas ليلائم منطقة العرض
   canvas.style.width = '100%';
   canvas.style.height = 'auto';
   canvas.style.maxWidth = '100%';
@@ -1033,7 +1215,6 @@ function enterStudio() {
   scheduleStudioHide();
   document.body.style.overflow = 'hidden';
   
-  // ✅ ضبط الأبعاد بعد أن يأخذ المتصفح قياساته
   requestAnimationFrame(() => {
     fitCanvasToArea();
     redraw(0);
@@ -1089,7 +1270,6 @@ studioVideoArea.addEventListener('click', e => {
   btn.addEventListener('click', scheduleStudioHide);
 });
 
-// ✅ إعادة ضبط الأبعاد عند تغيير النافذة
 window.addEventListener('resize', () => {
   if (isRecording && document.body.classList.contains('studio-mode')) {
     fitCanvasToArea();
@@ -1491,7 +1671,6 @@ function drawEmptyState(W, H, msg) {
   ctx.fillText(msg || '🎥 اختر مصدراً', W / 2, H / 2);
 }
 
-// ✅ الإطار الذهبي الرقيق
 function drawThinGoldFrame(W, H, PAD) {
   const grad = ctx.createLinearGradient(0, 0, W, H);
   grad.addColorStop(0,    '#B8860B');
@@ -1730,9 +1909,8 @@ updateSegmentsLog();
 animFrame = requestAnimationFrame(renderLoop);
 
 console.log('✅ الاستوديو جاهز!');
+console.log('📍 ميزة "ابدأ من هنا" مُفعّلة');
 console.log('🖼️ إطار ذهبي رقيق (4px)');
-console.log('📺 3 أنماط: مذيع / مرجعي / مقسوم');
-console.log('✂️ دالة fitCanvasToArea: ضبط تلقائي للأبعاد');
 </script>
 </body>
 </html>
