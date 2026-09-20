@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>استوديو الفيديو المباشر الذكي - مع الإيقاف المؤقت</title>
+<title>استوديو الفيديو المباشر الذكي - النسخة الكاملة</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -172,7 +172,6 @@
   .btn-yellow { background: #ffc107; color: #0a1a2e; }
   .btn-gray { background: #546e7a; color: #fff; }
 
-  /* ====== منطقة العرض الذكية ====== */
   .preview-wrap {
     position: relative;
     width: 100%;
@@ -231,7 +230,6 @@
   }
   @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
 
-  /* ====== قسم الفيديو المرجعي ====== */
   .ref-box {
     background: #1a0f2e;
     border: 2px solid #9c27b0;
@@ -305,7 +303,6 @@
     background: #9c27b0;
     box-shadow: 0 0 12px #9c27b0;
   }
-  .ref-controls button:disabled { opacity: 0.4; }
 
   .ref-progress {
     width: 100%;
@@ -342,7 +339,6 @@
     50% { box-shadow: 0 0 0 12px #9c27b000; }
   }
 
-  /* ====== الحالة ====== */
   .status {
     padding: 14px;
     border-radius: 12px;
@@ -353,7 +349,7 @@
     background: #0a1a2a;
     border: 2px solid #2e4a6a;
     color: #b8d0e8;
-    line-height: 1.6;
+    line-height: 1.7;
   }
   .status.ok { color: #00FF00; border-color: #00FF0050; background: #00FF0010; }
   .status.err { color: #ff4757; border-color: #ff475750; background: #ff475710; }
@@ -383,7 +379,6 @@
   .timer.show { display: block; }
   .timer.paused { color: #ffc107; }
 
-  /* مؤقت الإيقاف المؤقت */
   .pause-timer {
     text-align: center;
     font-size: 1.1rem;
@@ -483,7 +478,6 @@
     box-shadow: 0 0 8px #9c27b0;
   }
 
-  /* ====== شريط التحكم السريع أثناء التسجيل ====== */
   .quick-bar {
     position: fixed;
     bottom: 0;
@@ -522,9 +516,6 @@
     transition: 0.15s;
   }
   .quick-bar button:active { transform: scale(0.96); }
-  @media (max-width: 500px) {
-    .quick-bar button { font-size: 0.75rem; padding: 12px 4px; }
-  }
 
   .scroll-top {
     position: fixed;
@@ -580,7 +571,6 @@
     color: #ffc107;
   }
 
-  /* ====== خيارات الإيقاف المؤقت ====== */
   .pause-options {
     background: #1a1a2e;
     border: 2px solid #ffc107;
@@ -658,7 +648,6 @@
   }
   .pause-text-input:focus { border-color: #ffc107; }
 
-  /* سجل المقاطع */
   .segments-log {
     margin-top: 10px;
     max-height: 150px;
@@ -721,7 +710,11 @@
         <button class="big-btn btn-red" id="btnCamOff">⏹️ إيقاف</button>
         <button class="big-btn btn-cyan" id="btnSwitchCam">🔄 تبديل الكاميرا</button>
       </div>
-      <div class="hint">سيطلب المتصفح السماح بالكاميرا والميكروفون.</div>
+      <button class="big-btn btn-gray" id="btnDiagnose" style="margin-top:8px; font-size:0.9rem;">
+        🔍 فحص حالة الكاميرا والمتصفح
+      </button>
+      <div class="hint">سيطلب المتصفح السماح بالكاميرا والميكروفون.<br>
+      <b>⚠️ مهم:</b> يجب فتح الصفحة عبر HTTPS أو localhost، وليس file://</div>
     </div>
   </div>
 
@@ -789,7 +782,7 @@
     <div class="hint">👆 اسحب النص أو الشعار داخل الفيديو لتحريكهما</div>
   </div>
 
-  <!-- ============ 6 : الفيديو المرجعي ============ -->
+  <!-- ============ 6 ============ -->
   <div class="step" style="border-color:#9c27b0;">
     <div class="step-title"><span class="num" style="background:#9c27b0;color:#fff;">6</span> 
       <span style="color:#d8b4ff;">الفيديو المرجعي (للتعليق عليه)</span>
@@ -826,7 +819,7 @@
     </div>
   </div>
 
-  <!-- ============ 7 : الإيقاف المؤقت الذكي ============ -->
+  <!-- ============ 7 ============ -->
   <div class="step" style="border-color:#ffc107;">
     <div class="step-title"><span class="num" style="background:#ffc107;color:#0a1a2e;">7</span> 
       <span style="color:#ffc107;">الإيقاف المؤقت الذكي (Pause)</span>
@@ -869,7 +862,6 @@
       </div>
     </div>
 
-    <!-- سجل المقاطع -->
     <div class="hint" style="background:#ffc10710; border-right-color:#ffc107; color:#ffc107; margin-top:10px;">
       📋 <b>سجل المقاطع المسجلة</b>
     </div>
@@ -911,10 +903,7 @@
       ▶️ ابدأ التسجيل
     </button>
 
-    <!-- أزرار التحكم الرئيسية أثناء التسجيل -->
     <div id="recordingControls" style="display:none; margin-top:8px;">
-      
-      <!-- صف الإيقاف/الاستئناف - الأهم -->
       <div class="btn-row" style="margin-bottom:8px;">
         <button class="big-btn btn-yellow" id="btnPause" style="margin-top:0; display:none;">
           ⏸️ إيقاف مؤقت
@@ -924,7 +913,6 @@
         </button>
       </div>
 
-      <!-- صف أزرار إضافية -->
       <div class="btn-row" id="switchRow" style="display:none; margin-bottom:8px;">
         <button class="big-btn btn-orange" id="btnSwitch" style="display:none; margin-top:0;">
           🎬 بث الفيديو البديل
@@ -934,7 +922,6 @@
         </button>
       </div>
 
-      <!-- زر الفيديو المرجعي -->
       <button class="big-btn ref-broadcast-btn" id="btnRefBroadcast" style="display:none;">
         🎞️ تشغيل الفيديو المرجعي
       </button>
@@ -945,7 +932,6 @@
       </div>
     </div>
 
-    <!-- زر الإنهاء النهائي -->
     <button class="big-btn btn-red" id="btnStop" disabled style="display:none;">
       ⏹️ إنهاء التسجيل نهائياً
     </button>
@@ -964,7 +950,6 @@
 
 </div>
 
-<!-- شريط التحكم السريع -->
 <div class="quick-bar" id="quickBar">
   <div class="quick-bar-inner">
     <button id="quickPause" style="background:#ffc107;color:#0a1a2e;">⏸️ إيقاف</button>
@@ -977,10 +962,7 @@
 
 <script>
 // ============================================================
-//  استوديو الفيديو المباشر الذكي
-//  ✅ إيقاف مؤقت ذكي (Pause/Resume) مع شاشة انتقالية
-//  ✅ الفيديو المرجعي للتعليق
-//  ✅ معاينة ذكية + شريط سريع
+//  استوديو الفيديو المباشر الذكي - النسخة الكاملة المُحدّثة
 // ============================================================
 
 // ===== الحالة =====
@@ -1004,7 +986,7 @@ let tickerX = 0;
 let tickerInited = false;
 
 let isRecording = false;
-let isPaused    = false;         // ✅ حالة الإيقاف المؤقت
+let isPaused    = false;
 let mediaRecorder = null;
 let recordedChunks = [];
 let canvasStream = null;
@@ -1021,7 +1003,6 @@ let logoX = 0.5, logoY = 0.15;
 let isDragging = null;
 let dragOff = { x: 0, y: 0 };
 
-// المؤقتات
 let timerInterval = null;
 let pauseTimerInterval = null;
 let recordStartTime = 0;
@@ -1029,11 +1010,9 @@ let pauseStartTime = 0;
 let accumulatedPauseTime = 0;
 let lastFrameTime = 0;
 
-// المقاطع
-let segments = [];              // [{ start, end, duration }]
+let segments = [];
 let currentSegmentStart = 0;
 
-// خيارات الإيقاف المؤقت
 let optShowTransition = true;
 let optSkipTransition = false;
 let transitionText = '⏸️ جاري الانتقال إلى موقع آخر...';
@@ -1080,6 +1059,7 @@ const camControls = $('camControls');
 const btnCamOn = $('btnCamOn');
 const btnCamOff = $('btnCamOff');
 const btnSwitchCam = $('btnSwitchCam');
+const btnDiagnose = $('btnDiagnose');
 const otherInfo = $('otherInfo');
 const musicInfo = $('musicInfo');
 const canvas = $('previewCanvas');
@@ -1104,7 +1084,6 @@ const musicVolVal = $('musicVolVal');
 const musicVolBox = $('musicVolBox');
 const previewWrap = $('previewWrap');
 
-// الفيديو المرجعي
 const refVideo = $('refVideo');
 const refBox = $('refBox');
 const refStatus = $('refStatus');
@@ -1121,7 +1100,6 @@ const refCurrent = $('refCurrent');
 const refDuration = $('refDuration');
 const btnRefBroadcast = $('btnRefBroadcast');
 
-// المؤشرات
 const indSource = $('indSource');
 const indMic = $('indMic');
 const indRef = $('indRef');
@@ -1135,7 +1113,6 @@ const quickRef = $('quickRef');
 const quickStop = $('quickStop');
 const scrollTop = $('scrollTop');
 
-// خيارات الإيقاف
 const optShowTransitionInp = $('optShowTransition');
 const optSkipTransitionInp = $('optSkipTransition');
 const transitionTextBox = $('transitionTextBox');
@@ -1233,10 +1210,7 @@ function connectMic() {
 function applyMix() {
   if (!audioCtx) return;
   const t = audioCtx.currentTime;
-
-  // ✅ أثناء الإيقاف المؤقت: كتم كل شيء
   const muted = isPaused;
-
   const mainOn  = (!muted && broadcast === 'main')  ? 1 : 0;
   const otherOn = (!muted && broadcast === 'other') ? 1 : 0;
   const refOn   = (!muted && broadcast === 'ref' && !refMuted) ? 1 : 0;
@@ -1266,7 +1240,6 @@ function updateIndicators() {
   indMusic.classList.toggle('ref-on', musicLoaded && musicOn);
   indMusic.textContent = musicOn ? '🎵 يعمل' : '🎵 الموسيقى';
 
-  // مؤشر التسجيل
   if (isPaused) {
     indRec.classList.remove('on');
     indRec.classList.add('paused');
@@ -1348,42 +1321,201 @@ videoFileInp.addEventListener('change', e => {
 });
 
 // ============================================================
-//  الكاميرا
+//  ✅ دالة تشغيل الكاميرا الذكية (مع محاولات متعددة)
 // ============================================================
 async function startCameraStream(facing) {
   if (cameraStream) {
     try { cameraStream.getTracks().forEach(t => t.stop()); } catch (e) {}
     cameraStream = null;
   }
-  const constraints = {
-    video: { facingMode: { ideal: facing }, width: { ideal: 1280 }, height: { ideal: 720 } },
-    audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
-  };
-  cameraStream = await navigator.mediaDevices.getUserMedia(constraints);
-  camVideo.srcObject = cameraStream;
+
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    throw new Error('متصفحك لا يدعم الوصول للكاميرا. استخدم Chrome أو Safari حديث.');
+  }
+
+  if (location.protocol !== 'https:' &&
+      location.hostname !== 'localhost' &&
+      location.hostname !== '127.0.0.1' &&
+      !location.hostname.startsWith('192.168.')) {
+    throw new Error('يجب فتح الصفحة عبر HTTPS أو localhost للوصول للكاميرا.');
+  }
+
+  const attempts = [
+    {
+      name: 'عالية الدقة مع الصوت',
+      constraints: {
+        video: { facingMode: { ideal: facing }, width: { ideal: 1280 }, height: { ideal: 720 } },
+        audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
+      }
+    },
+    {
+      name: 'متوسطة الدقة مع الصوت',
+      constraints: {
+        video: { facingMode: { ideal: facing }, width: { ideal: 640 }, height: { ideal: 480 } },
+        audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
+      }
+    },
+    {
+      name: 'دقة منخفضة مع الصوت',
+      constraints: {
+        video: { width: { ideal: 640 }, height: { ideal: 480 } },
+        audio: true
+      }
+    },
+    {
+      name: 'فيديو فقط',
+      constraints: {
+        video: { facingMode: { ideal: facing }, width: { ideal: 640 }, height: { ideal: 480 } }
+      }
+    },
+    {
+      name: 'الأبسط (فيديو فقط)',
+      constraints: { video: true }
+    }
+  ];
+
+  let lastError = null;
+  let stream = null;
+
+  for (let i = 0; i < attempts.length; i++) {
+    const attempt = attempts[i];
+    try {
+      console.log(`🎥 محاولة ${i + 1}: ${attempt.name}...`);
+      setStatus('busy', `⏳ محاولة تشغيل الكاميرا (${i + 1}/${attempts.length}): ${attempt.name}...`);
+      stream = await navigator.mediaDevices.getUserMedia(attempt.constraints);
+      console.log(`✅ نجحت المحاولة ${i + 1}: ${attempt.name}`);
+      break;
+    } catch (err) {
+      console.warn(`❌ فشلت المحاولة ${i + 1}:`, err.name, err.message);
+      lastError = err;
+      if (err.name === 'NotAllowedError' || err.name === 'SecurityError') {
+        throw new Error('تم رفض الإذن. اضغط على أيقونة القفل 🔒 بجانب العنوان واسمح بالكاميرا.');
+      }
+      if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
+        throw new Error('لم يتم العثور على كاميرا في الجهاز.');
+      }
+      continue;
+    }
+  }
+
+  if (!stream) {
+    let reason = 'سبب غير معروف';
+    if (lastError) {
+      switch (lastError.name) {
+        case 'NotReadableError':
+        case 'TrackStartError':
+          reason = 'الكاميرا مشغولة في تطبيق آخر. أغلق (Zoom، Teams، Camera، متصفح آخر) وحاول مجدداً.';
+          break;
+        case 'OverconstrainedError':
+          reason = 'الدقة المطلوبة غير مدعومة. جرب دقة أقل.';
+          break;
+        case 'NotAllowedError':
+          reason = 'تم رفض الإذن. اضغط على القفل 🔒 بجانب العنوان واسمح بالكاميرا.';
+          break;
+        case 'NotFoundError':
+          reason = 'لا توجد كاميرا في هذا الجهاز.';
+          break;
+        case 'AbortError':
+          reason = 'تم إلغاء العملية. حاول مرة أخرى.';
+          break;
+        default:
+          reason = lastError.message || lastError.name;
+      }
+    }
+    throw new Error(reason);
+  }
+
+  cameraStream = stream;
+  camVideo.srcObject = stream;
   camVideo.muted = true;
-  await camVideo.play();
-  if (!camVideo.videoWidth) await new Promise(res => { camVideo.onloadedmetadata = res; });
+
+  try { await camVideo.play(); }
+  catch (e) { camVideo.play().catch(()=>{}); }
+
+  if (!camVideo.videoWidth) {
+    await new Promise(res => {
+      const timeout = setTimeout(res, 3000);
+      camVideo.onloadedmetadata = () => { clearTimeout(timeout); res(); };
+    });
+  }
+
   currentFacing = facing;
+
+  const vTrack = stream.getVideoTracks()[0];
+  const aTracks = stream.getAudioTracks();
+  const settings = vTrack ? vTrack.getSettings() : {};
+  console.log('📹 إعدادات الكاميرا:', settings);
+  console.log('🎤 مسارات صوتية:', aTracks.length);
+
+  return {
+    hasAudio: aTracks.length > 0,
+    width: settings.width,
+    height: settings.height,
+    facingMode: settings.facingMode || facing
+  };
 }
 
+// ============================================================
+//  ✅ زر تشغيل الكاميرا مع معالجة أخطاء مفصلة
+// ============================================================
 btnCamOn.addEventListener('click', async function () {
+  btnCamOn.disabled = true;
+  const oldText = btnCamOn.textContent;
+  btnCamOn.textContent = '⏳ جاري التشغيل...';
+
   try {
-    setStatus('busy', '⏳ جاري تشغيل الكاميرا...');
-    await startCameraStream('user');
+    setStatus('busy', '⏳ جاري طلب إذن الكاميرا...');
+    const result = await startCameraStream('user');
     cameraReady = true;
     resizeCanvasForSource();
-    resumeAudio(); connectMic(); applyMix();
+    resumeAudio();
+    connectMic();
+    applyMix();
+
     btnCamOn.style.display = 'none';
     camControls.style.display = 'grid';
-    refreshStartBtn(); redraw(0); updateIndicators();
-    const hasMic = cameraStream.getAudioTracks().length > 0;
-    setStatus('ok', '✅ الكاميرا جاهزة' + (hasMic ? ' مع الميكروفون 🎤' : ''));
+    refreshStartBtn();
+    redraw(0);
+    updateIndicators();
+
+    const info = [];
+    if (result.hasAudio) info.push('🎤 ميكروفون');
+    if (result.width && result.height) info.push(`📐 ${result.width}×${result.height}`);
+
+    setStatus('ok',
+      '✅ الكاميرا جاهزة' +
+      (info.length ? ' (' + info.join(' • ') + ')' : '') +
+      '<br><span style="font-size:0.85rem;">اضغط الزر الأخضر للبدء</span>'
+    );
+
   } catch (e) {
-    setStatus('err', '⚠️ تعذر تشغيل الكاميرا: ' + (e.message || e));
+    console.error('❌ Camera error:', e);
+    let errorHTML = `<b style="color:#ff4757;">⚠️ تعذر تشغيل الكاميرا</b><br>`;
+    errorHTML += `<span style="font-size:0.85rem;">${e.message || e}</span>`;
+    errorHTML += `<div style="margin-top:8px; padding:8px; background:#ff475710; border-radius:8px; font-size:0.8rem; text-align:right; line-height:1.8;">`;
+    errorHTML += `<b>الحلول المقترحة:</b><br>`;
+    errorHTML += `🔹 أغلق أي تطبيق يستخدم الكاميرا (Zoom، Teams، Camera)<br>`;
+    errorHTML += `🔹 اضغط على أيقونة القفل 🔒 بجانب العنوان واسمح بالكاميرا<br>`;
+    errorHTML += `🔹 أعد تحميل الصفحة (F5) وحاول مجدداً<br>`;
+    errorHTML += `🔹 تأكد أن الصفحة تُفتح عبر HTTPS أو localhost<br>`;
+    errorHTML += `🔹 جرب متصفحاً آخر (Chrome / Safari)<br>`;
+    errorHTML += `</div>`;
+
+    setStatus('err', errorHTML);
+    btnCamOn.style.display = 'flex';
+    camControls.style.display = 'none';
+    cameraReady = false;
+
+  } finally {
+    btnCamOn.disabled = false;
+    if (cameraReady) btnCamOn.textContent = oldText;
+    else btnCamOn.textContent = '🎥 إعادة المحاولة';
   }
 });
 
+// ============================================================
+//  زر تبديل الكاميرا
+// ============================================================
 btnSwitchCam.addEventListener('click', async function () {
   if (!cameraReady) return;
   const newFacing = (currentFacing === 'user') ? 'environment' : 'user';
@@ -1393,7 +1525,7 @@ btnSwitchCam.addEventListener('click', async function () {
   try {
     await startCameraStream(newFacing);
     if (audioCtx) { connectMic(); applyMix(); }
-    resizeCanvasForSource(); redraw(0);
+    resizeCanvasForSource(); redraw(0); updateIndicators();
     setStatus('ok', '✅ تم التبديل إلى الكاميرا ' + (newFacing === 'user' ? 'الأمامية' : 'الخلفية'));
   } catch (e) {
     setStatus('err', '⚠️ تعذر تبديل الكاميرا: ' + (e.message || e));
@@ -1413,8 +1545,65 @@ function stopCamera() {
   try { if (cameraStream) cameraStream.getTracks().forEach(t => t.stop()); } catch (e) {}
   cameraStream = null; cameraReady = false; camVideo.srcObject = null;
   btnCamOn.style.display = 'flex'; camControls.style.display = 'none';
+  btnCamOn.textContent = '🎥 تشغيل الكاميرا والميكروفون';
   refreshStartBtn(); redraw(0); updateIndicators();
 }
+
+// ============================================================
+//  ✅ زر التشخيص
+// ============================================================
+btnDiagnose.addEventListener('click', async function () {
+  let html = '<b style="color:#ffc107;">🔍 تقرير التشخيص</b><br><br>';
+
+  html += `<b>1. البروتوكول:</b> ${location.protocol}//${location.hostname}<br>`;
+  if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+    html += `<span style="color:#ff4757;">⚠️ يجب استخدام HTTPS أو localhost</span><br>`;
+  } else {
+    html += `<span style="color:#00FF00;">✅ آمن</span><br>`;
+  }
+
+  html += `<br><b>2. دعم المتصفح:</b><br>`;
+  html += `navigator.mediaDevices: ${!!navigator.mediaDevices ? '✅' : '❌'}<br>`;
+  html += `getUserMedia: ${!!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) ? '✅' : '❌'}<br>`;
+
+  try {
+    if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const cams = devices.filter(d => d.kind === 'videoinput');
+      const mics = devices.filter(d => d.kind === 'audioinput');
+
+      html += `<br><b>3. الأجهزة المكتشفة:</b><br>`;
+      html += `📹 كاميرات: <b style="color:#00FF00;">${cams.length}</b><br>`;
+      html += `🎤 ميكروفونات: <b style="color:#00FF00;">${mics.length}</b><br>`;
+
+      if (cams.length === 0) {
+        html += `<span style="color:#ff4757;">⚠️ لا توجد كاميرا! قد تكون الأذونات مرفوضة.</span><br>`;
+      } else {
+        cams.forEach((cam, i) => {
+          html += `<span style="font-size:0.7rem;"> • ${cam.label || 'كاميرا ' + (i + 1)}</span><br>`;
+        });
+      }
+    }
+  } catch (e) {
+    html += `<span style="color:#ff4757;">فشل فحص الأجهزة: ${e.message}</span><br>`;
+  }
+
+  try {
+    if (navigator.permissions && navigator.permissions.query) {
+      const camPerm = await navigator.permissions.query({ name: 'camera' });
+      const micPerm = await navigator.permissions.query({ name: 'microphone' });
+      html += `<br><b>4. حالة الإذن:</b><br>`;
+      html += `📹 الكاميرا: <b>${camPerm.state}</b><br>`;
+      html += `🎤 الميكروفون: <b>${micPerm.state}</b><br>`;
+    }
+  } catch (e) {}
+
+  html += `<br><b>5. حالة النظام:</b><br>`;
+  html += `هل الكاميرا تعمل حالياً؟ ${cameraReady ? '✅ نعم' : '❌ لا'}<br>`;
+  html += `هل التسجيل جارٍ؟ ${isRecording ? '🔴 نعم' : '⚪ لا'}<br>`;
+
+  setStatus('busy', html);
+});
 
 // ============================================================
 //  الفيديو البديل
@@ -1700,9 +1889,7 @@ function drawTickerOrNews(W, H, dt) {
   else drawStaticNews(W, H);
 }
 
-// ✅ الشاشة الانتقالية الذكية
 function drawTransitionScreen(W, H) {
-  // خلفية متدرجة
   const grad = ctx.createLinearGradient(0, 0, W, H);
   grad.addColorStop(0, '#0a1a2e');
   grad.addColorStop(0.5, '#1a0f2e');
@@ -1710,13 +1897,11 @@ function drawTransitionScreen(W, H) {
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, W, H);
 
-  // إطار مضيء
   const pulse = (Math.sin(Date.now() / 400) + 1) / 2;
   ctx.strokeStyle = `rgba(255, 193, 7, ${0.3 + pulse * 0.4})`;
   ctx.lineWidth = 4;
   ctx.strokeRect(20, 20, W - 40, H - 40);
 
-  // الشعار إن وجد
   if (logoImg && logoImg.width) {
     const lw = W * 0.15;
     const lh = (logoImg.height / logoImg.width) * lw;
@@ -1728,7 +1913,6 @@ function drawTransitionScreen(W, H) {
     ctx.restore();
   }
 
-  // النص الرئيسي
   const fs = W * 0.05;
   ctx.font = `900 ${fs}px Cairo, Tahoma, sans-serif`;
   ctx.textAlign = 'center';
@@ -1740,14 +1924,12 @@ function drawTransitionScreen(W, H) {
   ctx.fillText(displayText, W / 2, H * 0.5);
   ctx.shadowBlur = 0;
 
-  // وقت الإيقاف
   const pauseSec = Math.floor((Date.now() - pauseStartTime) / 1000);
   const fs2 = W * 0.03;
   ctx.font = `700 ${fs2}px Cairo, Tahoma, sans-serif`;
   ctx.fillStyle = 'rgba(255,255,255,0.5)';
   ctx.fillText('مدة الإيقاف: ' + fmtTime(pauseSec), W / 2, H * 0.7);
 
-  // نقاط متحركة
   const dots = '.'.repeat((Math.floor(Date.now() / 400) % 4));
   ctx.font = `900 ${fs * 0.7}px Cairo, sans-serif`;
   ctx.fillStyle = 'rgba(255, 193, 7, 0.7)';
@@ -1761,25 +1943,21 @@ function redraw(dt) {
   ctx.fillStyle = '#000';
   ctx.fillRect(0, 0, W, H);
 
-  // ✅ إذا كنا في وضع الإيقاف المؤقت
   if (isPaused && isRecording) {
     if (optShowTransition && !optSkipTransition) {
       drawTransitionScreen(W, H);
     } else {
-      // انتقال سلس: نعرض آخر إطار أو المصدر
       if (activeSource === 'camera') {
         if (camVideo.readyState >= 2) drawCover(camVideo, W, H);
       } else {
         if (videoLoaded && video.readyState >= 2) drawCover(video, W, H);
       }
-      // نص صغير في الأسفل
       ctx.fillStyle = 'rgba(255, 193, 7, 0.9)';
       ctx.font = `700 ${W * 0.03}px Cairo, sans-serif`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'bottom';
       ctx.fillText('⏸️ إيقاف مؤقت...', W / 2, H - 20);
     }
-    // لا نرسم الخبر أثناء الإيقاف المؤقت
     canvas._newsBounds = null;
     canvas._logoBounds = null;
     return;
@@ -1787,7 +1965,6 @@ function redraw(dt) {
 
   let drew = false;
 
-  // أولوية العرض: المرجعي > البديل > المصدر
   if (broadcast === 'ref' && refLoaded && refVideo.readyState >= 2) {
     drew = drawCover(refVideo, W, H);
   } else if (broadcast === 'other' && otherLoaded && otherVideo.readyState >= 2) {
@@ -1918,7 +2095,6 @@ function stopTimer() {
   timerEl.classList.remove('show', 'paused');
 }
 
-// ✅ مؤقت الإيقاف المؤقت
 function startPauseTimer() {
   pauseStartTime = Date.now();
   pauseTimerEl.classList.add('show');
@@ -1973,13 +2149,11 @@ function pauseRecording() {
 
   isPaused = true;
 
-  // إنهاء المقطع الحالي
   const segDuration = (Date.now() - currentSegmentStart) / 1000;
   if (segDuration > 0.5) {
     segments.push({ start: currentSegmentStart, end: Date.now(), duration: segDuration });
   }
 
-  // إيقاف المصادر الصوتية/المرئية
   try { video.pause(); } catch (e) {}
   try { otherVideo.pause(); } catch (e) {}
   try { refVideo.pause(); } catch (e) {}
@@ -1987,7 +2161,6 @@ function pauseRecording() {
 
   applyMix();
 
-  // تحديث الواجهة
   btnPause.style.display = 'none';
   btnResume.style.display = 'flex';
 
@@ -1999,8 +2172,6 @@ function pauseRecording() {
   quickPause.style.background = '#00FF00';
 
   timerEl.classList.add('paused');
-
-  // بدء مؤقت الإيقاف
   startPauseTimer();
 
   updateIndicators();
@@ -2017,24 +2188,18 @@ function pauseRecording() {
 function resumeRecording() {
   if (!isRecording || !isPaused) return;
 
-  // حساب زمن الإيقاف
   const pauseDuration = Date.now() - pauseStartTime;
   accumulatedPauseTime += pauseDuration;
 
   isPaused = false;
-
-  // بدء مقطع جديد
   currentSegmentStart = Date.now();
 
-  // استئناف المصدر الأساسي
   if (activeSource === 'file') {
     video.play().catch(()=>{});
   }
-  // (الكاميرا تعمل تلقائياً)
 
   applyMix();
 
-  // تحديث الواجهة
   btnPause.style.display = 'flex';
   btnResume.style.display = 'none';
 
@@ -2320,13 +2485,11 @@ btnStart.addEventListener('click', function () {
     isRecording = true;
     isPaused = false;
 
-    // سجل المقاطع: بدء المقطع الأول
     segments = [];
     currentSegmentStart = Date.now();
 
     startTimer();
 
-    // تحديث الواجهة
     btnStart.style.display = 'none';
     recordingControls.style.display = 'block';
     btnStop.style.display = 'flex';
@@ -2361,7 +2524,6 @@ btnStart.addEventListener('click', function () {
       btnRefBroadcast.style.display = 'none';
     }
 
-    // شريط التحكم السريع
     quickBar.classList.add('show');
     quickBar.classList.remove('paused');
     quickPause.textContent = '⏸️ إيقاف';
@@ -2403,7 +2565,7 @@ btnStart.addEventListener('click', function () {
 });
 
 // ============================================================
-//  إنهاء التسجيل نهائياً
+//  إنهاء التسجيل
 // ============================================================
 btnStop.addEventListener('click', () => stopRecording());
 quickStop.addEventListener('click', () => stopRecording());
@@ -2411,7 +2573,6 @@ quickStop.addEventListener('click', () => stopRecording());
 function stopRecording() {
   if (!isRecording) return;
 
-  // إذا كنا في وضع الإيقاف، نضيف المقطع الأخير
   if (isPaused) {
     const segDuration = (Date.now() - currentSegmentStart) / 1000;
     if (segDuration > 0.5) {
@@ -2438,7 +2599,6 @@ function stopRecording() {
   musicOn = false;
   applyMix();
 
-  // تحديث الواجهة
   recordingControls.style.display = 'none';
   btnStop.style.display = 'none';
   btnStop.disabled = true;
