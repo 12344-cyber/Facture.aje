@@ -95,12 +95,10 @@
   .segment-item { display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; background: #1a2f3f; border-radius: 8px; margin-bottom: 4px; font-size: 0.8rem; color: #b8d0e8; }
   .segment-item .seg-num { background: #00FF00; color: #0a1a2e; padding: 2px 8px; border-radius: 10px; font-weight: 900; font-size: 0.75rem; }
 
-  /* ✅ منزلق الميكروفون */
   #micVol { -webkit-appearance: none; appearance: none; width: 100%; height: 8px; border-radius: 8px; background: #2e4a6a; outline: none; border: none; margin-top: 10px; padding: 0; }
   #micVol::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 26px; height: 26px; border-radius: 50%; background: #00bcd4; cursor: pointer; border: 3px solid #fff; box-shadow: 0 0 12px #00bcd4; }
   #micVol::-moz-range-thumb { width: 26px; height: 26px; border-radius: 50%; background: #00bcd4; cursor: pointer; border: 3px solid #fff; box-shadow: 0 0 12px #00bcd4; }
 
-  /* وضع الاستوديو */
   .studio-overlay { display: none; position: fixed; inset: 0; z-index: 1000; background: #000; overflow: hidden; }
   body.studio-mode { overflow: hidden !important; padding: 0 !important; }
   body.studio-mode .studio-overlay { display: flex; flex-direction: column; animation: fadeIn 0.3s ease; }
@@ -221,7 +219,6 @@
     </div>
   </div>
 
-  <!-- ✅ قسم مستوى الميكروفون -->
   <div class="step" style="border-color:#00bcd4;">
     <div class="step-title">
       <span class="num" style="background:#00bcd4;color:#0a1a2e;">🎤</span>
@@ -306,10 +303,9 @@
 
 <script>
 // ============================================================
-//  استوديو الأخبار الاحترافي - النسخة النهائية
+//  استوديو الأخبار الاحترافي - مع الشريط المتحرك
 // ============================================================
 
-// ✅ إنشاء canvas ديناميكياً
 const canvas = document.createElement('canvas');
 canvas.width = 1280;
 canvas.height = 720;
@@ -340,10 +336,13 @@ let optAudioDuck = true;
 let optShowPiP = true;
 let optShowTransition = true;
 
-// ✅ متغيرات الصوت
-let micBoostValue = 2.5; // 250%
+let micBoostValue = 2.5;
 let micBoostNode = null;
 let micCompressor = null;
+
+// ✅ متغيرات الشريط المتحرك
+let tickerX = 0;
+let tickerInited = false;
 
 // ===== عناصر الفيديو =====
 const video = document.createElement('video');
@@ -403,7 +402,7 @@ function fmtTime(s) {
 }
 
 // ============================================================
-//  ✅ نظام الصوت مع Mic Boost
+//  نظام الصوت مع Mic Boost
 // ============================================================
 let audioCtx = null, audioDest = null;
 let srcMain = null, srcRef = null, micNode = null;
@@ -421,7 +420,6 @@ function ensureAudio() {
     gainMic = audioCtx.createGain();
     gainRef = audioCtx.createGain();
     
-    // ✅ Mic boost chain: gainMic → micBoostNode → micCompressor → audioDest
     micBoostNode = audioCtx.createGain();
     micBoostNode.gain.value = micBoostValue;
     
@@ -436,14 +434,12 @@ function ensureAudio() {
     gainMic.gain.value = 1;
     gainRef.gain.value = 0;
     
-    // ضاغط للمرجعي
     refLimiter = audioCtx.createDynamicsCompressor();
     refLimiter.threshold.value = -3;
     refLimiter.ratio.value = 20;
     refLimiter.attack.value = 0.003;
     refLimiter.release.value = 0.15;
     
-    // السلسلة الكاملة
     gainMic.connect(micBoostNode);
     micBoostNode.connect(micCompressor);
     micCompressor.connect(audioDest);
@@ -494,12 +490,8 @@ function applyMix() {
   const t = audioCtx.currentTime;
   const muted = isPaused;
   
-  // ✅ المرجعي يُسمع في نمطي reference و split
   const refPlaying = (layoutMode === 'reference' || layoutMode === 'split');
   
-  // ✅ Ducking ذكي:
-  // - reference mode: خفض قوي (0.15) لأن صوت المرجعي فقط يجب أن يُسمع
-  // - split mode: خفض متوسط (0.5) لأنك تريد سماع الاثنين
   let duckFactor = 1.0;
   if (optAudioDuck) {
     if (layoutMode === 'reference') duckFactor = 0.15;
@@ -857,6 +849,7 @@ function startRecording() {
     targetLayoutMode = 'anchor';
     transitionProgress = 0;
     isPaused = false;
+    tickerInited = false; // ✅ إعادة تهيئة الشريط
     applyMix();
 
     canvasStream = canvas.captureStream(30);
@@ -1206,44 +1199,40 @@ function drawPiP(el, W, H) {
   canvas._pipBounds = { x: px, y: py, w: pw, h: ph };
 }
 
-function drawNewsLowerThird(W, H) {
+// ✅ الشريط الإخباري المتحرك
+function drawNewsLowerThird(W, H, dt) {
   const news = newsText.value.trim();
-  if (!news) { canvas._newsBounds = null; return; }
+  if (!news) { 
+    canvas._newsBounds = null; 
+    tickerInited = false; 
+    return; 
+  }
+  
   const sizes = { 2: 0.028, 3: 0.038, 4: 0.05, 5: 0.065 };
   const fs = W * (sizes[newsSize] || 0.038);
   ctx.font = `900 ${fs}px Cairo, Tahoma, sans-serif`;
-  ctx.textAlign = 'right';
-  ctx.textBaseline = 'middle';
-
-  const maxWidth = W * 0.82;
-  const words = news.split(' ');
-  const lines = []; let line = '';
-  for (const w of words) {
-    const test = line ? line + ' ' + w : w;
-    if (ctx.measureText(test).width > maxWidth && line) { lines.push(line); line = w; }
-    else line = test;
-  }
-  if (line) lines.push(line);
-
+  
+  const textWidth = ctx.measureText(news).width;
   const lineH = fs * 1.3;
-  const totalH = lines.length * lineH;
-  const barH = totalH + 32;
+  const barH = lineH + 32;
   const barY = H - barH;
-
+  
+  // خلفية الشريط
   const barGrad = ctx.createLinearGradient(0, barY, 0, H);
   barGrad.addColorStop(0, 'rgba(0, 0, 0, 0.3)');
   barGrad.addColorStop(0.3, 'rgba(0, 0, 0, 0.85)');
   barGrad.addColorStop(1, 'rgba(0, 0, 0, 0.95)');
   ctx.fillStyle = barGrad;
   ctx.fillRect(0, barY, W, barH);
-
+  
   ctx.fillStyle = '#ff4757';
   ctx.fillRect(0, barY, W, 4);
-
+  
+  // شارة "مباشر / مرجعي"
   const badgeW = fs * 4;
   const badgeH = fs * 1.6;
   const badgeX = W - badgeW - 20;
-  const badgeY = barY + 12;
+  const badgeY = barY + (barH - badgeH) / 2;
   const bGrad = ctx.createLinearGradient(badgeX, 0, badgeX + badgeW, 0);
   bGrad.addColorStop(0, '#ff4757');
   bGrad.addColorStop(1, '#c0392b');
@@ -1251,19 +1240,48 @@ function drawNewsLowerThird(W, H) {
   ctx.beginPath();
   ctx.roundRect(badgeX, badgeY, badgeW, badgeH, 4);
   ctx.fill();
-
+  
   ctx.fillStyle = '#fff';
   ctx.font = `900 ${fs * 0.85}px Cairo, sans-serif`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.fillText((layoutMode === 'reference') ? 'مرجعي' : 'مباشر', badgeX + badgeW / 2, badgeY + badgeH / 2);
-
+  
+  // منطقة التمرير
+  const tickerLeft = 20;
+  const tickerRight = badgeX - 20;
+  const textY = barY + barH / 2 + 2;
+  
+  // تهيئة موضع التمرير
+  if (!tickerInited) {
+    tickerX = W + 40;
+    tickerInited = true;
+  }
+  
+  // قص المنطقة
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(tickerLeft, barY, tickerRight - tickerLeft, barH);
+  ctx.clip();
+  
+  // رسم النص المتحرك
   ctx.fillStyle = '#fff';
   ctx.font = `900 ${fs}px Cairo, Tahoma, sans-serif`;
   ctx.textAlign = 'right';
-  const startY = barY + 12 + (totalH - lineH) / 2 + lineH / 2;
-  const textRightX = badgeX - 20;
-  lines.forEach((l, i) => ctx.fillText(l, textRightX, startY + i * lineH));
+  ctx.textBaseline = 'middle';
+  ctx.fillText(news, tickerX, textY);
+  
+  ctx.restore();
+  
+  // ✅ تحريك النص من اليمين إلى اليسار
+  const speed = W * 0.12;
+  tickerX -= speed * (dt || 0.033);
+  
+  // إعادة التمرير عند الخروج
+  if (tickerX < tickerLeft - textWidth - 40) {
+    tickerX = W + 40;
+  }
+  
   canvas._newsBounds = { x: 0, y: barY, w: W, h: barH };
 }
 
@@ -1389,7 +1407,7 @@ function redraw(dt) {
   }
 
   drawLogo(W, H);
-  drawNewsLowerThird(W, H);
+  drawNewsLowerThird(W, H, dt); // ✅ تمرير dt للتحريك
 }
 
 function drawEmptyState(W, H, msg) {
@@ -1418,7 +1436,7 @@ document.addEventListener('keydown', e => {
 });
 
 // ============================================================
-//  حلقة الرسم
+//  حلقة الرسم - ✅ مع دعم الشريط المتحرك
 // ============================================================
 function renderLoop(ts) {
   const dt = lastFrameTime ? Math.min(0.1, (ts - lastFrameTime) / 1000) : 0.033;
@@ -1427,9 +1445,11 @@ function renderLoop(ts) {
   const camLive = (activeSource === 'camera' && cameraReady && cameraStream);
   const videoLive = (activeSource === 'file' && videoLoaded && !video.paused && !video.ended);
   const refLive = (refLoaded && !refVideo.paused && !refVideo.ended);
+  const hasNews = !!newsText.value.trim();
   
   const needsAnim = isRecording || isPaused || layoutMode === 'reference' || 
-                    transitionProgress > 0 || camLive || videoLive || refLive;
+                    transitionProgress > 0 || camLive || videoLive || refLive ||
+                    hasNews; // ✅ الشريط يتحرك دائماً
   
   if (needsAnim) redraw(dt);
   animFrame = requestAnimationFrame(renderLoop);
@@ -1475,10 +1495,15 @@ $('sizeButtons').addEventListener('click', e => {
   $('sizeButtons').querySelectorAll('button').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   newsSize = parseInt(btn.dataset.size);
+  tickerInited = false; // إعادة تهيئة عند تغيير الحجم
   redraw(0);
 });
 
-newsText.addEventListener('input', () => redraw(0));
+// ✅ إعادة تهيئة الشريط عند تغيير النص
+newsText.addEventListener('input', () => { 
+  tickerInited = false; 
+  redraw(0); 
+});
 
 // ✅ التحكم بمستوى الميكروفون
 $('micVol').addEventListener('input', e => {
@@ -1506,7 +1531,8 @@ updateSegmentsLog();
 animFrame = requestAnimationFrame(renderLoop);
 
 console.log('✅ الاستوديو جاهز!');
-console.log('🎤 Mic Boost: 250% (يمكن تعديله من المنزلق)');
+console.log('🎤 Mic Boost: 250%');
+console.log('📜 الشريط الإخباري متحرك الآن');
 </script>
 </body>
 </html>
