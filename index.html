@@ -47,12 +47,6 @@
   .ref-video-wrap.show { display: block; }
   .ref-video-wrap video { width: 100%; display: block; border-radius: 10px; }
 
-  .ref-progress { width: 100%; height: 8px; background: #2a1a3f; border-radius: 4px; margin-top: 8px; overflow: hidden; cursor: pointer; position: relative; }
-  .ref-progress-fill { height: 100%; background: linear-gradient(90deg, #9c27b0, #e91e63); width: 0%; border-radius: 4px; }
-  .ref-time { display: flex; justify-content: space-between; font-size: 0.7rem; color: #b8d0e8; margin-top: 4px; }
-  .ref-controls { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 8px; }
-  .ref-controls button { padding: 10px 6px; background: #2a1a3f; border: 2px solid #9c27b0; color: #fff; border-radius: 10px; font-size: 0.85rem; font-family: 'Cairo'; font-weight: 700; cursor: pointer; transition: 0.2s; }
-
   .status { padding: 14px; border-radius: 12px; text-align: center; font-size: 0.95rem; font-weight: 700; margin-top: 10px; background: #0a1a2a; border: 2px solid #2e4a6a; color: #b8d0e8; line-height: 1.7; }
   .status.ok { color: #00FF00; border-color: #00FF0050; background: #00FF0010; }
   .status.err { color: #ff4757; border-color: #ff475750; background: #ff475710; }
@@ -107,168 +101,257 @@
   #refVolSlider::-moz-range-thumb { background: #9c27b0; box-shadow: 0 0 12px #9c27b0; }
 
   /* ============================================================
-     ✅ نظام تحديد المقطع الكامل
+     ✂️ نظام القص الاحترافي - شريط بمقبضين
      ============================================================ */
-  .clip-selector {
+  .trimmer {
     background: #0a1a2a;
     border: 2px solid #FFD700;
-    border-radius: 12px;
-    padding: 12px;
+    border-radius: 14px;
+    padding: 16px 12px 12px;
     margin-top: 10px;
   }
-  .clip-title {
+  .trimmer-title {
     color: #FFD700;
     font-weight: 900;
     font-size: 0.9rem;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 6px;
   }
-  .clip-presets {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 5px;
-    margin-bottom: 10px;
-  }
-  .clip-presets button {
-    padding: 8px 4px;
-    background: #1a2f3f;
-    border: 2px solid #2e4a6a;
-    color: #fff;
-    border-radius: 8px;
-    font-family: 'Cairo';
+  .trimmer-title .trimmer-badge {
+    font-size: 0.7rem;
+    padding: 3px 8px;
+    border-radius: 20px;
+    background: #FFD70020;
+    color: #FFD700;
+    border: 1px solid #FFD70050;
     font-weight: 700;
-    font-size: 0.75rem;
-    cursor: pointer;
-    transition: 0.2s;
   }
-  .clip-presets button.active {
-    background: linear-gradient(135deg, #FFD700, #DAA520);
-    color: #0a1a2e;
-    border-color: #FFD700;
-  }
-  .clip-presets button:active { transform: scale(0.95); }
 
-  /* شريط تحديد مرئي */
-  .clip-bar-wrap {
+  /* الشريط */
+  .trim-track {
     position: relative;
-    height: 30px;
-    background: #1a2f3f;
-    border-radius: 6px;
-    margin: 8px 0;
+    height: 60px;
+    margin: 8px 0 16px;
+    user-select: none;
+    touch-action: none;
+  }
+  .trim-rail {
+    position: absolute;
+    top: 22px;
+    left: 0;
+    right: 0;
+    height: 16px;
+    background: linear-gradient(180deg, #1a2f3f, #0f1f2f);
+    border-radius: 8px;
+    border: 1px solid #2e4a6a;
     overflow: hidden;
-    border: 2px solid #2e4a6a;
   }
-  .clip-bar-selected {
+  /* الشريط المظلل (الجزء المُحدد) */
+  .trim-selection {
     position: absolute;
-    top: 0;
-    bottom: 0;
-    background: linear-gradient(90deg, rgba(255, 215, 0, 0.6), rgba(255, 215, 0, 0.85));
-    border-left: 3px solid #FFD700;
-    border-right: 3px solid #FFD700;
+    top: 22px;
+    height: 16px;
+    background: linear-gradient(90deg, #FFD700, #FFA500, #FFD700);
+    background-size: 200% 100%;
+    animation: goldShimmer 3s linear infinite;
+    border-radius: 4px;
+    box-shadow: 0 0 16px rgba(255, 215, 0, 0.5), inset 0 0 8px rgba(255, 255, 255, 0.3);
     pointer-events: none;
+    z-index: 2;
   }
-  .clip-bar-cursor {
+  @keyframes goldShimmer {
+    0% { background-position: 0% 0%; }
+    100% { background-position: 200% 0%; }
+  }
+
+  /* المنطقة المظللة خارج التحديد */
+  .trim-outside {
     position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 3px;
-    background: #ff4757;
-    box-shadow: 0 0 8px #ff4757;
+    top: 22px;
+    height: 16px;
+    background: rgba(0, 0, 0, 0.7);
     pointer-events: none;
     z-index: 3;
-    display: none;
   }
 
-  .clip-times-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    margin: 8px 0;
-  }
-  .clip-time-box {
-    background: #1a2f3f;
+  /* المقابض */
+  .trim-handle {
+    position: absolute;
+    top: 8px;
+    width: 24px;
+    height: 44px;
     border-radius: 8px;
+    cursor: grab;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.15s, box-shadow 0.15s;
+    touch-action: none;
+    border: 3px solid #fff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+  }
+  .trim-handle:active { cursor: grabbing; transform: scale(1.15); }
+  .trim-handle::after {
+    content: '';
+    width: 3px;
+    height: 20px;
+    background: rgba(255,255,255,0.7);
+    border-radius: 2px;
+    box-shadow: 6px 0 0 rgba(255,255,255,0.7), -6px 0 0 rgba(255,255,255,0.7);
+  }
+  .trim-handle.start {
+    background: linear-gradient(135deg, #00FF00, #2e7d32);
+    box-shadow: 0 4px 16px rgba(0,255,0,0.5);
+  }
+  .trim-handle.end {
+    background: linear-gradient(135deg, #ff4757, #c0392b);
+    box-shadow: 0 4px 16px rgba(255,71,87,0.5);
+  }
+  .trim-handle.start::before,
+  .trim-handle.end::before {
+    content: '';
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: #fff;
+    border-radius: 50%;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    box-shadow: 0 0 8px #fff;
+  }
+
+  /* مؤشر الوقت الحالي */
+  .trim-cursor {
+    position: absolute;
+    top: 14px;
+    height: 32px;
+    width: 3px;
+    background: #fff;
+    box-shadow: 0 0 10px #fff, 0 0 20px rgba(255, 255, 255, 0.6);
+    pointer-events: none;
+    z-index: 8;
+    border-radius: 2px;
+    display: none;
+  }
+  .trim-cursor::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 8px solid #fff;
+  }
+
+  /* عرض الأوقات */
+  .trim-times {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 4px;
+  }
+  .trim-time-display {
+    flex: 1;
+    background: #0f1f33;
+    border: 2px solid #2e4a6a;
+    border-radius: 10px;
     padding: 8px;
     text-align: center;
-    border: 2px solid #2e4a6a;
   }
-  .clip-time-box.start { border-color: #00FF00; }
-  .clip-time-box.end { border-color: #ff4757; }
-  .clip-time-label {
+  .trim-time-display.start { border-color: #00FF00; }
+  .trim-time-display.end { border-color: #ff4757; }
+  .trim-time-display.duration { border-color: #FFD700; }
+  .trim-time-label {
     font-size: 0.7rem;
     font-weight: 900;
     margin-bottom: 2px;
+    opacity: 0.8;
   }
-  .clip-time-box.start .clip-time-label { color: #00FF00; }
-  .clip-time-box.end .clip-time-label { color: #ff4757; }
-  .clip-time-val {
-    font-size: 1.1rem;
+  .trim-time-display.start .trim-time-label { color: #00FF00; }
+  .trim-time-display.end .trim-time-label { color: #ff4757; }
+  .trim-time-display.duration .trim-time-label { color: #FFD700; }
+  .trim-time-val {
+    font-size: 1.05rem;
     color: #fff;
     font-weight: 900;
     font-variant-numeric: tabular-nums;
+    letter-spacing: 0.5px;
   }
 
-  .clip-actions {
+  /* أزرار القص */
+  .trim-actions {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 6px;
-    margin-top: 8px;
+    gap: 8px;
+    margin-top: 12px;
   }
-  .clip-actions button {
-    padding: 10px;
+  .trim-btn {
+    padding: 12px;
     border: none;
-    border-radius: 8px;
+    border-radius: 10px;
     font-family: 'Cairo';
     font-weight: 900;
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     cursor: pointer;
     transition: 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
   }
-  .clip-actions button:active { transform: scale(0.96); }
-  .btn-mark-start { background: linear-gradient(135deg, #00FF00, #2e7d32); color: #0a1a2e; }
-  .btn-mark-end { background: linear-gradient(135deg, #ff4757, #c0392b); color: #fff; }
-  .btn-clip-preview { background: linear-gradient(135deg, #00bcd4, #0097a7); color: #0a1a2e; grid-column: 1 / -1; }
-  .btn-clip-reset { background: #2e4a6a; color: #fff; grid-column: 1 / -1; }
-
-  .clip-summary {
-    text-align: center;
-    padding: 8px;
-    background: rgba(255, 215, 0, 0.1);
-    border: 1px dashed #FFD700;
-    border-radius: 8px;
-    margin-top: 8px;
-    font-size: 0.8rem;
-    color: #FFD700;
-    font-weight: 700;
+  .trim-btn:active { transform: scale(0.96); }
+  .trim-btn.preview {
+    background: linear-gradient(135deg, #00bcd4, #0097a7);
+    color: #0a1a2e;
+    grid-column: 1 / -1;
   }
-
-  .clip-ticker-note {
-    font-size: 0.75rem;
-    color: #b8d0e8;
-    text-align: center;
-    margin-top: 6px;
-    line-height: 1.6;
+  .trim-btn.preview.playing {
+    background: linear-gradient(135deg, #ffc107, #ff9800);
+  }
+  .trim-btn.reset {
+    background: #2e4a6a;
+    color: #fff;
+    grid-column: 1 / -1;
+  }
+  .trim-btn.goto-start {
+    background: linear-gradient(135deg, #00FF00, #2e7d32);
+    color: #0a1a2e;
+  }
+  .trim-btn.goto-end {
+    background: linear-gradient(135deg, #ff4757, #c0392b);
+    color: #fff;
   }
 
   /* نسخة المرجعي */
-  .clip-selector.ref {
+  .trimmer.ref {
     border-color: #9c27b0;
   }
-  .clip-selector.ref .clip-title {
+  .trimmer.ref .trimmer-title {
     color: #d8b4ff;
   }
-  .clip-selector.ref .clip-summary {
-    background: rgba(156, 39, 176, 0.15);
-    border-color: #9c27b0;
+  .trimmer.ref .trimmer-badge {
+    background: #9c27b020;
     color: #d8b4ff;
+    border-color: #9c27b050;
   }
-  .clip-selector.ref .clip-bar-selected {
-    background: linear-gradient(90deg, rgba(156, 39, 176, 0.6), rgba(233, 30, 99, 0.85));
-    border-color: #9c27b0;
+  .trimmer.ref .trim-handle.start {
+    background: linear-gradient(135deg, #9c27b0, #6a1b9a);
+    box-shadow: 0 4px 16px rgba(156,39,176,0.5);
   }
-  .clip-selector.ref .btn-clip-preview {
+  .trimmer.ref .trim-selection {
+    background: linear-gradient(90deg, #9c27b0, #e91e63, #9c27b0);
+    background-size: 200% 100%;
+    box-shadow: 0 0 16px rgba(156,39,176,0.5), inset 0 0 8px rgba(255, 255, 255, 0.3);
+  }
+  .trimmer.ref .trim-btn.preview {
     background: linear-gradient(135deg, #9c27b0, #e91e63);
     color: #fff;
   }
@@ -367,43 +450,47 @@
     <div id="fileBox" style="margin-top:10px;">
       <input type="file" id="videoFile" accept="video/*">
       
-      <!-- ✅ محدد مقطع الفيديو الرئيسي -->
-      <div id="mainClipBox" class="clip-selector" style="display:none;">
-        <div class="clip-title">✂️ تحديد مقطع الفيديو الرئيسي</div>
+      <!-- ✅ مقص الفيديو الرئيسي -->
+      <div id="mainTrimmer" class="trimmer" style="display:none;">
+        <div class="trimmer-title">
+          <span>✂️ حدد المقطع بالسحب</span>
+          <span class="trimmer-badge" id="mainTrimBadge">كامل</span>
+        </div>
         
-        <div class="clip-presets" data-target="main">
-          <button data-preset="all" class="active">📺 كامل</button>
-          <button data-preset="start">🎬 البداية</button>
-          <button data-preset="middle">🎯 الوسط</button>
-          <button data-preset="end">🏁 النهاية</button>
+        <div class="trim-track" id="mainTrimTrack">
+          <div class="trim-rail"></div>
+          <div class="trim-selection" id="mainTrimSelection"></div>
+          <div class="trim-outside" id="mainTrimOutsideL"></div>
+          <div class="trim-outside" id="mainTrimOutsideR"></div>
+          <div class="trim-cursor" id="mainTrimCursor"></div>
+          <div class="trim-handle start" id="mainTrimHandleStart"></div>
+          <div class="trim-handle end" id="mainTrimHandleEnd"></div>
         </div>
 
-        <div class="clip-bar-wrap" id="mainClipBar">
-          <div class="clip-bar-selected" id="mainClipSelected" style="left:0%; right:0%;"></div>
-          <div class="clip-bar-cursor" id="mainClipCursor"></div>
-        </div>
-
-        <div class="clip-times-row">
-          <div class="clip-time-box start">
-            <div class="clip-time-label">📍 البداية</div>
-            <div class="clip-time-val" id="mainClipStart">00:00.0</div>
+        <div class="trim-times">
+          <div class="trim-time-display start">
+            <div class="trim-time-label">🟢 البداية</div>
+            <div class="trim-time-val" id="mainTrimStartVal">00:00.0</div>
           </div>
-          <div class="clip-time-box end">
-            <div class="clip-time-label">🏁 النهاية</div>
-            <div class="clip-time-val" id="mainClipEnd">00:00.0</div>
+          <div class="trim-time-display duration">
+            <div class="trim-time-label">⏱️ المدة</div>
+            <div class="trim-time-val" id="mainTrimDurationVal">00:00.0</div>
+          </div>
+          <div class="trim-time-display end">
+            <div class="trim-time-label">🔴 النهاية</div>
+            <div class="trim-time-val" id="mainTrimEndVal">00:00.0</div>
           </div>
         </div>
 
-        <div class="clip-actions">
-          <button class="btn-mark-start" id="btnMainMarkStart">📍 ابدأ من هنا</button>
-          <button class="btn-mark-end" id="btnMainMarkEnd">🏁 انتهِ هنا</button>
-          <button class="btn-clip-preview" id="btnMainPreviewClip">▶️ استمع للمقطع المحدد</button>
-          <button class="btn-clip-reset" id="btnMainResetClip">🔄 إلغاء التحديد (الفيديو كاملاً)</button>
+        <div class="trim-actions">
+          <button class="trim-btn goto-start" id="mainTrimGotoStart">⏮️ ذهاب للبداية</button>
+          <button class="trim-btn goto-end" id="mainTrimGotoEnd">⏭️ ذهاب للنهاية</button>
+          <button class="trim-btn preview" id="mainTrimPreview">▶️ استمع للمقطع المحدد</button>
+          <button class="trim-btn reset" id="mainTrimReset">🔄 الفيديو كاملاً</button>
         </div>
 
-        <div class="clip-summary" id="mainClipSummary">📺 سيُبثّ الفيديو كاملاً</div>
-        <div class="clip-ticker-note">
-          💡 شغّل الفيديو في المعاينة أعلاه، وعند الوصول للنقطة اضغط «📍 ابدأ من هنا» أو «🏁 انتهِ هنا»
+        <div class="hint" style="background:#FFD70010; border-right-color:#FFD700; color:#FFD700; margin-top:8px;">
+          💡 اسحب المقبض الأخضر لتحديد البداية والأحمر لتحديد النهاية
         </div>
       </div>
     </div>
@@ -448,43 +535,47 @@
       </div>
       <div class="ref-video-wrap" id="refVideoWrap"><video id="refVideo" playsinline webkit-playsinline preload="metadata" controls style="width:100%; display:block; border-radius:10px; background:#000;"></video></div>
 
-      <!-- ✅ محدد مقطع المرجعي -->
-      <div id="refClipBox" class="clip-selector ref" style="margin-top:10px;">
-        <div class="clip-title">✂️ تحديد مقطع الفيديو المرجعي</div>
+      <!-- ✅ مقص المرجعي -->
+      <div id="refTrimmer" class="trimmer ref" style="margin-top:12px;">
+        <div class="trimmer-title">
+          <span>✂️ حدد مقطع المرجعي</span>
+          <span class="trimmer-badge" id="refTrimBadge">كامل</span>
+        </div>
         
-        <div class="clip-presets" data-target="ref">
-          <button data-preset="all" class="active">📺 كامل</button>
-          <button data-preset="start">🎬 البداية</button>
-          <button data-preset="middle">🎯 الوسط</button>
-          <button data-preset="end">🏁 النهاية</button>
+        <div class="trim-track" id="refTrimTrack">
+          <div class="trim-rail"></div>
+          <div class="trim-selection" id="refTrimSelection"></div>
+          <div class="trim-outside" id="refTrimOutsideL"></div>
+          <div class="trim-outside" id="refTrimOutsideR"></div>
+          <div class="trim-cursor" id="refTrimCursor"></div>
+          <div class="trim-handle start" id="refTrimHandleStart"></div>
+          <div class="trim-handle end" id="refTrimHandleEnd"></div>
         </div>
 
-        <div class="clip-bar-wrap" id="refClipBar">
-          <div class="clip-bar-selected" id="refClipSelected" style="left:0%; right:0%;"></div>
-          <div class="clip-bar-cursor" id="refClipCursor"></div>
-        </div>
-
-        <div class="clip-times-row">
-          <div class="clip-time-box start">
-            <div class="clip-time-label">📍 البداية</div>
-            <div class="clip-time-val" id="refClipStart">00:00.0</div>
+        <div class="trim-times">
+          <div class="trim-time-display start">
+            <div class="trim-time-label">🟣 البداية</div>
+            <div class="trim-time-val" id="refTrimStartVal">00:00.0</div>
           </div>
-          <div class="clip-time-box end">
-            <div class="clip-time-label">🏁 النهاية</div>
-            <div class="clip-time-val" id="refClipEnd">00:00.0</div>
+          <div class="trim-time-display duration">
+            <div class="trim-time-label">⏱️ المدة</div>
+            <div class="trim-time-val" id="refTrimDurationVal">00:00.0</div>
+          </div>
+          <div class="trim-time-display end">
+            <div class="trim-time-label">🔴 النهاية</div>
+            <div class="trim-time-val" id="refTrimEndVal">00:00.0</div>
           </div>
         </div>
 
-        <div class="clip-actions">
-          <button class="btn-mark-start" id="btnRefMarkStart">📍 ابدأ من هنا</button>
-          <button class="btn-mark-end" id="btnRefMarkEnd">🏁 انتهِ هنا</button>
-          <button class="btn-clip-preview" id="btnRefPreviewClip">▶️ استمع للمقطع المحدد</button>
-          <button class="btn-clip-reset" id="btnRefResetClip">🔄 إلغاء التحديد (الفيديو كاملاً)</button>
+        <div class="trim-actions">
+          <button class="trim-btn goto-start" id="refTrimGotoStart">⏮️ ذهاب للبداية</button>
+          <button class="trim-btn goto-end" id="refTrimGotoEnd">⏭️ ذهاب للنهاية</button>
+          <button class="trim-btn preview" id="refTrimPreview">▶️ استمع للمقطع المحدد</button>
+          <button class="trim-btn reset" id="refTrimReset">🔄 المرجعي كاملاً</button>
         </div>
 
-        <div class="clip-summary" id="refClipSummary">📺 سيُبثّ المرجعي كاملاً</div>
-        <div class="clip-ticker-note">
-          💡 شغّل المرجعي في المشغل أعلاه، وعند الوصول للنقطة اضغط «📍 ابدأ من هنا» أو «🏁 انتهِ هنا»
+        <div class="hint" style="background:#9c27b010; border-right-color:#9c27b0; color:#d8b4ff; margin-top:8px;">
+          💡 اسحب المقبض البنفسجي لتحديد البداية والأحمر لتحديد النهاية
         </div>
       </div>
     </div>
@@ -500,9 +591,6 @@
       <span id="micVolVal" style="color:#00bcd4; font-weight:900; font-size:1.1rem;">250%</span>
     </label>
     <input type="range" id="micVol" class="volume-slider" min="100" max="500" value="250" step="10">
-    <div class="hint" style="background:#00bcd410; border-right-color:#00bcd4; color:#00bcd4;">
-      💡 إذا كان صوتك منخفضاً، ارفع النسبة إلى 300% أو 400%.
-    </div>
   </div>
 
   <div class="step" style="border-color:#00FF00;">
@@ -597,7 +685,7 @@
 
 <script>
 // ============================================================
-//  استوديو الأخبار الاحترافي - مع محدد المقاطع الكامل
+//  استوديو الأخبار الاحترافي - مع مقص احترافي بمقبضين
 // ============================================================
 
 const canvas = document.createElement('canvas');
@@ -641,13 +729,11 @@ let refVolNode = null;
 let tickerX = 0;
 let tickerInited = false;
 
-// ✅ محدد المقاطع
-let mainClipStart = 0;
-let mainClipEnd = 0;
-let refClipStart = 0;
-let refClipEnd = 0;
-let mainPreviewing = false;
-let refPreviewing = false;
+// ✅ المقص
+let mainTrimStart = 0, mainTrimEnd = 0;
+let refTrimStart = 0, refTrimEnd = 0;
+let mainPreviewing = false, refPreviewing = false;
+let isDraggingHandle = null; // 'main-start' | 'main-end' | 'ref-start' | 'ref-end'
 
 // ===== عناصر الفيديو =====
 const video = document.createElement('video');
@@ -661,13 +747,11 @@ camVideo.setAttribute('playsinline', '');
 const refVideo = document.getElementById('refVideo');
 refVideo.playsInline = true; refVideo.muted = false; refVideo.volume = 1; refVideo.preload = 'auto';
 refVideo.setAttribute('playsinline', '');
-refVideo.setAttribute('webkit-playsinline', '');
-refVideo.controls = true;
 
 camVideo.style.cssText = 'position:fixed;left:-9999px;top:-9999px;width:2px;height:2px;opacity:0.01;pointer-events:none;';
 document.body.appendChild(camVideo);
 
-// ===== عناصر الواجهة =====
+// ===== الواجهة =====
 const $ = id => document.getElementById(id);
 const newsText = $('newsText');
 const logoPreview = $('logoPreview');
@@ -703,13 +787,11 @@ function setStatus(type, msg) {
   statusEl.className = 'status ' + (type || '');
   statusEl.innerHTML = msg;
 }
-
 function fmtTime(s) {
   if (!isFinite(s) || s < 0) return '00:00';
   const m = Math.floor(s / 60), sec = Math.floor(s % 60);
   return String(m).padStart(2, '0') + ':' + String(sec).padStart(2, '0');
 }
-
 function fmtPrecise(s) {
   if (!isFinite(s) || s < 0) return '00:00.0';
   const m = Math.floor(s / 60), sec = Math.floor(s % 60);
@@ -718,38 +800,284 @@ function fmtPrecise(s) {
 }
 
 // ============================================================
-//  ✅ ضبط أبعاد canvas
+//  ✅ نظام المقص الاحترافي
 // ============================================================
-function fitCanvasToArea() {
-  const area = studioVideoArea.getBoundingClientRect();
-  if (area.width <= 0 || area.height <= 0) return;
+function setupTrimmer(config) {
+  const {
+    trackId, selectionId, outsideLId, outsideRId, cursorId,
+    handleStartId, handleEndId,
+    startValId, endValId, durationValId, badgeId,
+    getDuration, getStart, getEnd, setStart, setEnd,
+    isRef
+  } = config;
 
-  const style = window.getComputedStyle(studioVideoArea);
-  const padLeft = parseFloat(style.paddingLeft) || 0;
-  const padRight = parseFloat(style.paddingRight) || 0;
-  const padTop = parseFloat(style.paddingTop) || 0;
-  const padBottom = parseFloat(style.paddingBottom) || 0;
+  const track = $(trackId);
+  const selection = $(selectionId);
+  const outsideL = $(outsideLId);
+  const outsideR = $(outsideRId);
+  const cursor = $(cursorId);
+  const handleStart = $(handleStartId);
+  const handleEnd = $(handleEndId);
+  const startVal = $(startValId);
+  const endVal = $(endValId);
+  const durationVal = $(durationValId);
+  const badge = $(badgeId);
 
-  const availW = area.width - padLeft - padRight;
-  const availH = area.height - padTop - padBottom;
-
-  if (availW <= 0 || availH <= 0) return;
-
-  const canvasAspect = canvas.width / canvas.height;
-  const availAspect = availW / availH;
-
-  let newW, newH;
-  if (canvasAspect > availAspect) {
-    newW = availW;
-    newH = availW / canvasAspect;
-  } else {
-    newH = availH;
-    newW = availH * canvasAspect;
+  function render() {
+    const dur = getDuration();
+    if (!dur) return;
+    const s = getStart();
+    const e = getEnd();
+    const trackW = track.clientWidth;
+    
+    const startPct = (s / dur) * 100;
+    const endPct = (e / dur) * 100;
+    
+    // موقع المقابض (RTL)
+    handleStart.style.right = `calc(${startPct}% - 12px)`;
+    handleEnd.style.right = `calc(${endPct}% - 12px)`;
+    
+    // المنطقة الذهبية
+    selection.style.right = `${startPct}%`;
+    selection.style.left = `${100 - endPct}%`;
+    
+    // المناطق الرمادية
+    outsideL.style.right = '0';
+    outsideL.style.left = `${100 - startPct}%`;
+    outsideR.style.right = `${endPct}%`;
+    outsideR.style.left = '0';
+    
+    // النصوص
+    startVal.textContent = fmtPrecise(s);
+    endVal.textContent = fmtPrecise(e);
+    durationVal.textContent = fmtPrecise(e - s);
+    
+    // شارة
+    const isFull = s < 0.1 && e > dur - 0.1;
+    if (isFull) {
+      badge.textContent = 'كامل';
+      badge.style.background = '';
+      badge.style.color = '';
+    } else {
+      const pct = Math.round(((e - s) / dur) * 100);
+      badge.textContent = pct + '%';
+      badge.style.background = isRef ? '#9c27b020' : '#FFD70020';
+    }
   }
 
-  canvas.style.width = newW + 'px';
-  canvas.style.height = newH + 'px';
+  function getPosFromEvent(e) {
+    const rect = track.getBoundingClientRect();
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    // RTL: نحسب من اليمين
+    const fromRight = rect.right - clientX;
+    const pct = Math.max(0, Math.min(1, fromRight / rect.width));
+    return pct * getDuration();
+  }
+
+  function onPointerDown(handle, e) {
+    e.preventDefault();
+    e.stopPropagation();
+    isDraggingHandle = handle;
+    handleStart.style.transition = 'none';
+    handleEnd.style.transition = 'none';
+  }
+
+  handleStart.addEventListener('mousedown', (e) => onPointerDown('start', e));
+  handleStart.addEventListener('touchstart', (e) => onPointerDown('start', e), { passive: false });
+  handleEnd.addEventListener('mousedown', (e) => onPointerDown('end', e));
+  handleEnd.addEventListener('touchstart', (e) => onPointerDown('end', e), { passive: false });
+
+  function onPointerMove(e) {
+    if (!isDraggingHandle) return;
+    const dur = getDuration();
+    if (!dur) return;
+    const pos = getPosFromEvent(e);
+    
+    if (isDraggingHandle === 'start') {
+      const newStart = Math.min(pos, getEnd() - 0.5);
+      setStart(Math.max(0, newStart));
+    } else if (isDraggingHandle === 'end') {
+      const newEnd = Math.max(pos, getStart() + 0.5);
+      setEnd(Math.min(dur, newEnd));
+    }
+    render();
+  }
+
+  function onPointerUp() {
+    isDraggingHandle = null;
+    handleStart.style.transition = '';
+    handleEnd.style.transition = '';
+  }
+
+  document.addEventListener('mousemove', onPointerMove);
+  document.addEventListener('touchmove', onPointerMove, { passive: false });
+  document.addEventListener('mouseup', onPointerUp);
+  document.addEventListener('touchend', onPointerUp);
+
+  // ✅ النقر على الشريط يقفز للوقت
+  track.addEventListener('click', (e) => {
+    if (isDraggingHandle) return;
+    const t = getPosFromEvent(e);
+    config.onSeek && config.onSeek(t);
+  });
+
+  // ✅ تحديث المؤشر عند التشغيل
+  window.addEventListener('resize', render);
+  setTimeout(render, 100);
+  
+  return { render, getPosFromEvent };
 }
+
+// ✅ إعداد مقص الرئيسي
+let mainTrimmer = null;
+let refTrimmer = null;
+
+// ✅ تهيئة بعد رفع الفيديوهات
+function initMainTrimmer() {
+  mainTrimmer = setupTrimmer({
+    trackId: 'mainTrimTrack',
+    selectionId: 'mainTrimSelection',
+    outsideLId: 'mainTrimOutsideL',
+    outsideRId: 'mainTrimOutsideR',
+    cursorId: 'mainTrimCursor',
+    handleStartId: 'mainTrimHandleStart',
+    handleEndId: 'mainTrimHandleEnd',
+    startValId: 'mainTrimStartVal',
+    endValId: 'mainTrimEndVal',
+    durationValId: 'mainTrimDurationVal',
+    badgeId: 'mainTrimBadge',
+    isRef: false,
+    getDuration: () => videoLoaded ? video.duration : 0,
+    getStart: () => mainTrimStart,
+    getEnd: () => mainTrimEnd,
+    setStart: (v) => { mainTrimStart = v; },
+    setEnd: (v) => { mainTrimEnd = v; },
+    onSeek: (t) => { video.currentTime = t; }
+  });
+}
+
+function initRefTrimmer() {
+  refTrimmer = setupTrimmer({
+    trackId: 'refTrimTrack',
+    selectionId: 'refTrimSelection',
+    outsideLId: 'refTrimOutsideL',
+    outsideRId: 'refTrimOutsideR',
+    cursorId: 'refTrimCursor',
+    handleStartId: 'refTrimHandleStart',
+    handleEndId: 'refTrimHandleEnd',
+    startValId: 'refTrimStartVal',
+    endValId: 'refTrimEndVal',
+    durationValId: 'refTrimDurationVal',
+    badgeId: 'refTrimBadge',
+    isRef: true,
+    getDuration: () => refLoaded ? refVideo.duration : 0,
+    getStart: () => refTrimStart,
+    getEnd: () => refTrimEnd,
+    setStart: (v) => { refTrimStart = v; },
+    setEnd: (v) => { refTrimEnd = v; },
+    onSeek: (t) => { refVideo.currentTime = t; }
+  });
+}
+
+// ✅ ربط الأزرار
+$('mainTrimGotoStart').addEventListener('click', () => { video.currentTime = mainTrimStart; });
+$('mainTrimGotoEnd').addEventListener('click', () => { video.currentTime = mainTrimEnd; });
+$('mainTrimReset').addEventListener('click', () => {
+  mainTrimStart = 0; mainTrimEnd = video.duration;
+  if (mainTrimmer) mainTrimmer.render();
+  setStatus('ok', '✅ الفيديو الرئيسي كاملاً');
+});
+$('mainTrimPreview').addEventListener('click', () => {
+  if (!videoLoaded) return;
+  if (mainPreviewing) {
+    video.pause();
+    mainPreviewing = false;
+    $('mainTrimPreview').textContent = '▶️ استمع للمقطع المحدد';
+    $('mainTrimPreview').classList.remove('playing');
+    return;
+  }
+  video.currentTime = mainTrimStart;
+  video.play().catch(()=>{});
+  mainPreviewing = true;
+  $('mainTrimPreview').textContent = '⏹️ إيقاف المعاينة';
+  $('mainTrimPreview').classList.add('playing');
+  setStatus('ok', '🎧 استمع للمقطع: ' + fmtPrecise(mainTrimStart) + ' ← ' + fmtPrecise(mainTrimEnd));
+});
+
+$('refTrimGotoStart').addEventListener('click', () => { refVideo.currentTime = refTrimStart; });
+$('refTrimGotoEnd').addEventListener('click', () => { refVideo.currentTime = refTrimEnd; });
+$('refTrimReset').addEventListener('click', () => {
+  refTrimStart = 0; refTrimEnd = refVideo.duration;
+  if (refTrimmer) refTrimmer.render();
+  setStatus('ok', '✅ الفيديو المرجعي كاملاً');
+});
+$('refTrimPreview').addEventListener('click', () => {
+  if (!refLoaded) return;
+  if (refPreviewing) {
+    refVideo.pause();
+    refPreviewing = false;
+    $('refTrimPreview').textContent = '▶️ استمع للمقطع المحدد';
+    $('refTrimPreview').classList.remove('playing');
+    return;
+  }
+  refVideo.currentTime = refTrimStart;
+  refVideo.play().catch(()=>{});
+  refPreviewing = true;
+  $('refTrimPreview').textContent = '⏹️ إيقاف المعاينة';
+  $('refTrimPreview').classList.add('playing');
+  setStatus('ok', '🎧 استمع للمقطع: ' + fmtPrecise(refTrimStart) + ' ← ' + fmtPrecise(refTrimEnd));
+});
+
+// ✅ مراقبة تقدم الفيديو (تحديث المؤشر + إيقاف عند النهاية)
+video.addEventListener('timeupdate', () => {
+  if (video.duration && videoLoaded) {
+    const pct = (video.currentTime / video.duration) * 100;
+    const cursor = $('mainTrimCursor');
+    cursor.style.right = pct + '%';
+    cursor.style.display = 'block';
+  }
+  
+  if ((mainPreviewing || (isRecording && !isPaused)) && mainTrimEnd < video.duration - 0.2) {
+    if (video.currentTime >= mainTrimEnd - 0.05) {
+      if (mainPreviewing) {
+        video.pause();
+        mainPreviewing = false;
+        $('mainTrimPreview').textContent = '▶️ استمع للمقطع المحدد';
+        $('mainTrimPreview').classList.remove('playing');
+        setStatus('ok', '✅ انتهت المعاينة');
+      } else if (isRecording && optLoopClip) {
+        video.currentTime = mainTrimStart;
+      } else if (isRecording) {
+        video.pause();
+      }
+    }
+  }
+});
+
+refVideo.addEventListener('timeupdate', () => {
+  if (refVideo.duration && refLoaded) {
+    const pct = (refVideo.currentTime / refVideo.duration) * 100;
+    const cursor = $('refTrimCursor');
+    cursor.style.right = pct + '%';
+    cursor.style.display = 'block';
+  }
+  
+  if ((refPreviewing || (isRecording && !isPaused && layoutMode !== 'anchor')) && refTrimEnd < refVideo.duration - 0.2) {
+    if (refVideo.currentTime >= refTrimEnd - 0.05) {
+      if (refPreviewing) {
+        refVideo.pause();
+        refPreviewing = false;
+        $('refTrimPreview').textContent = '▶️ استمع للمقطع المحدد';
+        $('refTrimPreview').classList.remove('playing');
+        setStatus('ok', '✅ انتهت معاينة المرجعي');
+      } else if (isRecording && optLoopClip) {
+        refVideo.currentTime = refTrimStart;
+      } else if (isRecording) {
+        refVideo.pause();
+      }
+    }
+  }
+});
 
 // ============================================================
 //  نظام الصوت
@@ -765,7 +1093,6 @@ function ensureAudio() {
   try {
     audioCtx = new AC();
     audioDest = audioCtx.createMediaStreamDestination();
-    
     gainMain = audioCtx.createGain();
     gainMic = audioCtx.createGain();
     gainRef = audioCtx.createGain();
@@ -781,7 +1108,6 @@ function ensureAudio() {
     
     mainVolNode = audioCtx.createGain();
     mainVolNode.gain.value = mainVolValue;
-    
     refVolNode = audioCtx.createGain();
     refVolNode.gain.value = refVolValue;
     
@@ -798,42 +1124,28 @@ function ensureAudio() {
     gainMic.connect(micBoostNode);
     micBoostNode.connect(micCompressor);
     micCompressor.connect(audioDest);
-    
     gainMain.connect(mainVolNode);
     mainVolNode.connect(audioDest);
-    
     gainRef.connect(refVolNode);
     refVolNode.connect(refLimiter);
     refLimiter.connect(audioDest);
     
     return audioCtx;
-  } catch (e) { 
-    audioCtx = null; 
-    return null; 
-  }
+  } catch (e) { audioCtx = null; return null; }
 }
 
 function resumeAudio() {
   const c = ensureAudio();
   if (c && c.state === 'suspended') c.resume().catch(()=>{});
 }
-
 function connectMain() {
   if (!ensureAudio() || srcMain) return;
-  try { 
-    srcMain = audioCtx.createMediaElementSource(video); 
-    srcMain.connect(gainMain); 
-  } catch (e) {}
+  try { srcMain = audioCtx.createMediaElementSource(video); srcMain.connect(gainMain); } catch (e) {}
 }
-
 function connectRef() {
   if (!ensureAudio() || srcRef) return;
-  try { 
-    srcRef = audioCtx.createMediaElementSource(refVideo); 
-    srcRef.connect(gainRef); 
-  } catch (e) {}
+  try { srcRef = audioCtx.createMediaElementSource(refVideo); srcRef.connect(gainRef); } catch (e) {}
 }
-
 function connectMic() {
   if (!ensureAudio() || !cameraStream) return false;
   if (!cameraStream.getAudioTracks().length) return false;
@@ -849,7 +1161,6 @@ function applyMix() {
   if (!audioCtx) return;
   const t = audioCtx.currentTime;
   const muted = isPaused;
-  
   const refPlaying = (layoutMode === 'reference' || layoutMode === 'split');
   
   let duckFactor = 1.0;
@@ -865,7 +1176,6 @@ function applyMix() {
   if (gainMain) gainMain.gain.setTargetAtTime(mainOn, t, 0.05);
   if (gainMic) gainMic.gain.setTargetAtTime(micOn, t, 0.05);
   if (gainRef) gainRef.gain.setTargetAtTime(refOn, t, 0.05);
-  
   if (micBoostNode) micBoostNode.gain.setTargetAtTime(micBoostValue, t, 0.05);
   if (mainVolNode) mainVolNode.gain.setTargetAtTime(mainVolValue, t, 0.05);
   if (refVolNode) refVolNode.gain.setTargetAtTime(refVolValue, t, 0.05);
@@ -890,11 +1200,8 @@ $('sourceButtons').addEventListener('click', e => {
 
 function resizeCanvas() {
   let w = 1280, h = 720;
-  if (activeSource === 'file' && videoLoaded && video.videoWidth) {
-    w = video.videoWidth; h = video.videoHeight;
-  } else if (activeSource === 'camera' && cameraReady && camVideo.videoWidth) {
-    w = camVideo.videoWidth; h = camVideo.videoHeight;
-  }
+  if (activeSource === 'file' && videoLoaded && video.videoWidth) { w = video.videoWidth; h = video.videoHeight; }
+  else if (activeSource === 'camera' && cameraReady && camVideo.videoWidth) { w = camVideo.videoWidth; h = camVideo.videoHeight; }
   w -= w % 2; h -= h % 2;
   if (w > 0 && h > 0) { canvas.width = w; canvas.height = h; }
 }
@@ -908,24 +1215,15 @@ function refreshStartBtn() {
 //  الكاميرا
 // ============================================================
 async function startCamera(facing) {
-  if (cameraStream) {
-    try { cameraStream.getTracks().forEach(t => t.stop()); } catch (e) {}
-    cameraStream = null;
-  }
-  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-    throw new Error('متصفحك لا يدعم الكاميرا');
-  }
-
+  if (cameraStream) { try { cameraStream.getTracks().forEach(t => t.stop()); } catch (e) {} cameraStream = null; }
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw new Error('متصفحك لا يدعم الكاميرا');
   const host = location.hostname;
-  const isLocal = host === 'localhost' || host === '127.0.0.1' || 
-                  host.startsWith('192.168.') || host.startsWith('10.') || host === '';
-  if (location.protocol !== 'https:' && !isLocal) {
-    throw new Error('يجب فتح الصفحة عبر HTTPS أو localhost');
-  }
+  const isLocal = host === 'localhost' || host === '127.0.0.1' || host.startsWith('192.168.') || host.startsWith('10.') || host === '';
+  if (location.protocol !== 'https:' && !isLocal) throw new Error('يجب فتح الصفحة عبر HTTPS أو localhost');
 
   const attempts = [
     { name: '1280x720', c: { video: { facingMode: { ideal: facing }, width: { ideal: 1280 }, height: { ideal: 720 } }, audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true, sampleRate: 48000, channelCount: 1 } } },
-    { name: '640x480', c: { video: { facingMode: { ideal: facing }, width: { ideal: 640 }, height: { ideal: 480 } }, audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } } },
+    { name: '640x480', c: { video: { facingMode: { ideal: facing }, width: { ideal: 640 }, height: { ideal: 480 } }, audio: true } },
     { name: 'افتراضي', c: { video: true, audio: true } },
     { name: 'فيديو فقط', c: { video: true } }
   ];
@@ -933,25 +1231,19 @@ async function startCamera(facing) {
   let stream = null, lastError = null;
   for (let i = 0; i < attempts.length; i++) {
     try {
-      setStatus('busy', `⏳ محاولة ${i + 1}/${attempts.length}: ${attempts[i].name}...`);
+      setStatus('busy', `⏳ محاولة ${i + 1}/${attempts.length}...`);
       stream = await navigator.mediaDevices.getUserMedia(attempts[i].c);
       break;
     } catch (e) {
       lastError = e;
-      if (e.name === 'NotAllowedError' || e.name === 'SecurityError') {
-        throw new Error('تم رفض الإذن. اضغط 🔒 واسمح بالكاميرا.');
-      }
+      if (e.name === 'NotAllowedError' || e.name === 'SecurityError') throw new Error('تم رفض الإذن. اضغط 🔒 واسمح بالكاميرا.');
       if (e.name === 'NotFoundError') throw new Error('لا توجد كاميرا.');
       continue;
     }
   }
-
   if (!stream) {
     let msg = 'فشل تشغيل الكاميرا';
-    if (lastError) {
-      if (lastError.name === 'NotReadableError') msg = 'الكاميرا مشغولة في تطبيق آخر.';
-      else msg = lastError.message || lastError.name;
-    }
+    if (lastError) { if (lastError.name === 'NotReadableError') msg = 'الكاميرا مشغولة في تطبيق آخر.'; else msg = lastError.message || lastError.name; }
     throw new Error(msg);
   }
 
@@ -959,13 +1251,7 @@ async function startCamera(facing) {
   camVideo.srcObject = stream;
   camVideo.muted = true;
   camVideo.play().catch(()=>{});
-
-  await new Promise(res => {
-    if (camVideo.videoWidth) return res();
-    const t = setTimeout(res, 2000);
-    camVideo.onloadedmetadata = () => { clearTimeout(t); res(); };
-  });
-
+  await new Promise(res => { if (camVideo.videoWidth) return res(); const t = setTimeout(res, 2000); camVideo.onloadedmetadata = () => { clearTimeout(t); res(); }; });
   currentFacing = facing;
   return { hasAudio: stream.getAudioTracks().length > 0 };
 }
@@ -976,36 +1262,20 @@ $('btnCamOn').addEventListener('click', async function() {
   btn.disabled = true;
   const oldText = btn.textContent;
   btn.textContent = '⏳ جاري التشغيل...';
-
   try {
     setStatus('busy', '⏳ جاري طلب إذن الكاميرا...');
     const result = await startCamera('user');
     cameraReady = true;
-    resizeCanvas();
-    resumeAudio();
-    connectMic();
-    applyMix();
+    resizeCanvas(); resumeAudio(); connectMic(); applyMix();
     btn.style.display = 'none';
     $('camControls').style.display = 'grid';
-    refreshStartBtn();
-    updateIndicators();
-    redraw(0);
+    refreshStartBtn(); updateIndicators(); redraw(0);
     setTimeout(() => redraw(0), 300);
-    setStatus('ok', '✅ الكاميرا جاهزة!' + (result.hasAudio ? ' 🎤' : '') + '<br><span style="font-size:0.85rem;">اضغط «ابدأ التسجيل الاحترافي»</span>');
+    setStatus('ok', '✅ الكاميرا جاهزة!' + (result.hasAudio ? ' 🎤' : ''));
   } catch (e) {
-    setStatus('err',
-      `<b style="color:#ff4757;">⚠️ ${e.message}</b>
-      <div style="margin-top:10px; padding:10px; background:#ff475710; border-radius:8px; font-size:0.8rem; line-height:1.9;">
-      🔹 افتح الصفحة عبر <b>HTTPS</b> أو <b>localhost</b><br>
-      🔹 اضغط 🔒 واسمح بالكاميرا<br>
-      🔹 أغلق Zoom، Teams، Camera<br>
-      🔹 أعد تحميل الصفحة (F5)
-      </div>`
-    );
+    setStatus('err', `<b style="color:#ff4757;">⚠️ ${e.message}</b><div style="margin-top:10px; padding:10px; background:#ff475710; border-radius:8px; font-size:0.8rem;">🔹 افتح عبر HTTPS / localhost<br>🔹 اسمح بالكاميرا من 🔒<br>🔹 أغلق Zoom و Teams</div>`);
     btn.textContent = oldText;
-  } finally {
-    btn.disabled = false;
-  }
+  } finally { btn.disabled = false; }
 });
 
 $('btnSwitchCam').addEventListener('click', async () => {
@@ -1016,24 +1286,18 @@ $('btnSwitchCam').addEventListener('click', async () => {
     await startCamera(currentFacing === 'user' ? 'environment' : 'user');
     connectMic(); applyMix(); resizeCanvas(); redraw(0);
     setStatus('ok', '✅ تم التبديل');
-  } catch (e) { setStatus('err', '⚠️ ' + e.message); }
-  finally { btn.disabled = false; }
+  } catch (e) { setStatus('err', '⚠️ ' + e.message); } finally { btn.disabled = false; }
 });
 
 $('btnCamOff').addEventListener('click', () => {
   if (isRecording) return;
   if (cameraStream) cameraStream.getTracks().forEach(t => t.stop());
-  cameraStream = null;
-  cameraReady = false;
-  camVideo.srcObject = null;
+  cameraStream = null; cameraReady = false; camVideo.srcObject = null;
   const btn = $('btnCamOn');
-  btn.style.display = 'flex';
-  btn.disabled = false;
+  btn.style.display = 'flex'; btn.disabled = false;
   btn.textContent = '🎥 تشغيل الكاميرا';
   $('camControls').style.display = 'none';
-  refreshStartBtn();
-  redraw(0);
-  updateIndicators();
+  refreshStartBtn(); redraw(0); updateIndicators();
   setStatus('', '👆 اضغط «تشغيل الكاميرا»');
 });
 
@@ -1046,11 +1310,10 @@ $('videoFile').addEventListener('change', e => {
   video.load();
   video.onloadedmetadata = () => {
     videoLoaded = true; video.currentTime = 0;
-    mainClipStart = 0;
-    mainClipEnd = video.duration;
-    $('mainClipBox').style.display = 'block';
-    updateMainClipUI();
-    resetMainPresets();
+    mainTrimStart = 0; mainTrimEnd = video.duration;
+    $('mainTrimmer').style.display = 'block';
+    if (!mainTrimmer) initMainTrimmer();
+    else mainTrimmer.render();
     if (activeSource === 'file') resizeCanvas();
     refreshStartBtn(); redraw(0); updateIndicators();
     setStatus('ok', '✅ الفيديو جاهز! المدة: ' + fmtTime(video.duration));
@@ -1072,7 +1335,7 @@ $('logoFile').addEventListener('change', e => {
 });
 
 // ============================================================
-//  رفع الفيديو المرجعي
+//  الفيديو المرجعي
 // ============================================================
 $('refFile').addEventListener('change', e => {
   const f = e.target.files[0]; if (!f) return;
@@ -1084,309 +1347,28 @@ $('refFile').addEventListener('change', e => {
   $('refStatus').textContent = '⏳ جاري التحميل...';
   refVideo.onloadedmetadata = () => {
     refLoaded = true;
-    refClipStart = 0;
-    refClipEnd = refVideo.duration;
+    refTrimStart = 0; refTrimEnd = refVideo.duration;
     $('refStatus').textContent = '✅ جاهز';
     $('refStatus').classList.add('ready');
-    updateRefClipUI();
-    resetRefPresets();
+    if (!refTrimmer) initRefTrimmer();
+    else refTrimmer.render();
     updateIndicators();
-    connectRef();
-    applyMix();
+    connectRef(); applyMix();
     modeRef.classList.remove('disabled');
     modeSplit.classList.remove('disabled');
     setStatus('ok', '✅ الفيديو المرجعي جاهز! المدة: ' + fmtTime(refVideo.duration));
   };
 });
 
-// ✅ تتبع التقدم في الفيديوهات — تحديث المؤشر
-video.addEventListener('timeupdate', () => {
-  const pct = (video.currentTime / video.duration) * 100;
-  const cursor = $('mainClipCursor');
-  cursor.style.right = pct + '%';
-  cursor.style.display = 'block';
-  
-  // ✅ إذا انتهى المقطع أثناء البث — أعد من البداية أو أوقف
-  if ((isRecording || mainPreviewing) && mainClipEnd < video.duration - 0.2) {
-    if (video.currentTime >= mainClipEnd - 0.05) {
-      if (mainPreviewing) {
-        video.pause();
-        mainPreviewing = false;
-        $('btnMainPreviewClip').textContent = '▶️ استمع للمقطع المحدد';
-        setStatus('ok', '✅ انتهت المعاينة');
-      } else if (isRecording && optLoopClip) {
-        video.currentTime = mainClipStart;
-      } else if (isRecording) {
-        video.pause();
-      }
-    }
-  }
-});
-
-refVideo.addEventListener('timeupdate', () => {
-  if (refVideo.duration) {
-    const pct = (refVideo.currentTime / refVideo.duration) * 100;
-    const cursor = $('refClipCursor');
-    cursor.style.right = pct + '%';
-    cursor.style.display = 'block';
-    
-    if ((isRecording || refPreviewing) && refClipEnd < refVideo.duration - 0.2) {
-      if (refVideo.currentTime >= refClipEnd - 0.05) {
-        if (refPreviewing) {
-          refVideo.pause();
-          refPreviewing = false;
-          $('btnRefPreviewClip').textContent = '▶️ استمع للمقطع المحدد';
-          setStatus('ok', '✅ انتهت معاينة المرجعي');
-        } else if (isRecording && optLoopClip) {
-          refVideo.currentTime = refClipStart;
-        } else if (isRecording) {
-          refVideo.pause();
-        }
-      }
-    }
-  }
-});
-
-refVideo.addEventListener('ended', () => {
-  if (isRecording && layoutMode === 'reference') {
-    if (optLoopClip && refClipEnd >= refVideo.duration - 0.2) {
-      // مقطع كامل — أعد من البداية
-    } else {
-      setLayout('anchor');
-    }
-  }
-});
-
 // ============================================================
-//  ✅ نظام تحديد المقطع — الفيديو الرئيسي
-// ============================================================
-function updateMainClipUI() {
-  if (!videoLoaded) return;
-  const dur = video.duration;
-  
-  if (mainClipStart >= mainClipEnd) {
-    mainClipStart = Math.max(0, mainClipEnd - 1);
-  }
-  
-  $('mainClipStart').textContent = fmtPrecise(mainClipStart);
-  $('mainClipEnd').textContent = fmtPrecise(mainClipEnd);
-  
-  const startPct = (mainClipStart / dur) * 100;
-  const endPct = (mainClipEnd / dur) * 100;
-  
-  $('mainClipSelected').style.right = startPct + '%';
-  $('mainClipSelected').style.left = (100 - endPct) + '%';
-  
-  // ملخص
-  const isFull = mainClipStart < 0.1 && mainClipEnd > dur - 0.1;
-  if (isFull) {
-    $('mainClipSummary').textContent = '📺 سيُبثّ الفيديو كاملاً';
-  } else {
-    const clipDuration = mainClipEnd - mainClipStart;
-    $('mainClipSummary').textContent = 
-      '✂️ مقطع محدد: من ' + fmtPrecise(mainClipStart) + 
-      ' إلى ' + fmtPrecise(mainClipEnd) + 
-      ' (' + fmtTime(clipDuration) + ')';
-  }
-}
-
-$('btnMainMarkStart').addEventListener('click', () => {
-  if (!videoLoaded) return;
-  mainClipStart = video.currentTime;
-  if (mainClipStart >= mainClipEnd) {
-    mainClipEnd = Math.min(video.duration, mainClipStart + 5);
-  }
-  updateMainClipUI();
-  resetMainPresets();
-  setStatus('ok', '📍 بداية المقطع: <b>' + fmtPrecise(mainClipStart) + '</b>');
-});
-
-$('btnMainMarkEnd').addEventListener('click', () => {
-  if (!videoLoaded) return;
-  mainClipEnd = video.currentTime;
-  if (mainClipEnd <= mainClipStart) {
-    mainClipStart = Math.max(0, mainClipEnd - 5);
-  }
-  updateMainClipUI();
-  resetMainPresets();
-  setStatus('ok', '🏁 نهاية المقطع: <b>' + fmtPrecise(mainClipEnd) + '</b>');
-});
-
-$('btnMainResetClip').addEventListener('click', () => {
-  if (!videoLoaded) return;
-  mainClipStart = 0;
-  mainClipEnd = video.duration;
-  updateMainClipUI();
-  resetMainPresets();
-  setStatus('ok', '✅ تم إلغاء التحديد — سيُبثّ الفيديو كاملاً');
-});
-
-$('btnMainPreviewClip').addEventListener('click', () => {
-  if (!videoLoaded) return;
-  
-  if (mainPreviewing) {
-    video.pause();
-    mainPreviewing = false;
-    $('btnMainPreviewClip').textContent = '▶️ استمع للمقطع المحدد';
-    setStatus('ok', '✅ تم إيقاف المعاينة');
-    return;
-  }
-  
-  video.currentTime = mainClipStart;
-  video.play().catch(()=>{});
-  mainPreviewing = true;
-  $('btnMainPreviewClip').textContent = '⏹️ إيقاف المعاينة';
-  setStatus('ok', '🎧 استمع للمقطع: ' + fmtPrecise(mainClipStart) + ' ← ' + fmtPrecise(mainClipEnd));
-});
-
-// ============================================================
-//  ✅ نظام تحديد المقطع — الفيديو المرجعي
-// ============================================================
-function updateRefClipUI() {
-  if (!refLoaded) return;
-  const dur = refVideo.duration;
-  
-  if (refClipStart >= refClipEnd) {
-    refClipStart = Math.max(0, refClipEnd - 1);
-  }
-  
-  $('refClipStart').textContent = fmtPrecise(refClipStart);
-  $('refClipEnd').textContent = fmtPrecise(refClipEnd);
-  
-  const startPct = (refClipStart / dur) * 100;
-  const endPct = (refClipEnd / dur) * 100;
-  
-  $('refClipSelected').style.right = startPct + '%';
-  $('refClipSelected').style.left = (100 - endPct) + '%';
-  
-  const isFull = refClipStart < 0.1 && refClipEnd > dur - 0.1;
-  if (isFull) {
-    $('refClipSummary').textContent = '📺 سيُبثّ المرجعي كاملاً';
-  } else {
-    const clipDuration = refClipEnd - refClipStart;
-    $('refClipSummary').textContent = 
-      '✂️ مقطع محدد: من ' + fmtPrecise(refClipStart) + 
-      ' إلى ' + fmtPrecise(refClipEnd) + 
-      ' (' + fmtTime(clipDuration) + ')';
-  }
-}
-
-$('btnRefMarkStart').addEventListener('click', () => {
-  if (!refLoaded) return;
-  refClipStart = refVideo.currentTime;
-  if (refClipStart >= refClipEnd) {
-    refClipEnd = Math.min(refVideo.duration, refClipStart + 5);
-  }
-  updateRefClipUI();
-  resetRefPresets();
-  setStatus('ok', '📍 بداية المرجعي: <b>' + fmtPrecise(refClipStart) + '</b>');
-});
-
-$('btnRefMarkEnd').addEventListener('click', () => {
-  if (!refLoaded) return;
-  refClipEnd = refVideo.currentTime;
-  if (refClipEnd <= refClipStart) {
-    refClipStart = Math.max(0, refClipEnd - 5);
-  }
-  updateRefClipUI();
-  resetRefPresets();
-  setStatus('ok', '🏁 نهاية المرجعي: <b>' + fmtPrecise(refClipEnd) + '</b>');
-});
-
-$('btnRefResetClip').addEventListener('click', () => {
-  if (!refLoaded) return;
-  refClipStart = 0;
-  refClipEnd = refVideo.duration;
-  updateRefClipUI();
-  resetRefPresets();
-  setStatus('ok', '✅ تم إلغاء تحديد المرجعي');
-});
-
-$('btnRefPreviewClip').addEventListener('click', () => {
-  if (!refLoaded) return;
-  
-  if (refPreviewing) {
-    refVideo.pause();
-    refPreviewing = false;
-    $('btnRefPreviewClip').textContent = '▶️ استمع للمقطع المحدد';
-    setStatus('ok', '✅ تم إيقاف المعاينة');
-    return;
-  }
-  
-  refVideo.currentTime = refClipStart;
-  refVideo.play().catch(()=>{});
-  refPreviewing = true;
-  $('btnRefPreviewClip').textContent = '⏹️ إيقاف المعاينة';
-  setStatus('ok', '🎧 استمع للمقطع: ' + fmtPrecise(refClipStart) + ' ← ' + fmtPrecise(refClipEnd));
-});
-
-// ✅ إعدادات سريعة (presets)
-document.querySelectorAll('.clip-presets').forEach(container => {
-  container.addEventListener('click', e => {
-    const btn = e.target.closest('button');
-    if (!btn) return;
-    const target = container.dataset.target;
-    const preset = btn.dataset.preset;
-    
-    container.querySelectorAll('button').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    
-    const dur = target === 'main' ? (videoLoaded ? video.duration : 0) : (refLoaded ? refVideo.duration : 0);
-    if (!dur) return;
-    
-    let s = 0, e2 = dur;
-    if (preset === 'start') { s = 0; e2 = dur * 0.25; }
-    else if (preset === 'middle') { s = dur * 0.4; e2 = dur * 0.6; }
-    else if (preset === 'end') { s = dur * 0.75; e2 = dur; }
-    else if (preset === 'all') { s = 0; e2 = dur; }
-    
-    if (target === 'main') {
-      mainClipStart = s; mainClipEnd = e2;
-      updateMainClipUI();
-    } else {
-      refClipStart = s; refClipEnd = e2;
-      updateRefClipUI();
-    }
-    setStatus('ok', '✂️ تم تطبيق النمط: ' + btn.textContent);
-  });
-});
-
-function resetMainPresets() {
-  document.querySelectorAll('.clip-presets[data-target="main"] button').forEach(b => b.classList.remove('active'));
-  const dur = video.duration;
-  const isFull = mainClipStart < 0.1 && mainClipEnd > dur - 0.1;
-  if (isFull) {
-    document.querySelector('.clip-presets[data-target="main"] button[data-preset="all"]').classList.add('active');
-  }
-}
-function resetRefPresets() {
-  document.querySelectorAll('.clip-presets[data-target="ref"] button').forEach(b => b.classList.remove('active'));
-  const dur = refVideo.duration;
-  const isFull = refClipStart < 0.1 && refClipEnd > dur - 0.1;
-  if (isFull) {
-    document.querySelector('.clip-presets[data-target="ref"] button[data-preset="all"]').classList.add('active');
-  }
-}
-
-// ============================================================
-//  الأنماط الذكية
+//  الأنماط
 // ============================================================
 function setLayout(mode) {
-  if (!isRecording) {
-    setStatus('err', '⚠️ ابدأ التسجيل أولاً ثم بدّل الأنماط');
-    return;
-  }
-  if (mode === 'reference' && !refLoaded) {
-    setStatus('err', '⚠️ ارفع الفيديو المرجعي أولاً (القسم 4)');
-    return;
-  }
+  if (!isRecording) { setStatus('err', '⚠️ ابدأ التسجيل أولاً'); return; }
+  if (mode === 'reference' && !refLoaded) { setStatus('err', '⚠️ ارفع الفيديو المرجعي أولاً'); return; }
   targetLayoutMode = mode;
-  if (optShowTransition) {
-    transitionProgress = 1.0;
-  } else {
-    transitionProgress = 0;
-    applyLayoutNow(mode);
-  }
+  if (optShowTransition) transitionProgress = 1.0;
+  else { transitionProgress = 0; applyLayoutNow(mode); }
   updateStudioUI();
 }
 
@@ -1394,23 +1376,18 @@ function applyLayoutNow(mode) {
   layoutMode = mode;
   if (mode === 'reference' || mode === 'split') {
     if (refLoaded) {
-      if (!refVideo._hasStarted) {
-        refVideo.currentTime = refClipStart;
+      if (!refVideo._hasStarted || refVideo.currentTime < refTrimStart - 0.1) {
+        refVideo.currentTime = refTrimStart;
         refVideo._hasStarted = true;
-      } else if (refVideo.currentTime < refClipStart - 0.1 || refVideo.currentTime > refClipEnd + 0.5) {
-        refVideo.currentTime = refClipStart;
       }
       refVideo.play().catch(()=>{});
     }
     if (activeSource === 'file') video.pause();
   } else {
-    if (refLoaded) {
-      refVideo.pause();
-      refVideo._hasStarted = false;
-    }
+    if (refLoaded) { refVideo.pause(); refVideo._hasStarted = false; }
     if (activeSource === 'file' && isRecording && !isPaused) {
-      if (video.currentTime < mainClipStart - 0.1 || video.currentTime > mainClipEnd + 0.5) {
-        video.currentTime = mainClipStart;
+      if (video.currentTime < mainTrimStart - 0.1 || video.currentTime > mainTrimEnd + 0.5) {
+        video.currentTime = mainTrimStart;
       }
       video.play().catch(()=>{});
     }
@@ -1439,36 +1416,14 @@ function updateStudioUI() {
     else studioLiveBadge.textContent = '🔴 بث مباشر';
     studioTimer.classList.remove('paused');
   }
-
   modeRef.classList.toggle('disabled', !refLoaded);
   modeSplit.classList.toggle('disabled', !refLoaded);
 }
 
-modeAnchor.addEventListener('click', (e) => {
-  e.stopPropagation();
-  if (!isRecording) { setStatus('err', '⚠️ ابدأ التسجيل أولاً'); return; }
-  setLayout('anchor');
-});
-
-modeRef.addEventListener('click', (e) => {
-  e.stopPropagation();
-  if (!isRecording) { setStatus('err', '⚠️ ابدأ التسجيل أولاً'); return; }
-  if (!refLoaded) { setStatus('err', '⚠️ ارفع الفيديو المرجعي أولاً (القسم 4)'); return; }
-  setLayout('reference');
-});
-
-modeSplit.addEventListener('click', (e) => {
-  e.stopPropagation();
-  if (!isRecording) { setStatus('err', '⚠️ ابدأ التسجيل أولاً'); return; }
-  if (!refLoaded) { setStatus('err', '⚠️ ارفع الفيديو المرجعي أولاً (القسم 4)'); return; }
-  setLayout('split');
-});
-
-studioMiniRef.addEventListener('click', (e) => {
-  e.stopPropagation();
-  if (!refLoaded) { setStatus('err', '⚠️ ارفع الفيديو المرجعي أولاً'); return; }
-  setLayout('reference');
-});
+modeAnchor.addEventListener('click', (e) => { e.stopPropagation(); if (!isRecording) { setStatus('err', '⚠️ ابدأ التسجيل أولاً'); return; } setLayout('anchor'); });
+modeRef.addEventListener('click', (e) => { e.stopPropagation(); if (!isRecording) { setStatus('err', '⚠️ ابدأ التسجيل أولاً'); return; } if (!refLoaded) { setStatus('err', '⚠️ ارفع الفيديو المرجعي أولاً'); return; } setLayout('reference'); });
+modeSplit.addEventListener('click', (e) => { e.stopPropagation(); if (!isRecording) { setStatus('err', '⚠️ ابدأ التسجيل أولاً'); return; } if (!refLoaded) { setStatus('err', '⚠️ ارفع الفيديو المرجعي أولاً'); return; } setLayout('split'); });
+studioMiniRef.addEventListener('click', (e) => { e.stopPropagation(); if (!refLoaded) { setStatus('err', '⚠️ ارفع الفيديو المرجعي أولاً'); return; } setLayout('reference'); });
 
 // ============================================================
 //  التسجيل
@@ -1538,9 +1493,8 @@ function startRecording() {
     $('btnStop').style.display = 'flex';
     $('btnDownload').style.display = 'none';
 
-    // ✅ الفيديو الرئيسي يبدأ من مقطع محدد
     if (activeSource === 'file') {
-      video.currentTime = mainClipStart;
+      video.currentTime = mainTrimStart;
       video.play().catch(()=>{});
     }
     refVideo._hasStarted = false;
@@ -1554,18 +1508,8 @@ function startRecording() {
 
 function enterStudio() {
   document.body.classList.add('studio-mode');
-  
-  if (canvas.parentElement !== studioVideoArea) {
-    studioVideoArea.appendChild(canvas);
-  }
-  
-  canvas.style.width = '100%';
-  canvas.style.height = 'auto';
-  canvas.style.maxWidth = '100%';
-  canvas.style.maxHeight = '100%';
-  canvas.style.display = 'block';
-  canvas.style.borderRadius = '12px';
-  
+  if (canvas.parentElement !== studioVideoArea) studioVideoArea.appendChild(canvas);
+  canvas.style.cssText = 'width:100%; height:auto; max-width:100%; max-height:100%; display:block; border-radius:12px;';
   updateStudioUI();
   studioTapHint.style.display = 'block';
   studioTapHint.style.animation = 'none';
@@ -1573,10 +1517,25 @@ function enterStudio() {
   studioTapHint.style.animation = 'hintFade 5s forwards';
   scheduleStudioHide();
   document.body.style.overflow = 'hidden';
-  
   requestAnimationFrame(() => { fitCanvasToArea(); redraw(0); });
   setTimeout(() => { fitCanvasToArea(); redraw(0); }, 100);
   setTimeout(() => { fitCanvasToArea(); redraw(0); }, 400);
+}
+
+function fitCanvasToArea() {
+  const area = studioVideoArea.getBoundingClientRect();
+  if (area.width <= 0 || area.height <= 0) return;
+  const style = window.getComputedStyle(studioVideoArea);
+  const availW = area.width - (parseFloat(style.paddingLeft)||0) - (parseFloat(style.paddingRight)||0);
+  const availH = area.height - (parseFloat(style.paddingTop)||0) - (parseFloat(style.paddingBottom)||0);
+  if (availW <= 0 || availH <= 0) return;
+  const canvasAspect = canvas.width / canvas.height;
+  const availAspect = availW / availH;
+  let newW, newH;
+  if (canvasAspect > availAspect) { newW = availW; newH = availW / canvasAspect; }
+  else { newH = availH; newW = availH * canvasAspect; }
+  canvas.style.width = newW + 'px';
+  canvas.style.height = newH + 'px';
 }
 
 function exitStudio() {
@@ -1585,11 +1544,9 @@ function exitStudio() {
   const wrap = $('previewWrap');
   if (wrap && canvas.parentElement !== wrap) {
     wrap.appendChild(canvas);
+    canvas.style.cssText = 'max-width:100%; display:block; border-radius:14px; box-shadow: 0 4px 20px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,215,0,0.15); background: #000;';
     canvas.style.width = '100%';
     canvas.style.height = 'auto';
-    canvas.style.maxWidth = '100%';
-    canvas.style.maxHeight = '';
-    canvas.style.borderRadius = '14px';
   }
   if (studioControlsHideTimer) clearTimeout(studioControlsHideTimer);
   studioControlsHidden = false;
@@ -1601,14 +1558,8 @@ function scheduleStudioHide() {
   showStudioControls();
   studioControlsHideTimer = setTimeout(() => hideStudioControls(), 4000);
 }
-function hideStudioControls() {
-  studioControlsHidden = true;
-  studioOverlay.classList.add('studio-controls-hidden');
-}
-function showStudioControls() {
-  studioControlsHidden = false;
-  studioOverlay.classList.remove('studio-controls-hidden');
-}
+function hideStudioControls() { studioControlsHidden = true; studioOverlay.classList.add('studio-controls-hidden'); }
+function showStudioControls() { studioControlsHidden = false; studioOverlay.classList.remove('studio-controls-hidden'); }
 
 studioVideoArea.addEventListener('click', e => {
   if (e.target.tagName === 'BUTTON') return;
@@ -1616,32 +1567,12 @@ studioVideoArea.addEventListener('click', e => {
   else hideStudioControls();
 });
 
-[studioPauseBtn, studioResumeBtn, studioStopBtn].forEach(btn => {
-  btn.addEventListener('click', scheduleStudioHide);
-});
+[studioPauseBtn, studioResumeBtn, studioStopBtn].forEach(btn => btn.addEventListener('click', scheduleStudioHide));
 
-window.addEventListener('resize', () => {
-  if (isRecording && document.body.classList.contains('studio-mode')) {
-    fitCanvasToArea();
-  }
-});
+window.addEventListener('resize', () => { if (isRecording && document.body.classList.contains('studio-mode')) fitCanvasToArea(); });
+window.addEventListener('orientationchange', () => { setTimeout(() => { if (isRecording && document.body.classList.contains('studio-mode')) fitCanvasToArea(); }, 300); });
 
-window.addEventListener('orientationchange', () => {
-  setTimeout(() => {
-    if (isRecording && document.body.classList.contains('studio-mode')) {
-      fitCanvasToArea();
-    }
-  }, 300);
-});
-
-// ============================================================
-//  الإيقاف المؤقت
-// ============================================================
-function togglePause() {
-  if (!isRecording) return;
-  if (isPaused) resumeRecording();
-  else pauseRecording();
-}
+function togglePause() { if (!isRecording) return; if (isPaused) resumeRecording(); else pauseRecording(); }
 
 function pauseRecording() {
   if (!isRecording || isPaused) return;
@@ -1681,9 +1612,6 @@ function resumeRecording() {
   setStatus('busy', '🔴 تم استئناف التسجيل');
 }
 
-// ============================================================
-//  المؤقتات
-// ============================================================
 function startTimer() {
   recordStartTime = Date.now();
   accumulatedPauseTime = 0;
@@ -1697,10 +1625,7 @@ function startTimer() {
     studioTimerText.textContent = t;
   }, 250);
 }
-function stopTimer() {
-  if (timerInterval) clearInterval(timerInterval);
-  $('timer').classList.remove('show');
-}
+function stopTimer() { if (timerInterval) clearInterval(timerInterval); $('timer').classList.remove('show'); }
 function startPauseTimer() {
   pauseStartTime = Date.now();
   $('pauseTimer').classList.add('show');
@@ -1708,37 +1633,18 @@ function startPauseTimer() {
     $('pauseTimerValue').textContent = fmtTime(Math.floor((Date.now() - pauseStartTime) / 1000));
   }, 250);
 }
-function stopPauseTimer() {
-  if (pauseTimerInterval) clearInterval(pauseTimerInterval);
-  $('pauseTimer').classList.remove('show');
-}
+function stopPauseTimer() { if (pauseTimerInterval) clearInterval(pauseTimerInterval); $('pauseTimer').classList.remove('show'); }
 
 function updateSegmentsLog() {
-  if (!segments.length) {
-    $('segmentsLog').innerHTML = '<div style="text-align:center; color:#5a7a9a; padding:10px; font-size:0.8rem;">لم يبدأ بعد...</div>';
-    return;
-  }
-  $('segmentsLog').innerHTML = segments.map((s, i) => `
-    <div class="segment-item">
-      <span class="seg-num">مقطع ${i + 1}</span>
-      <span>${fmtTime(s.duration)}</span>
-      <span>✅</span>
-    </div>
-  `).join('');
+  if (!segments.length) { $('segmentsLog').innerHTML = '<div style="text-align:center; color:#5a7a9a; padding:10px; font-size:0.8rem;">لم يبدأ بعد...</div>'; return; }
+  $('segmentsLog').innerHTML = segments.map((s, i) => `<div class="segment-item"><span class="seg-num">مقطع ${i + 1}</span><span>${fmtTime(s.duration)}</span><span>✅</span></div>`).join('');
 }
 
-// ============================================================
-//  إنهاء التسجيل
-// ============================================================
 function stopRecording() {
   if (!isRecording) return;
   exitStudio();
-  if (isPaused) {
-    const dur = (Date.now() - currentSegmentStart) / 1000;
-    if (dur > 0.5) segments.push({ duration: dur });
-  }
-  isRecording = false;
-  isPaused = false;
+  if (isPaused) { const dur = (Date.now() - currentSegmentStart) / 1000; if (dur > 0.5) segments.push({ duration: dur }); }
+  isRecording = false; isPaused = false;
   stopTimer(); stopPauseTimer();
   try { if (mediaRecorder.state === 'recording') mediaRecorder.stop(); } catch (e) { finishRecording(); }
   try { video.pause(); refVideo.pause(); } catch (e) {}
@@ -1751,10 +1657,7 @@ function stopRecording() {
 }
 
 function finishRecording() {
-  if (!recordedChunks.length) {
-    setStatus('err', '⚠️ لم يتم تسجيل بيانات');
-    return;
-  }
+  if (!recordedChunks.length) { setStatus('err', '⚠️ لم يتم تسجيل بيانات'); return; }
   const mime = mediaRecorder.mimeType || pickMime || 'video/webm';
   outputBlob = new Blob(recordedChunks, { type: mime });
   outputExt = mime.indexOf('mp4') !== -1 ? 'mp4' : 'webm';
@@ -1773,9 +1676,6 @@ $('btnDownload').addEventListener('click', () => {
   setStatus('ok', '✅ تم التحميل: ' + name);
 });
 
-// ============================================================
-//  المؤشرات
-// ============================================================
 function updateIndicators() {
   $('indSource').classList.toggle('on', (activeSource === 'file' && videoLoaded) || (activeSource === 'camera' && cameraReady));
   $('indSource').textContent = (activeSource === 'file' && videoLoaded) ? '📹 الفيديو' : (cameraReady ? '🎥 الكاميرا' : '📹 المصدر');
@@ -1795,18 +1695,11 @@ function updateIndicators() {
 // ============================================================
 if (!CanvasRenderingContext2D.prototype.roundRect) {
   CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
-    this.beginPath();
-    this.moveTo(x + r, y);
-    this.lineTo(x + w - r, y);
-    this.quadraticCurveTo(x + w, y, x + w, y + r);
-    this.lineTo(x + w, y + h - r);
-    this.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-    this.lineTo(x + r, y + h);
-    this.quadraticCurveTo(x, y + h, x, y + h - r);
-    this.lineTo(x, y + r);
-    this.quadraticCurveTo(x, y, x + r, y);
-    this.closePath();
-    return this;
+    this.beginPath(); this.moveTo(x + r, y); this.lineTo(x + w - r, y);
+    this.quadraticCurveTo(x + w, y, x + w, y + r); this.lineTo(x + w, y + h - r);
+    this.quadraticCurveTo(x + w, y + h, x + w - r, y + h); this.lineTo(x + r, y + h);
+    this.quadraticCurveTo(x, y + h, x, y + h - r); this.lineTo(x, y + r);
+    this.quadraticCurveTo(x, y, x + r, y); this.closePath(); return this;
   };
 }
 
@@ -1817,182 +1710,72 @@ function drawCover(el, x, y, w, h) {
   let dw, dh, dx, dy;
   if (va > ca) { dw = w; dh = w / va; dx = x; dy = y + (h - dh) / 2; }
   else { dh = h; dw = h * va; dx = x + (w - dw) / 2; dy = y; }
-  try {
-    ctx.save();
-    ctx.beginPath();
-    ctx.rect(x, y, w, h);
-    ctx.clip();
-    ctx.drawImage(el, dx, dy, dw, dh);
-    ctx.restore();
-    return true;
-  } catch (e) { return false; }
+  try { ctx.save(); ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip(); ctx.drawImage(el, dx, dy, dw, dh); ctx.restore(); return true; } catch (e) { return false; }
 }
 
 function drawPiP(el, W, H) {
   if (!optShowPiP || !el.videoWidth) { canvas._pipBounds = null; return; }
-  const pw = W * pipSize;
-  const ph = pw * (9 / 16);
-  const px = (pipX * W) - pw / 2;
-  const py = (pipY * H) - ph / 2;
-
-  ctx.save();
-  ctx.shadowBlur = 30;
-  ctx.shadowColor = 'rgba(0,0,0,0.9)';
-  ctx.shadowOffsetY = 8;
-  ctx.fillStyle = '#000';
-  ctx.beginPath();
-  ctx.roundRect(px, py, pw, ph, 12);
-  ctx.fill();
-  ctx.restore();
-
-  ctx.save();
-  ctx.beginPath();
-  ctx.roundRect(px, py, pw, ph, 12);
-  ctx.clip();
-  drawCover(el, px, py, pw, ph);
-  ctx.restore();
-
+  const pw = W * pipSize, ph = pw * (9 / 16);
+  const px = (pipX * W) - pw / 2, py = (pipY * H) - ph / 2;
+  ctx.save(); ctx.shadowBlur = 30; ctx.shadowColor = 'rgba(0,0,0,0.9)'; ctx.shadowOffsetY = 8;
+  ctx.fillStyle = '#000'; ctx.beginPath(); ctx.roundRect(px, py, pw, ph, 12); ctx.fill(); ctx.restore();
+  ctx.save(); ctx.beginPath(); ctx.roundRect(px, py, pw, ph, 12); ctx.clip(); drawCover(el, px, py, pw, ph); ctx.restore();
   const pulse = (Math.sin(Date.now() / 300) + 1) / 2;
   const borderColor = layoutMode === 'reference' ? `rgba(255, 215, 0, ${0.7 + pulse * 0.3})` : '#FFD700';
-  ctx.save();
-  ctx.strokeStyle = borderColor;
-  ctx.lineWidth = 3;
-  ctx.beginPath();
-  ctx.roundRect(px, py, pw, ph, 12);
-  ctx.stroke();
-  ctx.restore();
-
+  ctx.save(); ctx.strokeStyle = borderColor; ctx.lineWidth = 3; ctx.beginPath(); ctx.roundRect(px, py, pw, ph, 12); ctx.stroke(); ctx.restore();
   const badgeW = 60, badgeH = 22;
-  ctx.save();
-  ctx.fillStyle = 'rgba(0,0,0,0.85)';
-  ctx.beginPath();
-  ctx.roundRect(px + 8, py + 8, badgeW, badgeH, 6);
-  ctx.fill();
-  ctx.fillStyle = '#FFD700';
-  ctx.font = `900 12px Cairo, sans-serif`;
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText('أنت', px + 8 + badgeW / 2, py + 8 + badgeH / 2);
-  ctx.restore();
-
+  ctx.save(); ctx.fillStyle = 'rgba(0,0,0,0.85)'; ctx.beginPath(); ctx.roundRect(px + 8, py + 8, badgeW, badgeH, 6); ctx.fill();
+  ctx.fillStyle = '#FFD700'; ctx.font = `900 12px Cairo, sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText('أنت', px + 8 + badgeW / 2, py + 8 + badgeH / 2); ctx.restore();
   canvas._pipBounds = { x: px, y: py, w: pw, h: ph };
 }
 
 function drawNewsLowerThird(W, H, dt) {
   const news = newsText.value.trim();
-  if (!news) { 
-    canvas._newsBounds = null; 
-    tickerInited = false; 
-    return; 
-  }
-  
+  if (!news) { canvas._newsBounds = null; tickerInited = false; return; }
   const sizes = { 2: 0.028, 3: 0.038, 4: 0.05, 5: 0.065 };
   const fs = W * (sizes[newsSize] || 0.038);
   ctx.font = `900 ${fs}px Cairo, Tahoma, sans-serif`;
-  
   const textWidth = ctx.measureText(news).width;
   const lineH = fs * 1.3;
   const barH = lineH + 32;
   const barY = H - barH;
-  
   const barGrad = ctx.createLinearGradient(0, barY, 0, H);
-  barGrad.addColorStop(0, 'rgba(0, 0, 0, 0.3)');
-  barGrad.addColorStop(0.3, 'rgba(0, 0, 0, 0.85)');
-  barGrad.addColorStop(1, 'rgba(0, 0, 0, 0.95)');
-  ctx.fillStyle = barGrad;
-  ctx.fillRect(0, barY, W, barH);
-  
-  ctx.fillStyle = '#ff4757';
-  ctx.fillRect(0, barY, W, 4);
-  
-  const badgeW = fs * 4;
-  const badgeH = fs * 1.6;
-  const badgeX = W - badgeW - 20;
-  const badgeY = barY + (barH - badgeH) / 2;
+  barGrad.addColorStop(0, 'rgba(0, 0, 0, 0.3)'); barGrad.addColorStop(0.3, 'rgba(0, 0, 0, 0.85)'); barGrad.addColorStop(1, 'rgba(0, 0, 0, 0.95)');
+  ctx.fillStyle = barGrad; ctx.fillRect(0, barY, W, barH);
+  ctx.fillStyle = '#ff4757'; ctx.fillRect(0, barY, W, 4);
+  const badgeW = fs * 4, badgeH = fs * 1.6;
+  const badgeX = W - badgeW - 20, badgeY = barY + (barH - badgeH) / 2;
   const bGrad = ctx.createLinearGradient(badgeX, 0, badgeX + badgeW, 0);
-  
-  if (layoutMode === 'reference' || layoutMode === 'split') {
-    bGrad.addColorStop(0, '#9c27b0');
-    bGrad.addColorStop(1, '#e91e63');
-  } else {
-    bGrad.addColorStop(0, '#ff4757');
-    bGrad.addColorStop(1, '#c0392b');
-  }
-  ctx.fillStyle = bGrad;
-  ctx.beginPath();
-  ctx.roundRect(badgeX, badgeY, badgeW, badgeH, 4);
-  ctx.fill();
-  
-  ctx.fillStyle = '#fff';
-  ctx.font = `900 ${fs * 0.85}px Cairo, sans-serif`;
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  const badgeText = (layoutMode === 'reference' || layoutMode === 'split') ? 'مرجعي' : 'مباشر';
-  ctx.fillText(badgeText, badgeX + badgeW / 2, badgeY + badgeH / 2);
-  
-  const tickerLeft = 20;
-  const tickerRight = badgeX - 20;
+  if (layoutMode === 'reference' || layoutMode === 'split') { bGrad.addColorStop(0, '#9c27b0'); bGrad.addColorStop(1, '#e91e63'); }
+  else { bGrad.addColorStop(0, '#ff4757'); bGrad.addColorStop(1, '#c0392b'); }
+  ctx.fillStyle = bGrad; ctx.beginPath(); ctx.roundRect(badgeX, badgeY, badgeW, badgeH, 4); ctx.fill();
+  ctx.fillStyle = '#fff'; ctx.font = `900 ${fs * 0.85}px Cairo, sans-serif`;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText((layoutMode === 'reference' || layoutMode === 'split') ? 'مرجعي' : 'مباشر', badgeX + badgeW / 2, badgeY + badgeH / 2);
+  const tickerLeft = 20, tickerRight = badgeX - 20;
   const textY = barY + barH / 2 + 2;
-  
-  if (!tickerInited) {
-    tickerX = W + 40;
-    tickerInited = true;
-  }
-  
-  ctx.save();
-  ctx.beginPath();
-  ctx.rect(tickerLeft, barY, tickerRight - tickerLeft, barH);
-  ctx.clip();
-  
-  ctx.fillStyle = '#fff';
-  ctx.font = `900 ${fs}px Cairo, Tahoma, sans-serif`;
-  ctx.textAlign = 'right';
-  ctx.textBaseline = 'middle';
-  ctx.fillText(news, tickerX, textY);
-  
-  ctx.restore();
-  
-  const speed = W * 0.12;
-  tickerX -= speed * (dt || 0.033);
-  
-  if (tickerX < tickerLeft - textWidth - 40) {
-    tickerX = W + 40;
-  }
-  
+  if (!tickerInited) { tickerX = W + 40; tickerInited = true; }
+  ctx.save(); ctx.beginPath(); ctx.rect(tickerLeft, barY, tickerRight - tickerLeft, barH); ctx.clip();
+  ctx.fillStyle = '#fff'; ctx.font = `900 ${fs}px Cairo, Tahoma, sans-serif`;
+  ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+  ctx.fillText(news, tickerX, textY); ctx.restore();
+  tickerX -= W * 0.12 * (dt || 0.033);
+  if (tickerX < tickerLeft - textWidth - 40) tickerX = W + 40;
   canvas._newsBounds = { x: 0, y: barY, w: W, h: barH };
 }
 
 function drawTransitionScreen(W, H) {
   const grad = ctx.createLinearGradient(0, 0, W, H);
-  grad.addColorStop(0, '#0a1a2e');
-  grad.addColorStop(0.5, '#1a0f2e');
-  grad.addColorStop(1, '#0a1a2e');
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, W, H);
-
+  grad.addColorStop(0, '#0a1a2e'); grad.addColorStop(0.5, '#1a0f2e'); grad.addColorStop(1, '#0a1a2e');
+  ctx.fillStyle = grad; ctx.fillRect(0, 0, W, H);
   const pulse = (Math.sin(Date.now() / 400) + 1) / 2;
-  ctx.strokeStyle = `rgba(255, 215, 0, ${0.3 + pulse * 0.4})`;
-  ctx.lineWidth = 4;
-  ctx.strokeRect(20, 20, W - 40, H - 40);
-
-  if (logoImg) {
-    const lw = W * 0.15;
-    const lh = (logoImg.height / logoImg.width) * lw;
-    ctx.globalAlpha = 0.9;
-    ctx.drawImage(logoImg, W / 2 - lw / 2, H * 0.25 - lh / 2, lw, lh);
-    ctx.globalAlpha = 1;
-  }
-
+  ctx.strokeStyle = `rgba(255, 215, 0, ${0.3 + pulse * 0.4})`; ctx.lineWidth = 4; ctx.strokeRect(20, 20, W - 40, H - 40);
+  if (logoImg) { const lw = W * 0.15; const lh = (logoImg.height / logoImg.width) * lw; ctx.globalAlpha = 0.9; ctx.drawImage(logoImg, W / 2 - lw / 2, H * 0.25 - lh / 2, lw, lh); ctx.globalAlpha = 1; }
   const fs = W * 0.05;
-  ctx.font = `900 ${fs}px Cairo, sans-serif`;
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillStyle = '#FFD700';
-  ctx.shadowBlur = 20;
-  ctx.shadowColor = '#FFD700';
-  ctx.fillText('⏸️ جاري الانتقال...', W / 2, H * 0.5);
-  ctx.shadowBlur = 0;
-
+  ctx.font = `900 ${fs}px Cairo, sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillStyle = '#FFD700'; ctx.shadowBlur = 20; ctx.shadowColor = '#FFD700';
+  ctx.fillText('⏸️ جاري الانتقال...', W / 2, H * 0.5); ctx.shadowBlur = 0;
   const pauseSec = Math.floor((Date.now() - pauseStartTime) / 1000);
   ctx.font = `700 ${W * 0.03}px Cairo, sans-serif`;
   ctx.fillStyle = 'rgba(255,255,255,0.5)';
@@ -2001,75 +1784,46 @@ function drawTransitionScreen(W, H) {
 
 function drawLogo(W, H) {
   if (!logoImg) { canvas._logoBounds = null; return; }
-  const lw = W * 0.12;
-  const lh = (logoImg.height / logoImg.width) * lw;
-  ctx.save();
-  ctx.shadowBlur = 12;
-  ctx.shadowColor = 'rgba(0,0,0,0.9)';
-  ctx.drawImage(logoImg, 20, 20, lw, lh);
-  ctx.restore();
+  const lw = W * 0.12; const lh = (logoImg.height / logoImg.width) * lw;
+  ctx.save(); ctx.shadowBlur = 12; ctx.shadowColor = 'rgba(0,0,0,0.9)'; ctx.drawImage(logoImg, 20, 20, lw, lh); ctx.restore();
   canvas._logoBounds = { x: 20, y: 20, w: lw, h: lh };
 }
 
 function drawEmptyState(W, H, msg) {
-  ctx.fillStyle = '#0a1a2e';
-  ctx.fillRect(0, 0, W, H);
-  ctx.fillStyle = '#5a7a9a';
-  ctx.font = `700 ${W * 0.025}px Cairo, sans-serif`;
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
+  ctx.fillStyle = '#0a1a2e'; ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = '#5a7a9a'; ctx.font = `700 ${W * 0.025}px Cairo, sans-serif`;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
   ctx.fillText(msg || '🎥 اختر مصدراً', W / 2, H / 2);
 }
 
 function drawThinGoldFrame(W, H, PAD) {
   const grad = ctx.createLinearGradient(0, 0, W, H);
-  grad.addColorStop(0,    '#B8860B');
-  grad.addColorStop(0.2,  '#FFD700');
-  grad.addColorStop(0.4,  '#FFF8DC');
-  grad.addColorStop(0.6,  '#FFD700');
-  grad.addColorStop(0.8,  '#DAA520');
-  grad.addColorStop(1,    '#B8860B');
-  
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, W, H);
-  
+  grad.addColorStop(0, '#B8860B'); grad.addColorStop(0.2, '#FFD700'); grad.addColorStop(0.4, '#FFF8DC');
+  grad.addColorStop(0.6, '#FFD700'); grad.addColorStop(0.8, '#DAA520'); grad.addColorStop(1, '#B8860B');
+  ctx.fillStyle = grad; ctx.fillRect(0, 0, W, H);
   const shine = ctx.createLinearGradient(0, 0, 0, PAD);
-  shine.addColorStop(0, 'rgba(255, 255, 255, 0.6)');
-  shine.addColorStop(1, 'rgba(255, 255, 255, 0)');
-  ctx.fillStyle = shine;
-  ctx.fillRect(0, 0, W, PAD);
+  shine.addColorStop(0, 'rgba(255, 255, 255, 0.6)'); shine.addColorStop(1, 'rgba(255, 255, 255, 0)');
+  ctx.fillStyle = shine; ctx.fillRect(0, 0, W, PAD);
 }
 
 function redraw(dt) {
   const W = canvas.width, H = canvas.height;
   if (!W || !H) return;
-
-  const PAD = 4;
-  const RADIUS = 10;
-  const innerW = W - PAD * 2;
-  const innerH = H - PAD * 2;
-
+  const PAD = 4, RADIUS = 10;
+  const innerW = W - PAD * 2, innerH = H - PAD * 2;
   drawThinGoldFrame(W, H, PAD);
-
   ctx.save();
-  ctx.beginPath();
-  ctx.roundRect(PAD, PAD, innerW, innerH, RADIUS);
-  ctx.clip();
+  ctx.beginPath(); ctx.roundRect(PAD, PAD, innerW, innerH, RADIUS); ctx.clip();
   ctx.translate(PAD, PAD);
-
   if (transitionProgress > 0) {
     transitionProgress -= (dt || 0.033) * 3.5;
     if (transitionProgress < 0.5 && layoutMode !== targetLayoutMode) applyLayoutNow(targetLayoutMode);
     if (transitionProgress <= 0) transitionProgress = 0;
   }
-
-  ctx.fillStyle = '#000';
-  ctx.fillRect(0, 0, innerW, innerH);
-
+  ctx.fillStyle = '#000'; ctx.fillRect(0, 0, innerW, innerH);
   if (isPaused && isRecording) {
-    if (optShowTransition) {
-      drawTransitionScreen(innerW, innerH);
-    } else {
+    if (optShowTransition) drawTransitionScreen(innerW, innerH);
+    else {
       if (activeSource === 'camera' && camVideo.readyState >= 2) drawCover(camVideo, 0, 0, innerW, innerH);
       else if (video.readyState >= 2) drawCover(video, 0, 0, innerW, innerH);
     }
@@ -2079,58 +1833,38 @@ function redraw(dt) {
       ctx.fillStyle = `rgba(0, 0, 0, ${alpha * 0.6})`;
       ctx.fillRect(0, 0, innerW, innerH);
     }
-
     if (layoutMode === 'anchor') {
       if (activeSource === 'camera' && camVideo.readyState >= 2) drawCover(camVideo, 0, 0, innerW, innerH);
       else if (video.readyState >= 2) drawCover(video, 0, 0, innerW, innerH);
       else drawEmptyState(innerW, innerH);
       canvas._pipBounds = null;
-    }
-    else if (layoutMode === 'reference') {
+    } else if (layoutMode === 'reference') {
       if (refLoaded && refVideo.readyState >= 2) drawCover(refVideo, 0, 0, innerW, innerH);
       else drawEmptyState(innerW, innerH, '🎞️ اضغط «عرض المرجعي»');
       if (activeSource === 'camera' && camVideo.readyState >= 2) drawPiP(camVideo, innerW, innerH);
       else if (video.readyState >= 2) drawPiP(video, innerW, innerH);
       else canvas._pipBounds = null;
-    }
-    else if (layoutMode === 'split') {
+    } else if (layoutMode === 'split') {
       const halfW = innerW / 2;
       if (refLoaded && refVideo.readyState >= 2) drawCover(refVideo, 0, 0, halfW, innerH);
       if (activeSource === 'camera' && camVideo.readyState >= 2) drawCover(camVideo, halfW, 0, halfW, innerH);
       else if (video.readyState >= 2) drawCover(video, halfW, 0, halfW, innerH);
-
-      ctx.strokeStyle = '#FFD700';
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.moveTo(halfW, 0);
-      ctx.lineTo(halfW, innerH);
-      ctx.stroke();
-
-      ctx.fillStyle = 'rgba(0,0,0,0.7)';
-      ctx.fillRect(halfW - 90, 20, 80, 30);
-      ctx.fillStyle = '#9c27b0';
-      ctx.font = '900 16px Cairo, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
+      ctx.strokeStyle = '#FFD700'; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.moveTo(halfW, 0); ctx.lineTo(halfW, innerH); ctx.stroke();
+      ctx.fillStyle = 'rgba(0,0,0,0.7)'; ctx.fillRect(halfW - 90, 20, 80, 30);
+      ctx.fillStyle = '#9c27b0'; ctx.font = '900 16px Cairo, sans-serif';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       ctx.fillText('المرجعي', halfW - 50, 35);
-
-      ctx.fillStyle = 'rgba(0,0,0,0.7)';
-      ctx.fillRect(halfW + 10, 20, 80, 30);
-      ctx.fillStyle = '#FFD700';
-      ctx.fillText('أنت', halfW + 50, 35);
+      ctx.fillStyle = 'rgba(0,0,0,0.7)'; ctx.fillRect(halfW + 10, 20, 80, 30);
+      ctx.fillStyle = '#FFD700'; ctx.fillText('أنت', halfW + 50, 35);
       canvas._pipBounds = null;
     }
-
     drawLogo(innerW, innerH);
     drawNewsLowerThird(innerW, innerH, dt);
   }
-
   ctx.restore();
 }
 
-// ============================================================
-//  اختصارات
-// ============================================================
 document.addEventListener('keydown', e => {
   if (!isRecording) return;
   if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
@@ -2143,56 +1877,25 @@ document.addEventListener('keydown', e => {
   scheduleStudioHide();
 });
 
-// ============================================================
-//  حلقة الرسم
-// ============================================================
 function renderLoop(ts) {
   const dt = lastFrameTime ? Math.min(0.1, (ts - lastFrameTime) / 1000) : 0.033;
   lastFrameTime = ts;
-
   const camLive = (activeSource === 'camera' && cameraReady && cameraStream);
   const videoLive = (activeSource === 'file' && videoLoaded && !video.paused && !video.ended);
   const refLive = (refLoaded && !refVideo.paused && !refVideo.ended);
   const hasNews = !!newsText.value.trim();
-  
-  const needsAnim = isRecording || isPaused || layoutMode === 'reference' || 
-                    transitionProgress > 0 || camLive || videoLive || refLive || hasNews ||
-                    mainPreviewing || refPreviewing;
-  
+  const needsAnim = isRecording || isPaused || layoutMode === 'reference' || transitionProgress > 0 || camLive || videoLive || refLive || hasNews || mainPreviewing || refPreviewing;
   if (needsAnim) redraw(dt);
   animFrame = requestAnimationFrame(renderLoop);
 }
 
-// ============================================================
-//  صيغة التسجيل
-// ============================================================
 function pickBestMime(hasAudio) {
   if (typeof MediaRecorder === 'undefined') return { mime: '', ext: 'webm' };
-  const list = hasAudio ? [
-    'video/mp4;codecs=avc1.42E01E,mp4a.40.2',
-    'video/mp4',
-    'video/webm;codecs=vp9,opus',
-    'video/webm;codecs=vp8,opus',
-    'video/webm'
-  ] : [
-    'video/mp4;codecs=avc1.42E01E',
-    'video/mp4',
-    'video/webm;codecs=vp9',
-    'video/webm'
-  ];
-  for (const m of list) {
-    try {
-      if (MediaRecorder.isTypeSupported(m)) {
-        return { mime: m, ext: m.indexOf('mp4') !== -1 ? 'mp4' : 'webm' };
-      }
-    } catch (e) {}
-  }
+  const list = hasAudio ? ['video/mp4;codecs=avc1.42E01E,mp4a.40.2','video/mp4','video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'] : ['video/mp4;codecs=avc1.42E01E','video/mp4','video/webm;codecs=vp9','video/webm'];
+  for (const m of list) { try { if (MediaRecorder.isTypeSupported(m)) return { mime: m, ext: m.indexOf('mp4') !== -1 ? 'mp4' : 'webm' }; } catch (e) {} }
   return { mime: '', ext: 'webm' };
 }
 
-// ============================================================
-//  ربط الإعدادات
-// ============================================================
 $('optAudioDuck').addEventListener('change', e => { optAudioDuck = e.target.checked; applyMix(); });
 $('optShowPiP').addEventListener('change', e => { optShowPiP = e.target.checked; redraw(0); });
 $('optLoopClip').addEventListener('change', e => { optLoopClip = e.target.checked; });
@@ -2208,46 +1911,31 @@ $('sizeButtons').addEventListener('click', e => {
   redraw(0);
 });
 
-newsText.addEventListener('input', () => { 
-  tickerInited = false; 
-  redraw(0); 
-});
+newsText.addEventListener('input', () => { tickerInited = false; redraw(0); });
 
 $('micVol').addEventListener('input', e => {
   micBoostValue = parseInt(e.target.value) / 100;
   $('micVolVal').textContent = e.target.value + '%';
-  if (micBoostNode && audioCtx) {
-    micBoostNode.gain.setTargetAtTime(micBoostValue, audioCtx.currentTime, 0.05);
-  }
+  if (micBoostNode && audioCtx) micBoostNode.gain.setTargetAtTime(micBoostValue, audioCtx.currentTime, 0.05);
 });
 
 $('mainVol').addEventListener('input', e => {
   mainVolValue = parseInt(e.target.value) / 100;
   $('mainVolVal').textContent = e.target.value + '%';
-  if (mainVolNode && audioCtx) {
-    mainVolNode.gain.setTargetAtTime(mainVolValue, audioCtx.currentTime, 0.05);
-  }
+  if (mainVolNode && audioCtx) mainVolNode.gain.setTargetAtTime(mainVolValue, audioCtx.currentTime, 0.05);
 });
 
 $('refVolSlider').addEventListener('input', e => {
   refVolValue = parseInt(e.target.value) / 100;
   $('refVolVal').textContent = e.target.value + '%';
-  if (refVolNode && audioCtx) {
-    refVolNode.gain.setTargetAtTime(refVolValue, audioCtx.currentTime, 0.05);
-  }
+  if (refVolNode && audioCtx) refVolNode.gain.setTargetAtTime(refVolValue, audioCtx.currentTime, 0.05);
 });
 
-// ============================================================
-//  التهيئة
-// ============================================================
-canvas.width = 1280;
-canvas.height = 720;
-
+canvas.width = 1280; canvas.height = 720;
 setTimeout(() => {
   const wrap = $('previewWrap');
   if (wrap && canvas.parentElement !== wrap) {
-    canvas.style.width = '100%';
-    canvas.style.height = 'auto';
+    canvas.style.width = '100%'; canvas.style.height = 'auto';
     wrap.appendChild(canvas);
   }
   redraw(0);
@@ -2258,8 +1946,7 @@ updateSegmentsLog();
 animFrame = requestAnimationFrame(renderLoop);
 
 console.log('✅ الاستوديو جاهز!');
-console.log('✂️ نظام تحديد المقطع الكامل مُفعّل (بداية + نهاية)');
-console.log('📺 3 أنماط: مذيع / مرجعي / مقسوم');
+console.log('✂️ مقص احترافي بمقبضين — اسحب لتحديد المقطع');
 </script>
 </body>
 </html>
