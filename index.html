@@ -106,6 +106,9 @@
   #refVolSlider::-webkit-slider-thumb { background: #9c27b0; box-shadow: 0 0 12px #9c27b0; }
   #refVolSlider::-moz-range-thumb { background: #9c27b0; box-shadow: 0 0 12px #9c27b0; }
 
+  /* ============================================================
+     وضع الاستوديو — ✅ مُصلح
+     ============================================================ */
   .studio-overlay { display: none; position: fixed; inset: 0; z-index: 1000; background: #000; overflow: hidden; }
   body.studio-mode { overflow: hidden !important; padding: 0 !important; }
   body.studio-mode .studio-overlay { display: flex; flex-direction: column; animation: fadeIn 0.3s ease; }
@@ -123,8 +126,30 @@
   .studio-live-badge { font-size: 0.8rem; font-weight: 700; padding: 6px 12px; border-radius: 30px; background: rgba(0,0,0,0.7); color: #00FF00; border: 2px solid #00FF0050; backdrop-filter: blur(8px); display: flex; align-items: center; gap: 6px; }
   .studio-live-badge.paused { color: #ffc107; border-color: #ffc10780; }
 
-  .studio-video-area { flex: 1; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; background: radial-gradient(ellipse at center, #0a1520 0%, #000 100%); padding: 16px; }
-  .studio-video-area canvas { max-width: 100%; max-height: 100%; width: auto; height: auto; display: block; object-fit: contain; border-radius: 12px; box-shadow: 0 12px 48px rgba(0,0,0,0.9), 0 0 0 1px rgba(255, 215, 0, 0.5); background: #000; }
+  /* ✅ منطقة الفيديو — إصلاح */
+  .studio-video-area {
+    flex: 1;
+    min-height: 0;
+    min-width: 0;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: radial-gradient(ellipse at center, #0a1520 0%, #000 100%);
+    padding: 60px 16px 100px 16px;
+  }
+
+  .studio-video-area canvas {
+    display: block;
+    background: #000;
+    border-radius: 12px;
+    box-shadow: 0 12px 48px rgba(0,0,0,0.9), 0 0 0 1px rgba(255, 215, 0, 0.5);
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+  }
 
   .studio-bottom-bar { position: absolute; bottom: 0; left: 0; right: 0; padding: 14px; padding-bottom: max(14px, env(safe-area-inset-bottom)); background: linear-gradient(to top, rgba(0,0,0,0.95), transparent); z-index: 10; transition: opacity 0.4s ease; }
 
@@ -151,7 +176,7 @@
     50% { box-shadow: 0 4px 20px rgba(0,0,0,0.5), 0 0 0 12px rgba(0,255,0,0); }
   }
 
-  .studio-tap-hint { position: absolute; bottom: 130px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.75); color: #fff; padding: 8px 18px; border-radius: 30px; font-size: 0.75rem; font-weight: 700; backdrop-filter: blur(8px); animation: hintFade 5s forwards; pointer-events: none; z-index: 20; white-space: nowrap; }
+  .studio-tap-hint { position: absolute; top: 80px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.75); color: #fff; padding: 8px 18px; border-radius: 30px; font-size: 0.75rem; font-weight: 700; backdrop-filter: blur(8px); animation: hintFade 5s forwards; pointer-events: none; z-index: 20; white-space: nowrap; }
   @keyframes hintFade { 0%, 70% { opacity: 1; } 100% { opacity: 0; } }
 
   .studio-mini-ref { position: absolute; top: 80px; right: 16px; background: rgba(156, 39, 176, 0.95); color: #fff; border: 2px solid #9c27b0; border-radius: 30px; padding: 10px 16px; font-family: 'Cairo'; font-weight: 900; font-size: 0.85rem; cursor: pointer; backdrop-filter: blur(8px); z-index: 15; display: none; align-items: center; gap: 6px; box-shadow: 0 4px 20px rgba(156,39,176,0.5); }
@@ -328,13 +353,12 @@
 
 <script>
 // ============================================================
-//  استوديو الأخبار الاحترافي - النسخة النهائية
+//  استوديو الأخبار الاحترافي - النسخة النهائية المُصلحة
 // ============================================================
 
 const canvas = document.createElement('canvas');
 canvas.width = 1280;
 canvas.height = 720;
-canvas.style.cssText = 'max-width:100%;max-height:100%;width:100%;height:auto;display:block;';
 const ctx = canvas.getContext('2d');
 
 // ===== الحالة =====
@@ -415,7 +439,11 @@ let studioControlsHidden = false;
 
 window.addEventListener('DOMContentLoaded', () => {
   const wrap = $('previewWrap');
-  if (wrap && !wrap.querySelector('canvas')) wrap.appendChild(canvas);
+  if (wrap && !wrap.querySelector('canvas')) {
+    canvas.style.width = '100%';
+    canvas.style.height = 'auto';
+    wrap.appendChild(canvas);
+  }
 });
 
 function setStatus(type, msg) {
@@ -427,6 +455,42 @@ function fmtTime(s) {
   if (!isFinite(s) || s < 0) return '00:00';
   const m = Math.floor(s / 60), sec = Math.floor(s % 60);
   return String(m).padStart(2, '0') + ':' + String(sec).padStart(2, '0');
+}
+
+// ============================================================
+//  ✅ ضبط أبعاد canvas حسب المساحة المتاحة
+// ============================================================
+function fitCanvasToArea() {
+  const area = studioVideoArea.getBoundingClientRect();
+  if (area.width <= 0 || area.height <= 0) return;
+
+  const style = window.getComputedStyle(studioVideoArea);
+  const padLeft = parseFloat(style.paddingLeft) || 0;
+  const padRight = parseFloat(style.paddingRight) || 0;
+  const padTop = parseFloat(style.paddingTop) || 0;
+  const padBottom = parseFloat(style.paddingBottom) || 0;
+
+  const availW = area.width - padLeft - padRight;
+  const availH = area.height - padTop - padBottom;
+
+  if (availW <= 0 || availH <= 0) return;
+
+  const canvasAspect = canvas.width / canvas.height;
+  const availAspect = availW / availH;
+
+  let newW, newH;
+  if (canvasAspect > availAspect) {
+    newW = availW;
+    newH = availW / canvasAspect;
+  } else {
+    newH = availH;
+    newW = availH * canvasAspect;
+  }
+
+  canvas.style.width = newW + 'px';
+  canvas.style.height = newH + 'px';
+  canvas.style.maxWidth = '100%';
+  canvas.style.maxHeight = '100%';
 }
 
 // ============================================================
@@ -815,7 +879,7 @@ function applyLayoutNow(mode) {
     if (activeSource === 'file' && isRecording && !isPaused) video.play().catch(()=>{});
   }
   applyMix();
-  updateStudioUI();   // ✅ الإصلاح: تحديث الأزرار فوراً
+  updateStudioUI();
 }
 
 function updateStudioUI() {
@@ -843,7 +907,6 @@ function updateStudioUI() {
   modeSplit.classList.toggle('disabled', !refLoaded);
 }
 
-// ✅ معالجات الأزرار الثلاثة - مع stopPropagation
 modeAnchor.addEventListener('click', (e) => {
   e.stopPropagation();
   if (!isRecording) { setStatus('err', '⚠️ ابدأ التسجيل أولاً'); return; }
@@ -946,9 +1009,22 @@ function startRecording() {
   }
 }
 
+// ✅ دالة دخول الاستوديو مع ضبط الأبعاد
 function enterStudio() {
   document.body.classList.add('studio-mode');
-  if (canvas.parentElement !== studioVideoArea) studioVideoArea.appendChild(canvas);
+  
+  if (canvas.parentElement !== studioVideoArea) {
+    studioVideoArea.appendChild(canvas);
+  }
+  
+  // ✅ إعادة ضبط حجم canvas ليلائم منطقة العرض
+  canvas.style.width = '100%';
+  canvas.style.height = 'auto';
+  canvas.style.maxWidth = '100%';
+  canvas.style.maxHeight = '100%';
+  canvas.style.display = 'block';
+  canvas.style.borderRadius = '12px';
+  
   updateStudioUI();
   studioTapHint.style.display = 'block';
   studioTapHint.style.animation = 'none';
@@ -956,6 +1032,20 @@ function enterStudio() {
   studioTapHint.style.animation = 'hintFade 5s forwards';
   scheduleStudioHide();
   document.body.style.overflow = 'hidden';
+  
+  // ✅ ضبط الأبعاد بعد أن يأخذ المتصفح قياساته
+  requestAnimationFrame(() => {
+    fitCanvasToArea();
+    redraw(0);
+  });
+  setTimeout(() => {
+    fitCanvasToArea();
+    redraw(0);
+  }, 100);
+  setTimeout(() => {
+    fitCanvasToArea();
+    redraw(0);
+  }, 400);
 }
 
 function exitStudio() {
@@ -966,8 +1056,9 @@ function exitStudio() {
     wrap.appendChild(canvas);
     canvas.style.width = '100%';
     canvas.style.height = 'auto';
-    canvas.style.maxWidth = '';
+    canvas.style.maxWidth = '100%';
     canvas.style.maxHeight = '';
+    canvas.style.borderRadius = '14px';
   }
   if (studioControlsHideTimer) clearTimeout(studioControlsHideTimer);
   studioControlsHidden = false;
@@ -994,9 +1085,23 @@ studioVideoArea.addEventListener('click', e => {
   else hideStudioControls();
 });
 
-// ✅ إخفاء تلقائي بعد 4 ثوان — لكن بدون التداخل مع أزرار الأنماط
 [studioPauseBtn, studioResumeBtn, studioStopBtn].forEach(btn => {
   btn.addEventListener('click', scheduleStudioHide);
+});
+
+// ✅ إعادة ضبط الأبعاد عند تغيير النافذة
+window.addEventListener('resize', () => {
+  if (isRecording && document.body.classList.contains('studio-mode')) {
+    fitCanvasToArea();
+  }
+});
+
+window.addEventListener('orientationchange', () => {
+  setTimeout(() => {
+    if (isRecording && document.body.classList.contains('studio-mode')) {
+      fitCanvasToArea();
+    }
+  }, 300);
 });
 
 // ============================================================
@@ -1386,7 +1491,7 @@ function drawEmptyState(W, H, msg) {
   ctx.fillText(msg || '🎥 اختر مصدراً', W / 2, H / 2);
 }
 
-// ✅ الإطار الذهبي الرقيق (كالشعرة)
+// ✅ الإطار الذهبي الرقيق
 function drawThinGoldFrame(W, H, PAD) {
   const grad = ctx.createLinearGradient(0, 0, W, H);
   grad.addColorStop(0,    '#B8860B');
@@ -1413,7 +1518,6 @@ function redraw(dt) {
   const W = canvas.width, H = canvas.height;
   if (!W || !H) return;
 
-  // ✅ إطار رقيق كالشعرة (4 بكسل)
   const PAD = 4;
   const RADIUS = 10;
   const innerW = W - PAD * 2;
@@ -1613,7 +1717,11 @@ canvas.height = 720;
 
 setTimeout(() => {
   const wrap = $('previewWrap');
-  if (wrap && canvas.parentElement !== wrap) wrap.appendChild(canvas);
+  if (wrap && canvas.parentElement !== wrap) {
+    canvas.style.width = '100%';
+    canvas.style.height = 'auto';
+    wrap.appendChild(canvas);
+  }
   redraw(0);
 }, 100);
 
@@ -1623,7 +1731,8 @@ animFrame = requestAnimationFrame(renderLoop);
 
 console.log('✅ الاستوديو جاهز!');
 console.log('🖼️ إطار ذهبي رقيق (4px)');
-console.log('🎬 3 أنماط: مذيع / مرجعي / مقسوم');
+console.log('📺 3 أنماط: مذيع / مرجعي / مقسوم');
+console.log('✂️ دالة fitCanvasToArea: ضبط تلقائي للأبعاد');
 </script>
 </body>
 </html>
