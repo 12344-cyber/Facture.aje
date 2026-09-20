@@ -34,7 +34,6 @@
   .btn-blue { background: #2e7d32; color: #fff; }
   .btn-cyan { background: #00bcd4; color: #0a1a2e; }
 
-  /* ✅ الإطار الذكي */
   .preview-wrap { position: relative; width: 100%; background: linear-gradient(135deg, #0a0f1a, #000); border-radius: 20px; border: 2px solid #2e4a6a; overflow: hidden; transition: border-color 0.3s; padding: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
   .preview-wrap.recording { border-color: #ff4757; box-shadow: 0 0 24px #ff475740, 0 8px 32px rgba(0,0,0,0.5); }
   .preview-wrap canvas { max-width: 100%; display: block; border-radius: 14px; box-shadow: 0 4px 20px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05); background: #000; }
@@ -96,7 +95,6 @@
   .segment-item { display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; background: #1a2f3f; border-radius: 8px; margin-bottom: 4px; font-size: 0.8rem; color: #b8d0e8; }
   .segment-item .seg-num { background: #00FF00; color: #0a1a2e; padding: 2px 8px; border-radius: 10px; font-weight: 900; font-size: 0.75rem; }
 
-  /* ✅ منزلقات موحّدة */
   .volume-slider { -webkit-appearance: none; appearance: none; width: 100%; height: 8px; border-radius: 8px; background: #2e4a6a; outline: none; border: none; margin-top: 10px; padding: 0; }
   .volume-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 26px; height: 26px; border-radius: 50%; cursor: pointer; border: 3px solid #fff; }
   .volume-slider::-moz-range-thumb { width: 26px; height: 26px; border-radius: 50%; cursor: pointer; border: 3px solid #fff; }
@@ -125,9 +123,8 @@
   .studio-live-badge { font-size: 0.8rem; font-weight: 700; padding: 6px 12px; border-radius: 30px; background: rgba(0,0,0,0.7); color: #00FF00; border: 2px solid #00FF0050; backdrop-filter: blur(8px); display: flex; align-items: center; gap: 6px; }
   .studio-live-badge.paused { color: #ffc107; border-color: #ffc10780; }
 
-  /* ✅ الإطار الذكي في الاستوديو */
   .studio-video-area { flex: 1; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; background: radial-gradient(ellipse at center, #0a1520 0%, #000 100%); padding: 16px; }
-  .studio-video-area canvas { max-width: 100%; max-height: 100%; width: auto; height: auto; display: block; object-fit: contain; border-radius: 18px; box-shadow: 0 12px 48px rgba(0,0,0,0.9), 0 0 0 2px rgba(0,255,0,0.15); background: #000; }
+  .studio-video-area canvas { max-width: 100%; max-height: 100%; width: auto; height: auto; display: block; object-fit: contain; border-radius: 18px; box-shadow: 0 12px 48px rgba(0,0,0,0.9), 0 0 0 2px rgba(255, 215, 0, 0.3); background: #000; }
 
   .studio-bottom-bar { position: absolute; bottom: 0; left: 0; right: 0; padding: 14px; padding-bottom: max(14px, env(safe-area-inset-bottom)); background: linear-gradient(to top, rgba(0,0,0,0.95), transparent); z-index: 10; transition: opacity 0.4s ease; }
 
@@ -244,7 +241,6 @@
     </div>
   </div>
 
-  <!-- ✅ مستويات أصوات الفيديو -->
   <div class="step" style="border-color:#00FF00;">
     <div class="step-title">
       <span class="num" style="background:#00FF00;color:#0a1a2e;">🔊</span>
@@ -336,7 +332,7 @@
 
 <script>
 // ============================================================
-//  استوديو الأخبار الاحترافي - النسخة النهائية
+//  استوديو الأخبار الاحترافي - النسخة النهائية مع الإطار الذهبي
 // ============================================================
 
 const canvas = document.createElement('canvas');
@@ -438,7 +434,7 @@ function fmtTime(s) {
 }
 
 // ============================================================
-//  نظام الصوت المُحدّث
+//  نظام الصوت
 // ============================================================
 let audioCtx = null, audioDest = null;
 let srcMain = null, srcRef = null, micNode = null;
@@ -456,7 +452,6 @@ function ensureAudio() {
     gainMic = audioCtx.createGain();
     gainRef = audioCtx.createGain();
     
-    // ✅ Mic boost chain
     micBoostNode = audioCtx.createGain();
     micBoostNode.gain.value = micBoostValue;
     micCompressor = audioCtx.createDynamicsCompressor();
@@ -466,11 +461,9 @@ function ensureAudio() {
     micCompressor.attack.value = 0.003;
     micCompressor.release.value = 0.25;
     
-    // ✅ منافذ التحكم في مستوى الفيديو الرئيسي
     mainVolNode = audioCtx.createGain();
     mainVolNode.gain.value = mainVolValue;
     
-    // ✅ منافذ التحكم في مستوى الفيديو المرجعي
     refVolNode = audioCtx.createGain();
     refVolNode.gain.value = refVolValue;
     
@@ -484,24 +477,20 @@ function ensureAudio() {
     refLimiter.attack.value = 0.003;
     refLimiter.release.value = 0.15;
     
-    // ✅ سلسلة الميكروفون
     gainMic.connect(micBoostNode);
     micBoostNode.connect(micCompressor);
     micCompressor.connect(audioDest);
     
-    // ✅ سلسلة الفيديو الرئيسي مع مستوى الصوت
     gainMain.connect(mainVolNode);
     mainVolNode.connect(audioDest);
     
-    // ✅ سلسلة الفيديو المرجعي مع مستوى الصوت
     gainRef.connect(refVolNode);
     refVolNode.connect(refLimiter);
     refLimiter.connect(audioDest);
     
-    console.log('✅ AudioContext جاهز — كل مستويات الصوت مفعّلة');
+    console.log('✅ AudioContext جاهز');
     return audioCtx;
   } catch (e) { 
-    console.error('AudioContext error:', e);
     audioCtx = null; 
     return null; 
   }
@@ -529,7 +518,6 @@ function connectMic() {
     if (micNode) { try { micNode.disconnect(); } catch (e) {} }
     micNode = audioCtx.createMediaStreamSource(cameraStream);
     micNode.connect(gainMic);
-    console.log('🎤 ربط الميكروفون');
     return true;
   } catch (e) { return false; }
 }
@@ -636,7 +624,6 @@ async function startCamera(facing) {
     try {
       setStatus('busy', `⏳ محاولة ${i + 1}/${attempts.length}: ${attempts[i].name}...`);
       stream = await navigator.mediaDevices.getUserMedia(attempts[i].c);
-      console.log('✅ نجحت:', attempts[i].name);
       break;
     } catch (e) {
       lastError = e;
@@ -693,9 +680,8 @@ $('btnCamOn').addEventListener('click', async function() {
     updateIndicators();
     redraw(0);
     setTimeout(() => redraw(0), 300);
-    setStatus('ok', '✅ الكاميرا جاهزة!' + (result.hasAudio ? ' 🎤 الميكروفون يعمل' : '') + '<br><span style="font-size:0.85rem;">اضغط «ابدأ التسجيل الاحترافي»</span>');
+    setStatus('ok', '✅ الكاميرا جاهزة!' + (result.hasAudio ? ' 🎤' : '') + '<br><span style="font-size:0.85rem;">اضغط «ابدأ التسجيل الاحترافي»</span>');
   } catch (e) {
-    console.error('Camera error:', e);
     setStatus('err',
       `<b style="color:#ff4757;">⚠️ ${e.message}</b>
       <div style="margin-top:10px; padding:10px; background:#ff475710; border-radius:8px; font-size:0.8rem; line-height:1.9;">
@@ -942,7 +928,6 @@ function startRecording() {
     if (activeSource === 'file') video.play().catch(()=>{});
     setStatus('busy', '<span class="live-dot"></span> التسجيل الاحترافي جارٍ');
   } catch (e) {
-    console.error(e);
     setStatus('err', '⚠️ ' + e.message);
     isRecording = false;
   }
@@ -1219,7 +1204,7 @@ function drawPiP(el, W, H) {
   ctx.restore();
 
   const pulse = (Math.sin(Date.now() / 300) + 1) / 2;
-  const borderColor = layoutMode === 'reference' ? `rgba(255, 71, 87, ${0.7 + pulse * 0.3})` : '#00FF00';
+  const borderColor = layoutMode === 'reference' ? `rgba(255, 71, 87, ${0.7 + pulse * 0.3})` : '#FFD700';
   ctx.save();
   ctx.strokeStyle = borderColor;
   ctx.lineWidth = 5;
@@ -1234,7 +1219,7 @@ function drawPiP(el, W, H) {
   ctx.beginPath();
   ctx.roundRect(px + 8, py + 8, badgeW, badgeH, 6);
   ctx.fill();
-  ctx.fillStyle = '#00FF00';
+  ctx.fillStyle = '#FFD700';
   ctx.font = `900 12px Cairo, sans-serif`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
@@ -1244,7 +1229,6 @@ function drawPiP(el, W, H) {
   canvas._pipBounds = { x: px, y: py, w: pw, h: ph };
 }
 
-// ✅ الشريط الإخباري المتحرك مع كلمة "مرجعي"
 function drawNewsLowerThird(W, H, dt) {
   const news = newsText.value.trim();
   if (!news) { 
@@ -1262,7 +1246,6 @@ function drawNewsLowerThird(W, H, dt) {
   const barH = lineH + 32;
   const barY = H - barH;
   
-  // خلفية الشريط
   const barGrad = ctx.createLinearGradient(0, barY, 0, H);
   barGrad.addColorStop(0, 'rgba(0, 0, 0, 0.3)');
   barGrad.addColorStop(0.3, 'rgba(0, 0, 0, 0.85)');
@@ -1273,14 +1256,12 @@ function drawNewsLowerThird(W, H, dt) {
   ctx.fillStyle = '#ff4757';
   ctx.fillRect(0, barY, W, 4);
   
-  // ✅ شارة "مباشر / مرجعي"
   const badgeW = fs * 4;
   const badgeH = fs * 1.6;
   const badgeX = W - badgeW - 20;
   const badgeY = barY + (barH - badgeH) / 2;
   const bGrad = ctx.createLinearGradient(badgeX, 0, badgeX + badgeW, 0);
   
-  // ✅ كلمة "مرجعي" تظهر باللون البنفسجي، "مباشر" بالأحمر
   if (layoutMode === 'reference' || layoutMode === 'split') {
     bGrad.addColorStop(0, '#9c27b0');
     bGrad.addColorStop(1, '#e91e63');
@@ -1297,11 +1278,9 @@ function drawNewsLowerThird(W, H, dt) {
   ctx.font = `900 ${fs * 0.85}px Cairo, sans-serif`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  // ✅ كلمة "مرجعي" تظهر عند عرض المرجعي
   const badgeText = (layoutMode === 'reference' || layoutMode === 'split') ? 'مرجعي' : 'مباشر';
   ctx.fillText(badgeText, badgeX + badgeW / 2, badgeY + badgeH / 2);
   
-  // منطقة التمرير
   const tickerLeft = 20;
   const tickerRight = badgeX - 20;
   const textY = barY + barH / 2 + 2;
@@ -1343,7 +1322,7 @@ function drawTransitionScreen(W, H) {
   ctx.fillRect(0, 0, W, H);
 
   const pulse = (Math.sin(Date.now() / 400) + 1) / 2;
-  ctx.strokeStyle = `rgba(255, 193, 7, ${0.3 + pulse * 0.4})`;
+  ctx.strokeStyle = `rgba(255, 215, 0, ${0.3 + pulse * 0.4})`;
   ctx.lineWidth = 4;
   ctx.strokeRect(20, 20, W - 40, H - 40);
 
@@ -1359,9 +1338,9 @@ function drawTransitionScreen(W, H) {
   ctx.font = `900 ${fs}px Cairo, sans-serif`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillStyle = '#ffc107';
+  ctx.fillStyle = '#FFD700';
   ctx.shadowBlur = 20;
-  ctx.shadowColor = '#ffc107';
+  ctx.shadowColor = '#FFD700';
   ctx.fillText('⏸️ جاري الانتقال...', W / 2, H * 0.5);
   ctx.shadowBlur = 0;
 
@@ -1383,82 +1362,6 @@ function drawLogo(W, H) {
   canvas._logoBounds = { x: 30, y: 30, w: lw, h: lh };
 }
 
-function redraw(dt) {
-  const W = canvas.width, H = canvas.height;
-  if (!W || !H) return;
-
-  if (transitionProgress > 0) {
-    transitionProgress -= (dt || 0.033) * 3.5;
-    if (transitionProgress < 0.5 && layoutMode !== targetLayoutMode) applyLayoutNow(targetLayoutMode);
-    if (transitionProgress <= 0) transitionProgress = 0;
-  }
-
-  ctx.fillStyle = '#000';
-  ctx.fillRect(0, 0, W, H);
-
-  if (isPaused && isRecording) {
-    if (optShowTransition) drawTransitionScreen(W, H);
-    else {
-      if (activeSource === 'camera' && camVideo.readyState >= 2) drawCover(camVideo, 0, 0, W, H);
-      else if (video.readyState >= 2) drawCover(video, 0, 0, W, H);
-    }
-    canvas._newsBounds = null;
-    canvas._logoBounds = null;
-    canvas._pipBounds = null;
-    return;
-  }
-
-  if (transitionProgress > 0) {
-    const alpha = Math.abs(transitionProgress - 0.5) * 2;
-    ctx.fillStyle = `rgba(0, 0, 0, ${alpha * 0.6})`;
-    ctx.fillRect(0, 0, W, H);
-  }
-
-  if (layoutMode === 'anchor') {
-    if (activeSource === 'camera' && camVideo.readyState >= 2) drawCover(camVideo, 0, 0, W, H);
-    else if (video.readyState >= 2) drawCover(video, 0, 0, W, H);
-    else drawEmptyState(W, H);
-    canvas._pipBounds = null;
-  } 
-  else if (layoutMode === 'reference') {
-    if (refLoaded && refVideo.readyState >= 2) drawCover(refVideo, 0, 0, W, H);
-    else drawEmptyState(W, H, '🎞️ اضغط «عرض المرجعي»');
-    if (activeSource === 'camera' && camVideo.readyState >= 2) drawPiP(camVideo, W, H);
-    else if (video.readyState >= 2) drawPiP(video, W, H);
-    else canvas._pipBounds = null;
-  } 
-  else if (layoutMode === 'split') {
-    const halfW = W / 2;
-    if (refLoaded && refVideo.readyState >= 2) drawCover(refVideo, 0, 0, halfW, H);
-    if (activeSource === 'camera' && camVideo.readyState >= 2) drawCover(camVideo, halfW, 0, halfW, H);
-    else if (video.readyState >= 2) drawCover(video, halfW, 0, halfW, H);
-
-    ctx.strokeStyle = '#ff4757';
-    ctx.lineWidth = 6;
-    ctx.beginPath();
-    ctx.moveTo(halfW, 0);
-    ctx.lineTo(halfW, H);
-    ctx.stroke();
-
-    ctx.fillStyle = 'rgba(0,0,0,0.7)';
-    ctx.fillRect(halfW - 90, 20, 80, 30);
-    ctx.fillStyle = '#9c27b0';
-    ctx.font = '900 16px Cairo, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText('المرجعي', halfW - 50, 35);
-
-    ctx.fillStyle = 'rgba(0,0,0,0.7)';
-    ctx.fillRect(halfW + 10, 20, 80, 30);
-    ctx.fillStyle = '#00FF00';
-    ctx.fillText('أنت', halfW + 50, 35);
-    canvas._pipBounds = null;
-  }
-
-  drawLogo(W, H);
-  drawNewsLowerThird(W, H, dt);
-}
-
 function drawEmptyState(W, H, msg) {
   ctx.fillStyle = '#0a1a2e';
   ctx.fillRect(0, 0, W, H);
@@ -1467,6 +1370,211 @@ function drawEmptyState(W, H, msg) {
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.fillText(msg || '🎥 اختر مصدراً', W / 2, H / 2);
+}
+
+// ============================================================
+//  🖼️ الإطار الذهبي الذكي
+// ============================================================
+
+function drawGoldFrameBackground(W, H, PAD, RADIUS) {
+  const grad = ctx.createLinearGradient(0, 0, W, H);
+  grad.addColorStop(0,    '#B8860B');
+  grad.addColorStop(0.15, '#FFD700');
+  grad.addColorStop(0.3,  '#FFF8DC');
+  grad.addColorStop(0.5,  '#DAA520');
+  grad.addColorStop(0.7,  '#FFF8DC');
+  grad.addColorStop(0.85, '#FFD700');
+  grad.addColorStop(1,    '#8B6914');
+
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, H);
+
+  const shine = ctx.createLinearGradient(0, 0, 0, PAD * 2);
+  shine.addColorStop(0, 'rgba(255,255,255,0.5)');
+  shine.addColorStop(1, 'rgba(255,255,255,0)');
+  ctx.fillStyle = shine;
+  ctx.fillRect(0, 0, W, PAD * 1.5);
+}
+
+function drawFrameOrnaments(W, H, PAD, RADIUS) {
+  const innerW = W - PAD * 2;
+  const innerH = H - PAD * 2;
+
+  ctx.save();
+  ctx.strokeStyle = 'rgba(255, 248, 220, 0.9)';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.roundRect(PAD - 1.5, PAD - 1.5, innerW + 3, innerH + 3, RADIUS + 1.5);
+  ctx.stroke();
+  ctx.restore();
+
+  ctx.save();
+  ctx.strokeStyle = 'rgba(139, 105, 20, 0.7)';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.roundRect(PAD - 4, PAD - 4, innerW + 8, innerH + 8, RADIUS + 4);
+  ctx.stroke();
+  ctx.restore();
+
+  const arcSize = 22;
+  const padOuter = PAD - 7;
+  ctx.save();
+  ctx.strokeStyle = '#FFF8DC';
+  ctx.lineWidth = 2.5;
+  ctx.lineCap = 'round';
+
+  ctx.beginPath();
+  ctx.moveTo(padOuter + arcSize, padOuter);
+  ctx.lineTo(padOuter + 8, padOuter);
+  ctx.quadraticCurveTo(padOuter, padOuter, padOuter, padOuter + 8);
+  ctx.lineTo(padOuter, padOuter + arcSize);
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.moveTo(W - padOuter - arcSize, padOuter);
+  ctx.lineTo(W - padOuter - 8, padOuter);
+  ctx.quadraticCurveTo(W - padOuter, padOuter, W - padOuter, padOuter + 8);
+  ctx.lineTo(W - padOuter, padOuter + arcSize);
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.moveTo(padOuter + arcSize, H - padOuter);
+  ctx.lineTo(padOuter + 8, H - padOuter);
+  ctx.quadraticCurveTo(padOuter, H - padOuter, padOuter, H - padOuter - 8);
+  ctx.lineTo(padOuter, H - padOuter - arcSize);
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.moveTo(W - padOuter - arcSize, H - padOuter);
+  ctx.lineTo(W - padOuter - 8, H - padOuter);
+  ctx.quadraticCurveTo(W - padOuter, H - padOuter, W - padOuter, H - padOuter - 8);
+  ctx.lineTo(W - padOuter, H - padOuter - arcSize);
+  ctx.stroke();
+
+  ctx.restore();
+
+  const dotOffset = PAD - 3;
+  ctx.save();
+  ctx.fillStyle = '#FFF8DC';
+  ctx.shadowColor = 'rgba(255, 215, 0, 0.9)';
+  ctx.shadowBlur = 8;
+  [[dotOffset, dotOffset], [W - dotOffset, dotOffset],
+   [dotOffset, H - dotOffset], [W - dotOffset, H - dotOffset]].forEach(([x, y]) => {
+    ctx.beginPath();
+    ctx.arc(x, y, 3.5, 0, Math.PI * 2);
+    ctx.fill();
+  });
+  ctx.restore();
+}
+
+// ============================================================
+//  دالة الرسم الرئيسية مع الإطار الذهبي
+// ============================================================
+function redraw(dt) {
+  const W = canvas.width, H = canvas.height;
+  if (!W || !H) return;
+
+  const PAD = 30;
+  const RADIUS = 22;
+  const innerW = W - PAD * 2;
+  const innerH = H - PAD * 2;
+
+  // 1. خلفية الإطار الذهبي
+  drawGoldFrameBackground(W, H, PAD, RADIUS);
+
+  // 2. ظل داخلي
+  ctx.save();
+  ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
+  ctx.shadowBlur = 30;
+  ctx.fillStyle = '#000';
+  ctx.beginPath();
+  ctx.roundRect(PAD, PAD, innerW, innerH, RADIUS);
+  ctx.fill();
+  ctx.restore();
+
+  // 3. منطقة المحتوى
+  ctx.save();
+  ctx.beginPath();
+  ctx.roundRect(PAD, PAD, innerW, innerH, RADIUS);
+  ctx.clip();
+  ctx.translate(PAD, PAD);
+
+  // معالجة الانتقال
+  if (transitionProgress > 0) {
+    transitionProgress -= (dt || 0.033) * 3.5;
+    if (transitionProgress < 0.5 && layoutMode !== targetLayoutMode) applyLayoutNow(targetLayoutMode);
+    if (transitionProgress <= 0) transitionProgress = 0;
+  }
+
+  ctx.fillStyle = '#000';
+  ctx.fillRect(0, 0, innerW, innerH);
+
+  // وضع الإيقاف المؤقت
+  if (isPaused && isRecording) {
+    if (optShowTransition) {
+      drawTransitionScreen(innerW, innerH);
+    } else {
+      if (activeSource === 'camera' && camVideo.readyState >= 2) drawCover(camVideo, 0, 0, innerW, innerH);
+      else if (video.readyState >= 2) drawCover(video, 0, 0, innerW, innerH);
+    }
+  } else {
+    if (transitionProgress > 0) {
+      const alpha = Math.abs(transitionProgress - 0.5) * 2;
+      ctx.fillStyle = `rgba(0, 0, 0, ${alpha * 0.6})`;
+      ctx.fillRect(0, 0, innerW, innerH);
+    }
+
+    // العرض حسب النمط
+    if (layoutMode === 'anchor') {
+      if (activeSource === 'camera' && camVideo.readyState >= 2) drawCover(camVideo, 0, 0, innerW, innerH);
+      else if (video.readyState >= 2) drawCover(video, 0, 0, innerW, innerH);
+      else drawEmptyState(innerW, innerH);
+      canvas._pipBounds = null;
+    }
+    else if (layoutMode === 'reference') {
+      if (refLoaded && refVideo.readyState >= 2) drawCover(refVideo, 0, 0, innerW, innerH);
+      else drawEmptyState(innerW, innerH, '🎞️ اضغط «عرض المرجعي»');
+      if (activeSource === 'camera' && camVideo.readyState >= 2) drawPiP(camVideo, innerW, innerH);
+      else if (video.readyState >= 2) drawPiP(video, innerW, innerH);
+      else canvas._pipBounds = null;
+    }
+    else if (layoutMode === 'split') {
+      const halfW = innerW / 2;
+      if (refLoaded && refVideo.readyState >= 2) drawCover(refVideo, 0, 0, halfW, innerH);
+      if (activeSource === 'camera' && camVideo.readyState >= 2) drawCover(camVideo, halfW, 0, halfW, innerH);
+      else if (video.readyState >= 2) drawCover(video, halfW, 0, halfW, innerH);
+
+      ctx.strokeStyle = '#FFD700';
+      ctx.lineWidth = 6;
+      ctx.beginPath();
+      ctx.moveTo(halfW, 0);
+      ctx.lineTo(halfW, innerH);
+      ctx.stroke();
+
+      ctx.fillStyle = 'rgba(0,0,0,0.7)';
+      ctx.fillRect(halfW - 90, 20, 80, 30);
+      ctx.fillStyle = '#9c27b0';
+      ctx.font = '900 16px Cairo, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('المرجعي', halfW - 50, 35);
+
+      ctx.fillStyle = 'rgba(0,0,0,0.7)';
+      ctx.fillRect(halfW + 10, 20, 80, 30);
+      ctx.fillStyle = '#FFD700';
+      ctx.fillText('أنت', halfW + 50, 35);
+      canvas._pipBounds = null;
+    }
+
+    // الشعار + الشريط
+    drawLogo(innerW, innerH);
+    drawNewsLowerThird(innerW, innerH, dt);
+  }
+
+  ctx.restore();
+
+  // 4. زخارف الإطار
+  drawFrameOrnaments(W, H, PAD, RADIUS);
 }
 
 // ============================================================
@@ -1552,7 +1660,6 @@ newsText.addEventListener('input', () => {
   redraw(0); 
 });
 
-// ✅ التحكم بمستوى الميكروفون
 $('micVol').addEventListener('input', e => {
   micBoostValue = parseInt(e.target.value) / 100;
   $('micVolVal').textContent = e.target.value + '%';
@@ -1561,7 +1668,6 @@ $('micVol').addEventListener('input', e => {
   }
 });
 
-// ✅ التحكم بمستوى الفيديو الرئيسي (الحل للمشكلة!)
 $('mainVol').addEventListener('input', e => {
   mainVolValue = parseInt(e.target.value) / 100;
   $('mainVolVal').textContent = e.target.value + '%';
@@ -1570,7 +1676,6 @@ $('mainVol').addEventListener('input', e => {
   }
 });
 
-// ✅ التحكم بمستوى الفيديو المرجعي
 $('refVolSlider').addEventListener('input', e => {
   refVolValue = parseInt(e.target.value) / 100;
   $('refVolVal').textContent = e.target.value + '%';
@@ -1596,8 +1701,8 @@ updateSegmentsLog();
 animFrame = requestAnimationFrame(renderLoop);
 
 console.log('✅ الاستوديو جاهز!');
-console.log('🔊 مستويات الصوت: ميكروفون + فيديو رئيسي + فيديو مرجعي');
-console.log('📺 كلمة "مرجعي" تظهر في الشريط عند العرض');
+console.log('🖼️ الإطار الذهبي الذكي مُفعّل');
+console.log('📺 كلمة "مرجعي" تظهر عند العرض');
 </script>
 </body>
 </html>
